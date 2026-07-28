@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: colore-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - /opt/colore-os/data/postgres:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    networks:
+      - colore-net
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.31.7
+    container_name: colore-n8n
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "5678:5678"
+
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+
+      N8N_HOST: ${N8N_HOST}
+      N8N_PORT: ${N8N_PORT}
+      N8N_PROTOCOL: ${N8N_PROTOCOL}
+
+      N8N_EDITOR_BASE_URL: ${N8N_EDITOR_BASE_URL}
+      WEBHOOK_URL: ${WEBHOOK_URL}
+
+      N8N_TRUST_PROXY: ${N8N_TRUST_PROXY}
+      N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE}
+
+      TZ: ${TZ}
+
+    volumes:
+      - /opt/colore-os/data/n8n:/home/node/.n8n
+
+    networks:
+      - colore-net
+
+  backend:
+    build:
+      context: /opt/colore-os/app/backend
+      dockerfile: Dockerfile
+
+    container_name: colore-backend
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    env_file:
+      - /opt/colore-os/docker/.env
+
+    ports:
+      - "8000:8000"
+
+    networks:
+      - colore-net
+
+networks:
+  colore-net:

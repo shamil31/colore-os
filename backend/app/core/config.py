@@ -12,7 +12,6 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int
 
     model_config = SettingsConfigDict(
-        env_file=".env",
         case_sensitive=True,
         extra="ignore",
     )
