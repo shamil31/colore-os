@@ -2,7 +2,8 @@
 
 ## Текущий статус проекта
 
-Phase 3 завершена.
+Phase 4 — Conversation Flows начата.
+Первый сценарий завершён.
 
 ## BACKLOG
 
@@ -13,6 +14,7 @@ Phase 3 завершена.
 ## TODO
 
 - Phase 4 — Conversation Flows.
+- Scenario 002 — Reschedule Appointment.
 
 ## DOING
 
@@ -32,3 +34,4 @@ Phase 3 завершена.
 - Conversation Principles v1.0.
 - Intent Map v1.0.
 - Decision Model v1.0.
+- Scenario 001 — Book Appointment v1.0.
