@@ -3,7 +3,7 @@
 ## Текущий статус проекта
 
 Phase 4 — Conversation Flows продолжается.
-Package 01 — Appointment Management v1.0 завершён.
+Package 02 — Customer Communication v1.0 завершён.
 
 ## BACKLOG
 
@@ -13,7 +13,7 @@ Package 01 — Appointment Management v1.0 завершён.
 
 ## TODO
 
-- Package 02 — Customer Communication.
+- Package 03 — Client Retention & Reactivation.
 
 ## DOING
 
@@ -38,3 +38,13 @@ Package 01 — Appointment Management v1.0 завершён.
 - Scenario 002 — Reschedule Appointment v1.0.
 - Scenario 003 — Cancel Appointment v1.0.
 - Scenario 004 — Consultation v1.0.
+- Package 02 — Customer Communication v1.0.
+- Scenario 005 — Price Inquiry v1.0.
+- Scenario 006 — Service Selection v1.0.
+- Scenario 007 — Lead Qualification v1.0.
+- Scenario 008 — Objection Handling v1.0.
+- Scenario 009 — Human Handoff v1.0.
+- Scenario 010 — Promotion Inquiry v1.0.
+- Scenario 011 — Master Selection v1.0.
+- Scenario 012 — First Contact v1.0.
+- Scenario 013 — Follow Up v1.0.
