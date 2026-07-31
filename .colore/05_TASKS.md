@@ -2,8 +2,8 @@
 
 ## Текущий статус проекта
 
-Phase 4 — Conversation Flows начата.
-Первый сценарий завершён.
+Phase 4 — Conversation Flows продолжается.
+Package 01 — Appointment Management v1.0 завершён.
 
 ## BACKLOG
 
@@ -13,8 +13,7 @@ Phase 4 — Conversation Flows начата.
 
 ## TODO
 
-- Phase 4 — Conversation Flows.
-- Scenario 002 — Reschedule Appointment.
+- Package 02 — Customer Communication.
 
 ## DOING
 
@@ -35,3 +34,7 @@ Phase 4 — Conversation Flows начата.
 - Intent Map v1.0.
 - Decision Model v1.0.
 - Scenario 001 — Book Appointment v1.0.
+- Package 01 — Appointment Management v1.0.
+- Scenario 002 — Reschedule Appointment v1.0.
+- Scenario 003 — Cancel Appointment v1.0.
+- Scenario 004 — Consultation v1.0.
