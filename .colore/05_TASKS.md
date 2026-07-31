@@ -2,7 +2,7 @@
 
 ## Текущий статус проекта
 
-Phase 2 завершена. Проект переходит к Phase 3 — Conversation & Decision Engine.
+Phase 3 завершена.
 
 ## BACKLOG
 
@@ -12,7 +12,7 @@ Phase 2 завершена. Проект переходит к Phase 3 — Conve
 
 ## TODO
 
-- Conversation & Decision Engine.
+- Phase 4 — Conversation Flows.
 
 ## DOING
 
@@ -29,3 +29,6 @@ Phase 2 завершена. Проект переходит к Phase 3 — Conve
 - AI Constitution v1.0.
 - AI Employee Framework v1.0.
 - AI Administrator Specification v1.0.
+- Conversation Principles v1.0.
+- Intent Map v1.0.
+- Decision Model v1.0.
