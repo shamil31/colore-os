@@ -2,7 +2,7 @@
 
 ## Текущий статус проекта
 
-Проект находится на этапе перехода от Runtime v1.0 к фазе бизнес-проектирования продукта.
+Phase 2 завершена. Проект переходит к Phase 3 — Conversation & Decision Engine.
 
 ## BACKLOG
 
@@ -12,7 +12,7 @@
 
 ## TODO
 
-- Нет задач.
+- Conversation & Decision Engine.
 
 ## DOING
 
@@ -26,3 +26,6 @@
 
 - Runtime v1.0.
 - Business Design & Product Definition.
+- AI Constitution v1.0.
+- AI Employee Framework v1.0.
+- AI Administrator Specification v1.0.
