@@ -12,7 +12,7 @@
 
 ## TODO
 
-- Business Design & Product Definition.
+- Нет задач.
 
 ## DOING
 
@@ -25,3 +25,4 @@
 ## DONE
 
 - Runtime v1.0.
+- Business Design & Product Definition.
