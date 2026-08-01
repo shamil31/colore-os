@@ -1,83 +1,94 @@
-# Coloré OS — CONTRACT
+# Coloré OS - Universal LLM Operating Contract
 
-## Назначение
+Last updated: 2026-08-01
 
-Этот документ определяет правила совместной работы между Владельцем проекта и AI.
+This is a mandatory behavior contract for any LLM entering the project.
+It is not a project description.
 
-Все участники проекта обязаны соблюдать эти правила.
+## 1) Start Of Work (Mandatory)
 
----
+Before any task, the LLM must:
+1. Confirm workspace path: /root/colore-os.
+2. Confirm repository is valid (git present).
+3. Read Source Of Truth documents in this exact order:
+	 - .colore/09_UAOP.md
+	 - .colore/01_CONTRACT.md
+	 - .colore/00_Master/PROJECT_STATE.md
+	 - .colore/00_Master/CURRENT_SPRINT.md
+	 - .colore/00_Master/DECISIONS.md
+	 - .colore/00_Master/KNOWN_STATE.md
+	 - .colore/00_Master/BACKLOG.md
+	 - .colore/00_Master/ROADMAP.md
+	 - .colore/00_Master/TODAY.md
 
-## Роли
+If any step fails, execution must stop and be fixed first.
 
-### Владелец проекта
+## 2) Source Of Truth Priority
 
-Отвечает за:
+When information conflicts, use this precedence:
+1. .colore/00_Master/*.md
+2. .colore/01_CONTRACT.md, .colore/02_PROJECT.md, .colore/03_ARCHITECTURE.md, .colore/05_TASKS.md
+3. Historical files (.colore/06_SESSION.md, .colore/07_DECISIONS.md, .colore/08_VERIFIED_HISTORY.md)
+4. All other project docs
 
-- бизнес;
-- стратегию;
-- приоритеты;
-- окончательное принятие решений.
+Chat history is never a source of truth.
 
-### AI
+## 3) Non-Revisable Decisions (Unless Owner Explicitly Reopens)
 
-Отвечает за:
+- Revenue First.
+- Reality First.
+- Finish Before Improve.
+- Main KPI: first revenue.
+- Coloré OS does not replace Altegio.
+- Coloré OS does not replace Integrilla.
+- Use existing infrastructure.
+- AI Administrator development is postponed.
+- Role split:
+	- Claude = Independent Reviewer
+	- Copilot = Implementation
+	- GPT = CTO
 
-- архитектуру;
-- планирование работ;
-- технические решения;
-- контроль выполнения задач;
-- проверку результатов;
-- ведение проектной документации.
+## 4) Execution Model
 
----
+- One active task at a time.
+- Every task follows: BACKLOG -> TODO -> DOING -> REVIEW -> DONE.
+- New ideas enter BACKLOG first.
+- Closed questions are not reopened without explicit owner decision.
+- No optimization work before completion of active P0 task.
 
-## Правила работы
+## 5) Sync Project Procedure
 
-1. Одновременно выполняется только одна задача.
+When running Sync Project, LLM must:
+1. Update all Source Of Truth docs.
+2. Record all decisions made today.
+3. Remove obsolete priorities and contradictions.
+4. Ensure architecture and vision are aligned to current sprint.
+5. Run consistency check across Source Of Truth.
+6. Commit with meaningful message.
 
-2. Новые идеи не прерывают текущую работу.
+## 6) Open Day Procedure
 
-3. Любая новая идея сначала фиксируется, затем рассматривается после завершения текущей задачи.
+1. Read Source Of Truth in mandatory order.
+2. Confirm current sprint and current KPI.
+3. Confirm one active product task.
+4. Set TODAY.md with exact active task.
+5. Start execution.
 
-4. Переход к следующей задаче разрешён только после статуса DONE.
+## 7) Close Day Procedure
 
-5. Любое изменение проходит цикл:
+1. Record only verified outcomes.
+2. Update session and decision logs.
+3. Update project state and backlog ordering.
+4. Set first task for next day.
+5. Commit day-close state.
 
-BACKLOG → TODO → DOING → REVIEW → DONE
+## 8) Failure Prevention Rules
 
-6. Любая задача считается завершённой только после прохождения REVIEW.
+- Never infer completion from assumptions.
+- Never claim work done without repository evidence.
+- Never shift priority from P0 revenue tasks to deferred tracks.
+- Never replace systems that are declared foundational in decisions.
 
-7. Последовательность выполнения обязательна:
+## 9) Amendment Rule
 
-BACKLOG → TODO → DOING → REVIEW → DONE
-
-Переход из DOING сразу в DONE запрещён.
-
-8. Новая фаза проекта не может начаться, пока предыдущая фаза не имеет статус DONE.
-
-9. Один логически завершённый этап проекта должен фиксироваться отдельным Git Commit.
-
----
-
-## Workspace
-
-Перед любой работой необходимо убедиться, что открыт правильный репозиторий.
-
-Если Workspace не подтверждён — работа запрещена.
-
----
-
-## Главное правило
-
-Finish before Improve.
-
-Сначала завершить.
-
-Потом улучшать.
-
----
-
-## Изменение правил
-
-Настоящий документ изменяется только по взаимному согласию Владельца проекта и AI.
+This contract can be changed only by explicit owner decision recorded in decisions log.

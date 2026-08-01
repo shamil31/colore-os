@@ -2,92 +2,70 @@
 
 Last updated: 2026-08-01
 
-Project phase and current priorities are maintained manually by the Product Owner.
+Project state is maintained manually.
+Never infer priorities from code structure alone.
 
-Never infer project phase or current priorities automatically from repository structure.
-
-Source of truth for this snapshot:
+## Source Of Truth
+- .colore/00_Master/PROJECT_STATE.md
+- .colore/00_Master/CURRENT_SPRINT.md
+- .colore/00_Master/DECISIONS.md
+- .colore/00_Master/KNOWN_STATE.md
+- .colore/00_Master/BACKLOG.md
+- .colore/00_Master/ROADMAP.md
+- .colore/00_Master/WORKFLOW.md
+- .colore/01_CONTRACT.md
+- .colore/02_PROJECT.md
+- .colore/03_ARCHITECTURE.md
 - .colore/05_TASKS.md
-- .colore/06_SESSION.md
-- .colore/07_DECISIONS.md
-- infrastructure/docker-compose.yml
-- backend/app/main.py
-- backend/app/api/clients.py
-
-## Current Phase
-- Phase 1 - Revenue Engine MVP (ACTIVE)
-
-## Phase Transition Status
-- Phase 0 - Project Operating System: DONE
-- Phase 1 - Revenue Engine MVP: ACTIVE
-
-## Current Operating Strategy
-- Product and Revenue are developed in parallel.
-- Development must continuously support business growth.
-- The primary business objective is to increase salon revenue.
-- The current KPI is:
-  - New leads
-  - Bookings
-  - Revenue
-  - Product progress
 
 ## Current Sprint
-- TODO
+- Name: FIRST REVENUE
+- Status: ACTIVE
+- Primary business objective:
+  - Получить первую реальную запись клиента, инициированную Coloré OS.
+- Main KPI:
+  - Первая выручка.
 
-## Current Active Task
-- Restore or implement the minimum Altegio integration required for Revenue Engine MVP
-- Current task status in runtime: TODO
+## Current Operating Doctrine
+- Revenue First.
+- Reality First.
+- Finish Before Improve.
+- Use existing infrastructure.
+- AI Administrator development is postponed.
 
-## Package Status
-- Package 01 - Appointment Management v1.0: DONE
-- Package 02 - Customer Communication v1.0: DONE
-- Package 03 - Client Retention & Reactivation: TODO
+## Verified Completed Work
+- Altegio Authentication
+- Company Discovery
+- Client Import
+- Visit Import
+- Revenue Engine
+- Revenue Report
+- Priority Report
+- Business Priority Report
+- Исправлен импорт стоимости визитов
+- Проверена корректность Revenue
+- Проверена Priority Formula
 
-## Runtime And Delivery Status
-- Runtime v1.0 is implemented.
-- Coloré Development OS v1.0: TODO
+## Current Priority Execution Queue
+- Priority -> Integrilla
+- Campaign Engine
+- Segmentation
+- Message Selection
+- Campaign Results
+- Learning
 
-## Architectural Milestone (2026-08-01)
-- UAOP adopted.
-- Runtime architecture finalized.
-- AI-independent workflow established.
-- Revenue/Product dual operating model adopted.
-- AI Efficiency Standard adopted.
+## Deferred Queue
+- AI Administrator
+- Dashboard
+- Marketplace
+- SaaS
+- Messenger
+- Event Sourcing
 
-## Repository And Environment Status
-- Git repository has an `origin` remote connected to GitHub.
-- VPS is the primary development environment.
-- Git workflow operational: TODO
-- Copilot Chat workflow operational: TODO
-- Copilot Cloud Agent tested: TODO
+## Architecture Guardrails
+- Coloré OS does not replace Altegio.
+- Coloré OS does not replace Integrilla.
+- Altegio remains system of record for CRM clients, appointments, and history.
 
-## Backend Status
-- Backend application exists under `backend/`.
-- FastAPI application entrypoint is implemented in `backend/app/main.py`.
-- Root status endpoint `/` is implemented.
-- Database status endpoint `/db` is implemented.
-- Client CRUD API is implemented under `/clients`.
-- Client model, schemas, service layer, and database session setup exist in the repository.
-- Alembic is configured and an initial schema revision file exists.
-
-## Verified Integrations
-- PostgreSQL integration is configured through application settings and Docker Compose.
-- Backend includes a database connection test via the `/db` endpoint.
-- n8n service is defined in Docker Compose.
-- Verified backend-to-external API integrations beyond PostgreSQL: TODO
-
-## Task Board Snapshot
-- BACKLOG
-  - Product roadmap detailing
-  - Monetization and commercialization model
-  - External communication channel integration plan
-- TODO
-  - Restore or implement the minimum Altegio integration required for Revenue Engine MVP
-- DOING
-  - None
-- REVIEW
-  - None
-
-## Unknowns
-- Current execution blockers: TODO
-- ETA for Package 03 completion: TODO
+## Next Operational Task
+- Build and validate Priority -> Integrilla message transport loop.

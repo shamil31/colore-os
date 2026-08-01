@@ -22,7 +22,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 ## Top-Level Files
 
 - `00_START.md` - workspace check, workday start rule, and core execution flow.
-- `01_CONTRACT.md` - collaboration contract between the project owner and AI.
+- `01_CONTRACT.md` - mandatory universal operating contract for any LLM.
 - `02_PROJECT.md` - project purpose, scope, users, modules, and success criteria.
 - `03_ARCHITECTURE.md` - system architecture and layer responsibilities.
 - `04_STACK.md` - current technology stack.
@@ -39,9 +39,11 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 Use it before every task to understand the current state of the project without rewriting historical files.
 
 - `PROJECT_STATE.md` - current project snapshot.
+- `CURRENT_SPRINT.md` - active sprint scope, KPI, and exit condition.
 - `KNOWN_STATE.md` - verified facts only.
 - `TODAY.md` - one active task for the current day.
 - `BACKLOG.md` - idea intake and backlog staging.
+- `ROADMAP.md` - synchronized execution stages.
 - `DECISIONS.md` - currently active decisions used during execution.
 - `WORKFLOW.md` - current execution workflow rules.
 
@@ -65,19 +67,19 @@ They are also not the same as project documentation or verified history.
 
 ## Workday Start
 
-Read `.colore/09_UAOP.md` first.
+Start every workday with Open Day procedure from .colore/01_CONTRACT.md.
 
-Every workday starts with:
-
-`@GitHub Начинаем день`
+Read .colore/09_UAOP.md first.
 
 Before every task, read:
 
 - `.colore/00_Master/PROJECT_STATE.md`
+- `.colore/00_Master/CURRENT_SPRINT.md`
 - `.colore/00_Master/KNOWN_STATE.md`
 - `.colore/00_Master/TODAY.md`
 - `.colore/00_Master/DECISIONS.md`
+- `.colore/00_Master/ROADMAP.md`
 
 ## Workday Close
 
-Close the day by updating the session log, recording any new decisions, and setting the first task for the next workday.
+Close the day with Close Day procedure from .colore/01_CONTRACT.md.

@@ -110,3 +110,43 @@ Phase Transition and Runtime Architecture Milestone
 	- AI-independent workflow established.
 	- Revenue/Product dual operating model adopted.
 	- AI Efficiency Standard adopted.
+
+### DEC-010
+
+FIRST REVENUE sprint declared as active operating mode.
+
+Решение:
+
+- Current sprint: FIRST REVENUE.
+- Main goal: первая реальная запись клиента, инициированная Coloré OS.
+- Main KPI: первая выручка.
+
+### DEC-011
+
+Revenue First and Reality First adopted as mandatory execution doctrine.
+
+Решение:
+
+- Prioritize direct path to first revenue over product expansion.
+- Planning and reporting must be evidence-based.
+
+### DEC-012
+
+Role split fixed for current operating stage.
+
+Решение:
+
+- Claude = Independent Reviewer.
+- Copilot = Implementation.
+- GPT = CTO.
+
+### DEC-013
+
+Infrastructure continuity and scope boundary fixed.
+
+Решение:
+
+- Use existing infrastructure.
+- Coloré OS does not replace Altegio.
+- Coloré OS does not replace Integrilla.
+- AI Administrator development is postponed until after first revenue.

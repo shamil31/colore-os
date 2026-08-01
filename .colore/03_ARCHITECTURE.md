@@ -1,75 +1,81 @@
 # Coloré OS — ARCHITECTURE
 
-## Общая архитектура
+## Revenue Architecture Chain
 
-Coloré OS проектируется как модульная многоуровневая система:
+Altegio
 
-- Presentation Layer (Frontend).
-- Application Layer (Backend API).
-- Intelligence Layer (AI Layer).
-- Data Layer (Database + Cache).
-- Integration Layer (внешние сервисы и каналы).
-- Infrastructure Layer (развертывание и эксплуатация).
+CRM
 
-## Backend
+Клиенты
 
-Backend представляет собой API-слой, который:
+Записи
 
-- управляет бизнес-доменами;
-- координирует выполнение операций между модулями;
-- предоставляет единый интерфейс доступа для Frontend, AI Layer и интеграций.
+История
 
-## Frontend
+->
 
-Frontend является клиентским интерфейсом системы и:
+Coloré OS
 
-- отображает операционные данные и состояния;
-- предоставляет рабочие сценарии для сотрудников;
-- взаимодействует с Backend через API-контракты.
+Revenue Engine
 
-## AI Layer
+Priority Engine
 
-AI Layer является интеллектуальным слоем, который:
+Decision Engine
 
-- обрабатывает контекст бизнес-процессов;
-- формирует рекомендации и автоматизированные действия;
-- использует данные и события из Backend в рамках заданных правил.
+Business Intelligence
 
-## Database
+->
 
-Data Layer включает:
+Integrilla
 
-- основное транзакционное хранилище;
-- слой быстрых временных данных/кеша;
-- единые правила хранения бизнес-сущностей и истории изменений.
+Транспорт сообщений
 
-## Integrations
+->
 
-Integration Layer обеспечивает связность Coloré OS с внешними каналами:
+Клиент
 
-- мессенджеры;
-- внешние сервисы коммуникации;
-- сторонние системы, необходимые для операционной работы.
+->
 
-## Infrastructure
+Altegio
 
-Infrastructure Layer определяет среду выполнения и эксплуатации:
+->
 
-- серверную среду для размещения компонентов;
-- контейнеризированный способ развертывания;
-- входной веб-шлюз и маршрутизацию запросов;
-- базовые контуры надежности и наблюдаемости.
+Выручка
 
-## Принципы модульности
+->
 
-- Каждый модуль имеет четкую ответственность.
-- Взаимодействие модулей идет через формальные интерфейсы.
-- Изменения внутри одного модуля не должны требовать переработки остальных.
-- Бизнес-домены изолируются логически и организационно.
+Обучение
 
-## Принципы масштабирования
+## Architectural Principles
 
-- Масштабирование компонентов возможно независимо по слоям.
-- Нагрузка распределяется через разделение ролей сервисов.
-- Архитектура допускает горизонтальное расширение вычислительных узлов.
-- Интеграционный контур проектируется с учетом роста количества подключений.
+- Coloré OS does not replace Altegio.
+- Coloré OS does not replace Integrilla.
+- Altegio remains CRM and appointment system of record.
+- Integrilla remains message transport.
+- Coloré OS acts as revenue intelligence and decision layer.
+
+## Core Components
+
+### Revenue Engine
+- Determines revenue opportunities from CRM data.
+
+### Priority Engine
+- Ranks clients and opportunities for action.
+
+### Decision Engine
+- Selects action strategy and campaign intent.
+
+### Business Intelligence
+- Measures outcomes and generates learning signals.
+
+## Data And Feedback Loop
+
+1. Read state from Altegio.
+2. Generate priorities and decisions in Coloré OS.
+3. Deliver messages through Integrilla.
+4. Capture client response and booking result in Altegio.
+5. Update revenue reports and learning loop.
+
+## Current Boundary
+
+- AI Administrator is explicitly out of scope until first revenue KPI is reached.
