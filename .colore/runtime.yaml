@@ -1,0 +1,18 @@
+version: "1.0"
+project: "Coloré OS"
+phase: "Phase 4 — Conversation Flows"
+current_task: "Implement Coloré Development OS v1.0"
+current_goal: "Turn the repository into a self-documenting project where GitHub is the single source of truth."
+current_status: "Done"
+verified:
+  - "Repository root contains README.md, backend/, docs/, infrastructure/, and .colore/."
+  - "Product and AI documentation exists under docs/."
+  - "Session 007 records Package 02 — Customer Communication v1.0 as completed."
+  - "Session 007 records Package 03 — Client Retention & Reactivation as the next recorded task."
+next_tasks:
+  - "Confirm the active product task at the next session start."
+  - "Continue the next verified task without restarting completed work."
+blockers:
+  - "TODO"
+last_completed: "Implement Coloré Development OS v1.0"
+last_update: "2026-08-01"
