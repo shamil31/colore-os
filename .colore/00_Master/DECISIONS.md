@@ -16,8 +16,8 @@ Use this file for the active working set only.
 - DEC-011: Reality First is mandatory for all planning and reporting.
 - DEC-012: Use existing infrastructure; no platform replacement work.
 - DEC-013: AI Administrator development is postponed until after first revenue.
-- DEC-014: Main KPI is first revenue.
-- DEC-015: Role split is fixed for execution:
+- DEC-010: Main KPI is first revenue.
+- DEC-012: Role split is fixed for execution:
 	- Claude = Independent Reviewer
 	- Copilot = Implementation
 	- GPT = CTO
