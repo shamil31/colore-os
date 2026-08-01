@@ -13,6 +13,11 @@ class SegmentAssignment:
     reason: str
 
 
+def _has_phone(phone: str | None) -> bool:
+    value = (phone or "").strip()
+    return value not in {"", "N/A", "None", "null"}
+
+
 def _band(score_0_100: float) -> str:
     if score_0_100 >= 66.0:
         return "High"
@@ -22,8 +27,7 @@ def _band(score_0_100: float) -> str:
 
 
 def _assign_segment(row: ClientPriorityRow) -> SegmentAssignment:
-    phone = (row.phone or "").strip()
-    has_phone = phone not in {"", "N/A", "None", "null"}
+    has_phone = _has_phone(row.phone)
 
     # Placeholder segment when we cannot safely route campaign communication.
     if not has_phone:
@@ -85,13 +89,17 @@ def _assign_segment(row: ClientPriorityRow) -> SegmentAssignment:
 
 
 def _print_campaign_line(row: ClientPriorityRow, assignment: SegmentAssignment) -> None:
+    send_status = "READY" if _has_phone(row.phone) and assignment.segment != "Gone Quiet" else "HOLD"
+
     print(
         " | ".join(
             [
+                f"Client ID: {row.client_id}",
                 f"Name: {row.name}",
                 f"Phone: {row.phone}",
                 f"Priority Score: {row.priority_score:.1f}",
                 f"Segment: {assignment.segment}",
+                f"Send Status: {send_status}",
                 f"Channel: {assignment.channel}",
                 f"Template: {assignment.template_id}",
                 f"Reason: {assignment.reason}",
@@ -107,8 +115,16 @@ def main() -> int:
     rows = _collect_priority_rows()
     rows.sort(key=lambda r: r.priority_score, reverse=True)
 
-    print("CAMPAIGN READY CLIENT LIST")
+    deduped_rows: list[ClientPriorityRow] = []
+    seen_client_ids: set[int] = set()
     for row in rows:
+        if row.client_id in seen_client_ids:
+            continue
+        seen_client_ids.add(row.client_id)
+        deduped_rows.append(row)
+
+    print("CAMPAIGN READY CLIENT LIST")
+    for row in deduped_rows:
         assignment = _assign_segment(row)
         _print_campaign_line(row, assignment)
 
