@@ -2,15 +2,25 @@
 
 Date: 2026-08-01
 
-## Day Start Snapshot
-- Active DOING task: None
-- Next task in TODO: Package 03 - Client Retention & Reactivation
-- Current phase: Phase 4 - Conversation Flows
+This file must contain one active task only.
 
-## Today Focus
-- Confirm whether Package 03 should move from TODO to DOING: TODO
-- Define first implementation slice for Package 03: TODO
-- Record acceptance criteria for first slice: TODO
+## Active Task
+- Package 03 - Client Retention & Reactivation
+
+## Current Status
+- TODO
+
+## Verified Context
+- Current phase: Phase 4 - Conversation Flows
+- Current sprint: TODO
+- This task is the next item listed in `.colore/05_TASKS.md` and `.colore/06_SESSION.md`.
+
+## Why This Task
+- This is the next task currently listed in `.colore/05_TASKS.md`.
+- DOING has not yet been confirmed in the project runtime.
+
+## Next Required Action
+- Confirm when this task moves from TODO to DOING.
 
 ## End Of Day Checklist
 - Update session log in .colore/06_SESSION.md: TODO

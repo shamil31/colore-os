@@ -30,11 +30,17 @@
   - BACKLOG -> TODO -> DOING -> REVIEW -> DONE
 - Main rule: Finish before Improve.
 - Runtime always overrides AI memory.
+- Runtime overrides AI assumptions.
 - Copilot is responsible only for implementation.
 - Never restart completed work.
 - Never invent project facts.
+- Never infer project phase automatically.
+- Never convert historical events into current state.
+- VERIFIED_HISTORY contains historical facts only.
+- KNOWN_STATE contains current facts only.
 
 ## Guardrails
 - Confirm workspace is /root/colore-os before changes.
 - Prefer repository files as source of truth when information conflicts.
+- Use `.colore/05_AI/` for AI role guidance and `.colore/PROMPTS/` for ready-to-use prompts.
 - Keep unknown values explicitly marked as TODO.
