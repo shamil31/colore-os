@@ -49,6 +49,13 @@
 - Use `.colore/05_AI/` for AI role guidance and `.colore/PROMPTS/` for ready-to-use prompts.
 - Keep unknown values explicitly marked as TODO.
 
+## Backend Runtime Commands
+- All backend Python commands must run inside the project virtual environment.
+- Required command pattern:
+  1. `source .venv/bin/activate`
+  2. `python ...`
+- Do not use direct system interpreter commands in backend runtime instructions.
+
 ## Resource Efficiency
 - Minimize unnecessary repository scans.
 - Read only the files required for the current task.
