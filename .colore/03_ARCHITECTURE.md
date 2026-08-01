@@ -76,6 +76,30 @@ Altegio
 4. Capture client response and booking result in Altegio.
 5. Update revenue reports and learning loop.
 
+## Bidirectional Integration
+
+Altegio
+
+↓
+
+Coloré OS
+
+↓
+
+Integrilla
+
+↓
+
+Client
+
+↑
+
+Write Back
+
+↑
+
+Altegio
+
 ## Current Boundary
 
 - AI Administrator is explicitly out of scope until first revenue KPI is reached.

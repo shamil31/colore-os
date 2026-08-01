@@ -29,6 +29,20 @@ Source baseline: .colore/05_TASKS.md
 ## New Backlog Candidates
 - TODO
 
+## Epic - Altegio Write Back
+
+- Status: Future
+- Candidate capabilities:
+  - AI Priority
+  - AI Segment
+  - VIP Level
+  - Campaign History
+  - Last Campaign
+  - Reactivation Status
+  - Internal Notes
+  - Personal Discount
+  - AI Recommendations
+
 ## Backlog Hygiene Rule
 - Remove or rewrite any item that conflicts with FIRST REVENUE doctrine.
 - If a task does not move toward first revenue now, keep it deferred.

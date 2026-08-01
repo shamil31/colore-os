@@ -46,6 +46,9 @@ Historical verified events belong only in .colore/08_VERIFIED_HISTORY.md.
   - Altegio -> Coloré OS -> Integrilla -> Client -> Altegio -> Revenue -> Learning
 - Coloré OS does not replace Altegio.
 - Coloré OS does not replace Integrilla.
+- Official Altegio API audit completed on 2026-08-01.
+- Architecture decision accepted: Coloré OS uses Altegio as operational CRM and can write business decisions back through official API.
+- Write Back implementation is intentionally postponed until AFTER Sprint FIRST REVENUE.
 - Backend and infra exist and are active in repository:
   - backend/app/main.py with /, /db, /clients routes
   - backend/app/api/clients.py CRUD for clients
