@@ -1,5 +1,9 @@
 # Coloré OS — START
 
+## First Runtime Rule
+
+Before any work, every AI must read `.colore/09_UAOP.md`.
+
 ## Workspace Check
 
 Перед началом любой работы обязательно проверить:

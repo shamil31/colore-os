@@ -2,6 +2,10 @@
 
 ## Execution Rules
 - Work on one task at a time.
+- Revenue activities are daily business operations.
+- Product development follows one active task at a time.
+- Revenue never interrupts the active Product task.
+- Product improvements should support Revenue whenever possible.
 - Follow lifecycle order without skipping stages:
   - BACKLOG -> TODO -> DOING -> REVIEW -> DONE
 - A task is complete only after REVIEW.
@@ -23,11 +27,23 @@
 - Verify workspace and git state.
 - Identify current active task.
 
+## Daily Workflow
+
+### Morning
+- Review Revenue priorities.
+- Review Product priorities.
+- Set the daily Revenue focus.
+- Confirm exactly one active Product task.
+
 ## Day Close
 - Summarize completed work.
 - Record updates in session log.
 - Record any new decisions.
 - Set first task for next working day.
+
+### Evening
+- Record Revenue progress.
+- Record Product progress.
 
 ## Unknown Process Details
 - Automation steps for status transitions: TODO

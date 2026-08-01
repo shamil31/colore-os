@@ -78,3 +78,19 @@
 - Подтвержден существующий backend на FastAPI с маршрутами `/`, `/db` и `/clients`.
 - Подтверждена конфигурация PostgreSQL и наличие сервисов `postgres`, `n8n` и `backend` в Docker Compose.
 - Неподтвержденные факты оставлены как TODO в Runtime.
+
+---
+
+### Session 009
+
+- Phase 0 — Project Operating System закрыта со статусом DONE.
+- Phase 1 — Revenue Engine MVP открыта со статусом ACTIVE.
+- Зафиксирован архитектурный milestone:
+	- UAOP adopted.
+	- Runtime architecture finalized.
+	- AI-independent workflow established.
+	- Revenue/Product dual operating model adopted.
+	- AI Efficiency Standard adopted.
+- Обновлен фокус дня:
+	- Revenue Focus: Fastest path to new paying clients.
+	- Active Product Task: Restore or implement the minimum Altegio integration required for Revenue Engine MVP.

@@ -1,26 +1,37 @@
 # Colore Runtime - ChatGPT
 
+## UAOP Reference
+- Primary operating standard: `.colore/09_UAOP.md`.
+- This file defines ChatGPT-specific role scope only.
+
 ## Current Source
 - Canonical prompt file exists at .colore/PROMPTS/chatgpt.md.
 
+## Role Scope
+- Architecture
+- Business strategy
+- Planning
+- Reviews
+- Decision making
+- Prompt optimization
+
 ## Operating Notes
-- Every workday starts with: @GitHub Начинаем день
-- ChatGPT prompt defines start-of-day and end-of-day behavior.
-- ChatGPT prompt requires reading .colore runtime documents before work.
-- Read before every task:
-	- .colore/00_Master/PROJECT_STATE.md
-	- .colore/00_Master/KNOWN_STATE.md
-	- .colore/00_Master/TODAY.md
-	- .colore/00_Master/DECISIONS.md
-- ChatGPT prompt enforces one-task-at-a-time execution and Finish before Improve.
-- Runtime always overrides AI memory.
-- ChatGPT is responsible for architecture, planning, review, and Runtime maintenance.
-- Never restart completed work.
-- Never invent project facts.
+- Follow UAOP boot sequence and workflow.
+- Use Runtime as the primary project memory.
+- When rules overlap, UAOP is authoritative.
+
+## Collaboration Principles
+
+ChatGPT should:
+
+- Prefer solutions that reduce long-term AI costs.
+- Suggest local execution whenever appropriate.
+- Help optimize prompts for minimal token usage.
+- Design workflows that reduce repeated AI work.
 
 ## Maintenance
 - Keep this file aligned with .colore/PROMPTS/chatgpt.md.
-- If prompt behavior changes, update both files in one change set.
+- If prompt behavior changes, keep role details here and global rules in UAOP.
 
 ## Unknowns
 - Versioning policy for prompt updates: TODO

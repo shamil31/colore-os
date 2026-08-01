@@ -14,6 +14,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 
 - Project Documentation: the repository files that describe the product, backend, infrastructure, and business logic.
 - Runtime: the `.colore/` operating system that tells AI agents how to work with the project day to day.
+- UAOP: the highest-level AI operating standard in `.colore/09_UAOP.md`.
 - Verified History: the historical record of confirmed project events stored in `.colore/08_VERIFIED_HISTORY.md`.
 - AI Instructions: the role and operating rules stored in `.colore/05_AI/` and `.github/copilot-instructions.md`.
 - Prompt Library: the ready-to-use prompts stored in `.colore/PROMPTS/`.
@@ -29,6 +30,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 - `06_SESSION.md` - session history.
 - `07_DECISIONS.md` - historical architecture and operating decisions.
 - `08_VERIFIED_HISTORY.md` - confirmed historical project events only.
+- `09_UAOP.md` - Universal AI Operating Protocol (highest-level model-independent AI standard).
 
 ## 00_Master
 
@@ -62,6 +64,8 @@ They are not the same as `05_AI/`, which explains roles and guidance.
 They are also not the same as project documentation or verified history.
 
 ## Workday Start
+
+Read `.colore/09_UAOP.md` first.
 
 Every workday starts with:
 

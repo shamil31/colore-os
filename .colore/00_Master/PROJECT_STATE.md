@@ -15,13 +15,27 @@ Source of truth for this snapshot:
 - backend/app/api/clients.py
 
 ## Current Phase
-- Phase 4 - Conversation Flows (in progress)
+- Phase 1 - Revenue Engine MVP (ACTIVE)
+
+## Phase Transition Status
+- Phase 0 - Project Operating System: DONE
+- Phase 1 - Revenue Engine MVP: ACTIVE
+
+## Current Operating Strategy
+- Product and Revenue are developed in parallel.
+- Development must continuously support business growth.
+- The primary business objective is to increase salon revenue.
+- The current KPI is:
+  - New leads
+  - Bookings
+  - Revenue
+  - Product progress
 
 ## Current Sprint
 - TODO
 
 ## Current Active Task
-- Package 03 - Client Retention & Reactivation
+- Restore or implement the minimum Altegio integration required for Revenue Engine MVP
 - Current task status in runtime: TODO
 
 ## Package Status
@@ -32,6 +46,13 @@ Source of truth for this snapshot:
 ## Runtime And Delivery Status
 - Runtime v1.0 is implemented.
 - Coloré Development OS v1.0: TODO
+
+## Architectural Milestone (2026-08-01)
+- UAOP adopted.
+- Runtime architecture finalized.
+- AI-independent workflow established.
+- Revenue/Product dual operating model adopted.
+- AI Efficiency Standard adopted.
 
 ## Repository And Environment Status
 - Git repository has an `origin` remote connected to GitHub.
@@ -61,7 +82,7 @@ Source of truth for this snapshot:
   - Monetization and commercialization model
   - External communication channel integration plan
 - TODO
-  - Package 03 - Client Retention & Reactivation
+  - Restore or implement the minimum Altegio integration required for Revenue Engine MVP
 - DOING
   - None
 - REVIEW

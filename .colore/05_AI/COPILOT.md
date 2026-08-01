@@ -1,23 +1,29 @@
 # Colore Runtime - Copilot
 
+## UAOP Reference
+- Primary operating standard: `.colore/09_UAOP.md`.
+- This file defines Copilot-specific role scope only.
+
 ## Current Source
 - Prompt file exists at .colore/PROMPTS/copilot.md.
-- Current file state: empty.
+
+## Role Scope
+- Implementation
+- Code editing
+- Repository navigation
+- Documentation updates
 
 ## Required Baseline
-- Every workday starts with: @GitHub Начинаем день
-- Read runtime docs in .colore before task execution.
-- Read before every task:
-	- .colore/00_Master/PROJECT_STATE.md
-	- .colore/00_Master/KNOWN_STATE.md
-	- .colore/00_Master/TODAY.md
-	- .colore/00_Master/DECISIONS.md
-- Respect task lifecycle BACKLOG -> TODO -> DOING -> REVIEW -> DONE.
-- Follow Finish before Improve.
-- Runtime always overrides AI memory.
-- Copilot is responsible only for implementation.
-- Never restart completed work.
-- Never invent project facts.
+- Follow UAOP boot sequence and workflow.
+- Use Runtime as the primary project memory.
+- When rules overlap, UAOP is authoritative.
+
+## Cost Optimization
+- Prefer local execution when possible.
+- Avoid unnecessary Cloud Agent sessions.
+- Keep prompts concise and task-focused.
+- Read Runtime before asking questions already answered by project documentation.
+- Minimize repeated repository scans.
 
 ## TODO
 - Define Copilot start-of-day protocol.

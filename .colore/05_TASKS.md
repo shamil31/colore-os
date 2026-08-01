@@ -11,6 +11,59 @@
 Phase 4 — Conversation Flows продолжается.
 Package 02 — Customer Communication v1.0 завершён.
 
+## Постоянные workstreams
+
+### Workstream A — Revenue
+
+Примеры:
+
+- Lead generation
+- Advertising
+- Client reactivation
+- Marketing campaigns
+- Conversion optimization
+
+### Workstream B — Product
+
+Примеры:
+
+- AI Administrator
+- Altegio Integration
+- Revenue Engine
+- Backend
+- Infrastructure
+
+## Priority Levels
+
+### P0 — Revenue Critical
+
+Immediate business impact.
+
+Examples:
+
+- Lead generation
+- Booking flow
+- Altegio integration
+- Revenue Engine
+
+### P1 — Product Critical
+
+Core product functionality.
+
+### P2 — Product Improvement
+
+Improves usability or maintainability.
+
+### P3 — Nice to Have
+
+Ideas, optimizations, experiments.
+
+## Priority Rule
+
+When multiple tasks exist, always complete the highest priority first.
+
+If a P0 task exists, do not start P1-P3 unless explicitly approved.
+
 ## BACKLOG
 
 - Product roadmap детализация.
