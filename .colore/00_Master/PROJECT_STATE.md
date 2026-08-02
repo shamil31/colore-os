@@ -1,6 +1,6 @@
 # Colore Runtime - Project State
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
 
 Project state is maintained manually.
 Never infer priorities from code structure alone.
@@ -45,6 +45,13 @@ Never infer priorities from code structure alone.
 - Исправлен импорт стоимости визитов
 - Проверена корректность Revenue
 - Проверена Priority Formula
+- Campaign Pipeline (9/10 stages) — 2026-08-02
+- Integrilla Export (XLSX generation) — 2026-08-02
+- Conversation Playbook (7 rules, 7 scenarios) — 2026-08-02
+- Project Knowledge Index — 2026-08-02
+- CLAUDE.md v1.1 (Architecture Review Applied) — 2026-08-02
+- Altegio API Capabilities Audit — 2026-08-02
+- Session Entry Point (NEXT.md) — 2026-08-02
 
 ## Current Priority Execution Queue
 - Priority -> Integrilla

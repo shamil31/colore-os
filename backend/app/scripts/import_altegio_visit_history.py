@@ -114,11 +114,6 @@ def _pick_master(source: dict[str, Any]) -> str | None:
 
 
 def _pick_amount(source: dict[str, Any]) -> float | None:
-    for key in ("amount", "cost", "total", "paid", "paid_full", "sum"):
-        value = _coerce_float(source.get(key))
-        if value is not None:
-            return value
-
     services = source.get("services")
     if isinstance(services, list):
         total = 0.0
@@ -126,7 +121,26 @@ def _pick_amount(source: dict[str, Any]) -> float | None:
         for item in services:
             if not isinstance(item, dict):
                 continue
-            value = _coerce_float(item.get("cost") or item.get("amount") or item.get("price"))
+
+            value = _coerce_float(item.get("cost_to_pay"))
+            if value is None:
+                value = _coerce_float(item.get("cost"))
+            if value is None:
+                continue
+
+            seen = True
+            total += value
+        if seen:
+            return total
+
+    goods = source.get("goods_transactions")
+    if isinstance(goods, list):
+        total = 0.0
+        seen = False
+        for item in goods:
+            if not isinstance(item, dict):
+                continue
+            value = _coerce_float(item.get("cost_to_pay"))
             if value is None:
                 continue
             seen = True
@@ -134,7 +148,7 @@ def _pick_amount(source: dict[str, Any]) -> float | None:
         if seen:
             return total
 
-    return None
+    return 0.0
 
 
 def _pick_status(source: dict[str, Any]) -> str | None:
