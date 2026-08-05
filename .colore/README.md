@@ -36,8 +36,11 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 
 `00_Master/` is the current working control layer.
 
+**⭐ BEFORE ANY SERIOUS WORK: Read `PROJECT_CONSTITUTION.md` first.**
+
 Use it before every task to understand the current state of the project without rewriting historical files.
 
+- **`PROJECT_CONSTITUTION.md`** - immutable project identity, principles, and strategic decisions. Read this before starting any task.
 - `PROJECT_STATE.md` - current project snapshot.
 - `CURRENT_SPRINT.md` - active sprint scope, KPI, and exit condition.
 - `KNOWN_STATE.md` - verified facts only.
@@ -46,6 +49,7 @@ Use it before every task to understand the current state of the project without 
 - `ROADMAP.md` - synchronized execution stages.
 - `DECISIONS.md` - currently active decisions used during execution.
 - `WORKFLOW.md` - current execution workflow rules.
+- `NEXT.md` - session entry point for any new LLM session.
 
 ## 05_AI
 
@@ -67,18 +71,20 @@ They are also not the same as project documentation or verified history.
 
 ## Workday Start
 
-Start every workday with Open Day procedure from .colore/01_CONTRACT.md.
+**For any new work session, start here:**
 
-Read .colore/09_UAOP.md first.
+1. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
+2. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
+3. Read `.colore/01_CONTRACT.md` — follow LLM operating contract
 
-Before every task, read:
+**Before every task, read:**
 
-- `.colore/00_Master/PROJECT_STATE.md`
-- `.colore/00_Master/CURRENT_SPRINT.md`
-- `.colore/00_Master/KNOWN_STATE.md`
-- `.colore/00_Master/TODAY.md`
-- `.colore/00_Master/DECISIONS.md`
-- `.colore/00_Master/ROADMAP.md`
+- `.colore/00_Master/PROJECT_CONSTITUTION.md` — project identity
+- `.colore/00_Master/NEXT.md` — session entry point
+- `.colore/00_Master/PROJECT_STATE.md` — current state
+- `.colore/00_Master/TODAY.md` — today's focus
+- `.colore/00_Master/DECISIONS.md` — active decisions
+- `.colore/00_Master/KNOWN_STATE.md` — verified facts
 
 ## Workday Close
 
