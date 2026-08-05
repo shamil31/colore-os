@@ -56,11 +56,11 @@ AI Resource Policy
 Правила:
 
 - Always prefer the lowest-cost tool that can complete the task.
-- Local models (Ollama and future local LLMs) are the default choice whenever practical.
-- GitHub Copilot Chat is used for everyday development assistance.
-- GitHub Cloud Agent is reserved for large autonomous tasks, repository-wide analysis, documentation generation, and long-running work.
-- ChatGPT is responsible for architecture, product strategy, business design, planning, reviews, and project management.
-- Before using a cloud AI service, evaluate whether the expected time savings justify the credit cost.
+- Local role performers are the default choice whenever practical.
+- Assigned engineering support is used for everyday implementation assistance.
+- Coordinated operations support is reserved for larger repository-wide tasks, documentation work, and long-running delivery support.
+- The Architect role is responsible for architecture, product strategy alignment, planning, review, and governance guidance.
+- Before using an external service, evaluate whether the expected time savings justify the cost.
 - Optimize for long-term sustainability, not maximum AI usage.
 
 ### DEC-008
@@ -83,13 +83,13 @@ Priority:
 Local tools
 ↓
 
-GitHub Copilot Chat
+Assigned engineering support
 ↓
 
-GitHub Cloud Agent
+Coordinated operations support
 ↓
 
-External cloud models
+External services
 
 - Avoid repeated repository-wide scans unless Runtime indicates repository structure has changed.
 - Reuse previous verified knowledge whenever possible.
@@ -136,9 +136,9 @@ Role split fixed for current operating stage.
 
 Решение:
 
-- Claude = Independent Reviewer.
-- Copilot = Implementation.
-- GPT = CTO.
+- Reviewer = Independent Review.
+- Engineering = Implementation.
+- Architect = Architecture Governance.
 
 ### DEC-013
 

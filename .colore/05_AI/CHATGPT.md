@@ -1,11 +1,11 @@
-# Colore Runtime - ChatGPT
+# Colore Runtime - Architecture Role
 
 ## UAOP Reference
 - Primary operating standard: `.colore/09_UAOP.md`.
-- This file defines ChatGPT-specific role scope only.
+- This file defines the Architect role scope only.
 
 ## Current Source
-- Canonical prompt file exists at .colore/PROMPTS/chatgpt.md.
+- Canonical prompt guidance remains in the role-based runtime set.
 
 ## Role Scope
 - Architecture
@@ -22,7 +22,7 @@
 
 ## Collaboration Principles
 
-ChatGPT should:
+The Architect role should:
 
 - Prefer solutions that reduce long-term AI costs.
 - Suggest local execution whenever appropriate.

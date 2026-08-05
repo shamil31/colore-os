@@ -2,7 +2,7 @@
 
 **Effective Date:** 2026-08-02  
 **Version:** 1.0  
-**Audience:** Any LLM entering the project  
+**Audience:** Any assigned role performer entering the project  
 **Purpose:** Single entry point before starting work on Coloré OS
 
 ---
@@ -98,11 +98,11 @@ Proof of concept. One booking validates the model before scaling.
 
 ## Execution Framework
 
-### LLM Operating Rules
-All LLMs working on this project must follow:
+### Operating Rules
+All assigned actors working on this project must follow:
 
-**Read before starting:** [.colore/01_CONTRACT.md](../01_CONTRACT.md) (Universal LLM Operating Contract)  
-**Universal protocol:** [.colore/09_UAOP.md](../09_UAOP.md) (model-independent AI operating standard)
+**Read before starting:** [.colore/01_CONTRACT.md](../01_CONTRACT.md) (Universal Operating Contract)  
+**Universal protocol:** [.colore/09_UAOP.md](../09_UAOP.md) (role-based operating standard)
 
 ### Source of Truth Priority
 When information conflicts, use this hierarchy:
@@ -192,7 +192,7 @@ This learning feeds back into the next campaign cycle.
 This document is the constitution of Coloré OS. It does not change with sprint goals or campaign outcomes.
 
 **If you think something in this document needs to change:**
-- Propose the change to the CTO (ChatGPT)
+- Propose the change through the Architect role
 - Document your reasoning
 - Wait for approval before modifying
 

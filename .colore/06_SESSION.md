@@ -107,9 +107,9 @@
 	- Revenue First
 	- Reality First
 	- Finish Before Improve
-	- Claude = Independent Reviewer
-	- Copilot = Implementation
-	- GPT = CTO
+	- Reviewer = Independent Review
+	- Engineering = Implementation
+	- Architect = Architecture Governance
 	- Используется существующая инфраструктура
 	- AI Administrator откладывается
 	- Главный KPI: первая выручка

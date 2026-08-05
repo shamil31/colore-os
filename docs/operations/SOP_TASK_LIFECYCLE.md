@@ -38,7 +38,7 @@ LEARN
 
 **Status Marker:** In BACKLOG.md or in conversation; not assigned.
 
-**Ownership:** Anyone (CEO, CTO, Claude, team)
+**Ownership:** Anyone (Product Owner, Architect, Engineering, team)
 
 **Actions:**
 - Identify the task or problem
@@ -57,11 +57,11 @@ LEARN
 
 ## Stage 2: RESEARCH
 
-**What:** Claude investigates if the task is feasible and what information is needed.
+**What:** Engineering investigates if the task is feasible and what information is needed.
 
-**Status Marker:** Task has research notes; owner is Claude.
+**Status Marker:** Task has research notes; owner is Engineering.
 
-**Ownership:** Claude (researcher)
+**Ownership:** Engineering (researcher)
 
 **Actions:**
 - Read relevant documentation
@@ -79,7 +79,7 @@ LEARN
 - Rough time estimate
 
 **Definition of Done:**
-- Claude has investigated thoroughly
+- Engineering has investigated thoroughly
 - Information gaps are documented
 - Feasibility assessment is clear
 - No unknowns remain (or are clearly noted)
@@ -95,11 +95,11 @@ LEARN
 
 ## Stage 3: DESIGN
 
-**What:** Claude creates detailed plan for how to build/complete the task.
+**What:** Engineering creates detailed plan for how to build/complete the task.
 
-**Status Marker:** Task has design document or plan; owner is Claude.
+**Status Marker:** Task has design document or plan; owner is Engineering.
 
-**Ownership:** Claude (designer)
+**Ownership:** Engineering (designer)
 
 **Actions:**
 - Create detailed step-by-step plan
@@ -123,7 +123,7 @@ LEARN
 - Flag any architectural concerns
 
 **Definition of Done:**
-- Claude is confident in the approach
+- Engineering is confident in the approach
 - Step-by-step plan is documented
 - All blockers are identified
 - Ready for CTO/business review
@@ -134,15 +134,15 @@ LEARN
 
 ## Stage 4: REVIEW
 
-**What:** ChatGPT and Shamil review design for correctness and alignment.
+**What:** Architect and Product Owner review design for correctness and alignment.
 
 **Status Marker:** Design has been reviewed; feedback is collected.
 
-**Ownership:** ChatGPT (architecture) + Shamil (business)
+**Ownership:** Architect (architecture) + Product Owner (business)
 
 **Reviewers' Focus:**
-- **ChatGPT (CTO):** Is the design sound? Does it respect architecture? Will it scale?
-- **Shamil (CEO):** Does this solve the business problem? Does it advance the sprint goal? Is scope right?
+- **Architect:** Is the design sound? Does it respect architecture? Will it scale?
+- **Product Owner:** Does this solve the business problem? Does it advance the sprint goal? Is scope right?
 
 **Feedback Types:**
 - ✅ Approved (proceed to build)
@@ -151,9 +151,9 @@ LEARN
 - ❓ Question (needs clarification before approval)
 
 **Review Process:**
-1. Claude presents design
-2. ChatGPT and Shamil provide feedback
-3. Claude addresses feedback
+1. Engineering presents design
+2. Architect and Product Owner provide feedback
+3. Engineering addresses feedback
 4. If major rework needed → back to DESIGN
 5. If minor adjustments → update and resubmit
 
@@ -168,11 +168,11 @@ LEARN
 
 ## Stage 5: BUILD
 
-**What:** Claude implements the task according to approved design.
+**What:** Engineering implements the task according to approved design.
 
 **Status Marker:** Task is in development; code is being written.
 
-**Ownership:** Claude (implementer)
+**Ownership:** Engineering (implementer)
 
 **Actions:**
 - Follow approved design step-by-step
@@ -202,11 +202,11 @@ LEARN
 
 ## Stage 6: VERIFY
 
-**What:** Shamil and ChatGPT verify that build matches design and works correctly.
+**What:** Product Owner and Architect verify that build matches design and works correctly.
 
 **Status Marker:** Build is complete; verification is in progress.
 
-**Ownership:** Shamil (business verification) + ChatGPT (technical verification)
+**Ownership:** Product Owner (business verification) + Architect (technical verification)
 
 **Verification Actions:**
 - Test that it works as designed
@@ -239,11 +239,11 @@ LEARN
 
 ## Stage 7: DEPLOY
 
-**What:** Shamil deploys the task to production/live environment.
+**What:** Product Owner deploys the task to the production/live environment.
 
 **Status Marker:** Code is live in production.
 
-**Ownership:** Shamil (deployment authority)
+**Ownership:** Product Owner (deployment authority)
 
 **Actions:**
 - Merge to main branch (if not already)
@@ -273,7 +273,7 @@ LEARN
 
 **Status Marker:** Task is complete; learning is captured.
 
-**Ownership:** Whole team (CEO, CTO, Claude)
+**Ownership:** Whole team (Product Owner, Architect, Engineering)
 
 **Learning Actions:**
 - Was the task completed on time?
@@ -309,11 +309,11 @@ LEARN
 | Stage | Status | Owner | Input | Output | Duration |
 |-------|--------|-------|-------|--------|----------|
 | IDEA | Backlog | Anyone | Need | Backlog Entry | Async |
-| RESEARCH | Research | Claude | Task Desc | Feasibility Report | 1-2 days |
-| DESIGN | Design | Claude | Requirements | Design Plan | 1-3 days |
-| REVIEW | Review | ChatGPT + Shamil | Design | Approval or Feedback | 1-2 days |
-| BUILD | In Progress | Claude | Approved Design | Working Code | 1-7 days |
-| VERIFY | Verification | Shamil + ChatGPT | Implementation | Verification Report | 1 day |
+| RESEARCH | Research | Engineering | Task Desc | Feasibility Report | 1-2 days |
+| DESIGN | Design | Engineering | Requirements | Design Plan | 1-3 days |
+| REVIEW | Review | Architect + Product Owner | Design | Approval or Feedback | 1-2 days |
+| BUILD | In Progress | Engineering | Approved Design | Working Code | 1-7 days |
+| VERIFY | Verification | Product Owner + Architect | Implementation | Verification Report | 1 day |
 | DEPLOY | Deployed | Shamil | Verified Code | Live System | Hours |
 | LEARN | Learning | Team | Results | Lessons Document | 1 day |
 
@@ -328,11 +328,11 @@ Every task goes through all stages. No exceptions.
 
 ### Rule 2: Clear Ownership at Each Stage
 Each stage has a clear owner who is responsible for completion:
-- RESEARCH → Claude
-- DESIGN → Claude
-- REVIEW → ChatGPT + Shamil
-- BUILD → Claude
-- VERIFY → Shamil + ChatGPT
+- RESEARCH → Engineering
+- DESIGN → Engineering
+- REVIEW → Architect + Product Owner
+- BUILD → Engineering
+- VERIFY → Product Owner + Architect
 - DEPLOY → Shamil
 - LEARN → Team
 
@@ -460,7 +460,7 @@ Some tasks are pure research (no build):
 
 1. **Timeboxing:** Should we set maximum time per stage? (e.g., max 2 days for RESEARCH?)
 
-2. **Parallel Tasks:** Can Claude work on multiple tasks simultaneously? Any limit?
+2. **Parallel Tasks:** Can Engineering work on multiple tasks simultaneously? Any limit?
 
 3. **Feedback Loops:** If REVIEW feedback is minor, can we shortcut back to BUILD?
 
@@ -468,7 +468,7 @@ Some tasks are pure research (no build):
 
 5. **Blocked Tasks:** If a task is blocked waiting for another task, what do we do?
 
-6. **Definition of Success:** Who sets the success criteria? Claude? Shamil? Together?
+6. **Definition of Success:** Who sets the success criteria? Engineering? Product Owner? Together?
 
 7. **Regression Testing:** During VERIFY, what's the scope of regression testing?
 

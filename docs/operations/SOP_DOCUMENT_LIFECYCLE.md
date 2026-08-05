@@ -32,7 +32,7 @@ INTEGRATED
 
 **Status Marker:** Not in repository; exists only in conversation or backlog.
 
-**Ownership:** Anyone (Claude, ChatGPT, Shamil, team)
+**Ownership:** Anyone (Engineering, Architect, Product Owner, team)
 
 **Actions:**
 - Identify need for new document
@@ -42,7 +42,7 @@ INTEGRATED
 **Exit Criteria:**
 - Document purpose is clear
 - Scope is defined
-- Owner (Claude for design) is assigned
+- Owner (Engineering for design) is assigned
 
 **Next Stage:** DESIGN
 
@@ -50,16 +50,16 @@ INTEGRATED
 
 ## Stage 2: DESIGN
 
-**What:** Document is written/designed by Claude.
+**What:** Document is written/designed by Engineering.
 
 **Status Marker:** Draft exists in conversation, scratchpad, or branch; not yet in main Git.
 
-**Ownership:** Claude (designer) + Owner feedback loop
+**Ownership:** Engineering (designer) + role feedback loop
 
 **Actions:**
-- Claude creates first draft
-- Claude iterates based on feedback
-- May request clarification from ChatGPT/Shamil
+- Engineering creates first draft
+- Engineering iterates based on feedback
+- May request clarification from Architect or Product Owner
 - Document reflects approved business logic (no invention)
 
 **Rules:**
@@ -71,7 +71,7 @@ INTEGRATED
 **Exit Criteria:**
 - Draft is complete and consistent
 - All TODO sections marked clearly
-- Claude is satisfied with quality
+- Engineering is satisfied with quality
 - Ready for external review
 
 **Next Stage:** REVIEW
@@ -80,16 +80,16 @@ INTEGRATED
 
 ## Stage 3: REVIEW
 
-**What:** ChatGPT and Shamil review document for accuracy and completeness.
+**What:** Architect and Product Owner review document for accuracy and completeness.
 
 **Status Marker:** Draft is reviewed; feedback is collected.
 
-**Ownership:** ChatGPT (architecture) + Shamil (business) + Claude (implementer)
+**Ownership:** Architect (architecture) + Product Owner (business) + Engineering (implementer)
 
 **Reviewers' Focus:**
-- **ChatGPT:** Is the architecture sound? Are constraints respected? Is terminology correct?
-- **Shamil:** Is the business logic correct? Does it match our strategy? Are there gaps?
-- **Claude:** Can this be improved? Are there ambiguities?
+- **Architect:** Is the architecture sound? Are constraints respected? Is terminology correct?
+- **Product Owner:** Is the business logic correct? Does it match our strategy? Are there gaps?
+- **Engineering:** Can this be improved? Are there ambiguities?
 
 **Feedback Types:**
 - ✅ Approved (no changes needed)
@@ -100,7 +100,7 @@ INTEGRATED
 **Process:**
 1. Document is shared with reviewers
 2. Reviewers provide feedback (async)
-3. Claude addresses feedback
+3. Engineering addresses feedback
 4. If major rework needed → return to DESIGN
 5. If minor tweaks → update and resubmit
 
@@ -115,11 +115,11 @@ INTEGRATED
 
 ## Stage 4: APPROVED
 
-**What:** Shamil approves the document for integration into Git.
+**What:** Product Owner approves the document for integration into Git.
 
 **Status Marker:** Document has final approval; ready to be committed.
 
-**Ownership:** Shamil (decision authority)
+**Ownership:** Product Owner (decision authority)
 
 **Decision:**
 - ✅ Approved for Integration
@@ -132,7 +132,7 @@ INTEGRATED
 - Is ready for real use
 
 **Exit Criteria:**
-- Shamil has explicitly approved
+- Product Owner has explicitly approved
 - Document can be moved to Git
 - Can be added to INDEX.md
 
@@ -146,7 +146,7 @@ INTEGRATED
 
 **Status Marker:** Document is in `/root/colore-os/` with commit in history.
 
-**Ownership:** Claude (integration executor)
+**Ownership:** Engineering (integration executor)
 
 **Actions:**
 - Create file in correct directory (per architecture)
@@ -187,10 +187,10 @@ Related: [any related documents or issues]
 | Stage | Status | Owner | Input | Output | Duration |
 |-------|--------|-------|-------|--------|----------|
 | IDEA | Not in Repo | Anyone | Need + Purpose | Backlog Entry | Async |
-| DESIGN | Draft | Claude | Requirements | Draft Document | 1-2 days |
-| REVIEW | In Review | ChatGPT + Shamil | Draft | Feedback/Approval | 1-2 days |
-| APPROVED | Approved | Shamil | Review Feedback | Approval | Hours |
-| INTEGRATED | In Git | Claude | Approval | Committed Document | Hours |
+| DESIGN | Draft | Engineering | Requirements | Draft Document | 1-2 days |
+| REVIEW | In Review | Architect + Product Owner | Draft | Feedback/Approval | 1-2 days |
+| APPROVED | Approved | Product Owner | Review Feedback | Approval | Hours |
+| INTEGRATED | In Git | Engineering | Approval | Committed Document | Hours |
 
 ---
 
@@ -238,7 +238,7 @@ Every integrated document's commit message must link to approval decision (via c
 If a critical bug or emergency requires a document:
 1. Minimal DESIGN phase (approval text only)
 2. Fast REVIEW (1-2 hours)
-3. Shamil approval
+3. Product Owner approval
 4. Integration
 
 Mark as "v0.1 - Hotfix" in metadata.
@@ -302,7 +302,7 @@ Place document in appropriate section:
 
 ## Responsibilities
 
-### Claude (Designer)
+### Engineering (Designer)
 - Creates draft based on requirements
 - Does not invent missing information
 - Marks unclear sections as TODO
@@ -310,7 +310,7 @@ Place document in appropriate section:
 - Commits final approved document
 - Maintains INDEX.md
 
-### ChatGPT (Architecture Reviewer)
+### Architect (Architecture Reviewer)
 - Verifies architectural correctness
 - Checks terminology consistency
 - Ensures constraints are respected
@@ -351,9 +351,9 @@ Place document in appropriate section:
 
 1. **Review SLA:** Should we set maximum review time (e.g., 48 hours)? What if reviewer is unavailable?
 
-2. **Concurrent Reviews:** Should ChatGPT and Shamil review simultaneously or sequentially?
+2. **Concurrent Reviews:** Should Architect and Product Owner review simultaneously or sequentially?
 
-3. **Conflict Resolution:** If ChatGPT and Shamil disagree on changes, who decides?
+3. **Conflict Resolution:** If Architect and Product Owner disagree on changes, who decides?
 
 4. **Emergency Documents:** What's the minimum viable process for critical hotfixes?
 

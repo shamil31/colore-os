@@ -22,7 +22,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 ## Top-Level Files
 
 - `00_START.md` - workspace check, workday start rule, and core execution flow.
-- `01_CONTRACT.md` - mandatory universal operating contract for any LLM.
+- `01_CONTRACT.md` - mandatory universal operating contract for any assigned role performer.
 - `02_PROJECT.md` - project purpose, scope, users, modules, and success criteria.
 - `03_ARCHITECTURE.md` - system architecture and layer responsibilities.
 - `04_STACK.md` - current technology stack.
@@ -53,10 +53,10 @@ Use it before every task to understand the current state of the project without 
 
 ## 05_AI
 
-`05_AI/` defines AI-specific operating guidance.
+- `05_AI/` defines role-specific operating guidance.
 
-- `CHATGPT.md` - ChatGPT role and operating responsibilities.
-- `COPILOT.md` - Copilot role and operating responsibilities.
+- `CHATGPT.md` - architecture-role operating responsibilities.
+- `COPILOT.md` - implementation-focused operating responsibilities.
 - `PROMPT_TEMPLATES.md` - reusable prompt patterns and prompt-writing guidance.
 
 ## PROMPTS
@@ -75,7 +75,7 @@ They are also not the same as project documentation or verified history.
 
 1. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
 2. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
-3. Read `.colore/01_CONTRACT.md` — follow LLM operating contract
+3. Read `.colore/01_CONTRACT.md` — follow the operating contract
 
 **Before every task, read:**
 

@@ -13,7 +13,7 @@
 - Git
 - GitHub
 - VS Code
-- OpenAI API
+- External API integrations
 
 ## Расширение стека
 

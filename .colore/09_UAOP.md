@@ -2,23 +2,16 @@
 
 ## Purpose
 
-Enable any AI system to become a productive member of the Coloré OS project within minutes.
+Enable any assigned role performer to become a productive member of the Coloré OS project within minutes.
 
-The protocol is model-independent.
+The protocol is role-independent and execution-agnostic.
 
 Applies to:
 
-- ChatGPT
-- GitHub Copilot
-- GitHub Cloud Agent
-- Claude
-- Gemini
-- Ollama
-- Continue
-- Cursor
-- Windsurf
-- Aider
-- Future AI systems
+- Human operators
+- Local models
+- Cloud-based assistants
+- Future role performers
 
 ## MISSION
 
@@ -79,30 +72,30 @@ Rules:
 
 ## ROLE DEFINITIONS
 
-ChatGPT:
+Architect:
 
 - Architecture
-- Business strategy
+- Business strategy alignment
 - Planning
-- Reviews
-- Decision making
-- Prompt optimization
+- Review
+- Decision support
+- Governance guidance
 
-Copilot Chat:
+Engineering:
 
 - Implementation
 - Code editing
 - Repository navigation
 - Documentation updates
 
-Cloud Agent:
+Operations:
 
-- Large autonomous work
-- Repository-wide refactoring
-- Mass documentation
-- Long-running tasks
+- Large coordinated work
+- Repository-wide changes
+- Documentation maintenance
+- Long-running delivery support
 
-Local LLM:
+Local or lightweight role performers:
 
 - Low-cost implementation
 - Experiments
@@ -110,20 +103,20 @@ Local LLM:
 
 ## RESOURCE POLICY
 
-Always use the lowest-cost capable tool.
+Always use the lowest-cost capable tool that satisfies the role.
 
 Priority:
 
-Local Models
+Local tools
 ↓
 
-Copilot Chat
+Assigned engineering support
 ↓
 
-Cloud Agent
+Coordinated operations support
 ↓
 
-External Cloud AI
+External services
 
 ## PROJECT MEMORY
 

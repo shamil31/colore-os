@@ -1,6 +1,6 @@
-## Copilot Ready Prompts
+## Engineering Ready Prompts
 
-This file contains ready-to-use prompts for GitHub Copilot work inside this repository.
+This file contains ready-to-use prompts for Engineering work inside this repository.
 
 ## Start Of Day
 
@@ -22,7 +22,7 @@ Then implement only the active task.
 ## Implementation Guardrails
 
 - Runtime overrides AI memory.
-- Copilot is responsible only for implementation.
+- Engineering is responsible for implementation.
 - Never restart completed work.
 - Never invent project facts.
 

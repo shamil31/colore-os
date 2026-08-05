@@ -1,4 +1,4 @@
-# Copilot Runtime Instructions
+# Engineering Runtime Instructions
 
 ## Scope
 - Applies to this repository only.
@@ -35,7 +35,7 @@
 - Main rule: Finish before Improve.
 - Runtime always overrides AI memory.
 - Runtime overrides AI assumptions.
-- Copilot is responsible only for implementation.
+- Engineering is responsible for implementation.
 - Never restart completed work.
 - Never invent project facts.
 - Never infer project phase automatically.
@@ -82,13 +82,13 @@ Priority:
 Local tools
 ↓
 
-GitHub Copilot Chat
+Assigned engineering support
 ↓
 
-GitHub Cloud Agent
+Coordinated operations support
 ↓
 
-External cloud models
+External services
 
 8. Avoid repeated repository-wide scans unless Runtime indicates repository structure has changed.
 9. Reuse previous verified knowledge whenever possible.

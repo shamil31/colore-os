@@ -18,9 +18,9 @@ Use this file for the active working set only.
 - DEC-013: AI Administrator development is postponed until after first revenue.
 - DEC-010: Main KPI is first revenue.
 - DEC-012: Role split is fixed for execution:
-	- Claude = Independent Reviewer
-	- Copilot = Implementation
-	- GPT = CTO
+	- Reviewer = Independent Review
+	- Engineering = Implementation
+	- Architect = Architecture Governance
 
 ## Working Rules
 - Runtime always overrides AI memory.

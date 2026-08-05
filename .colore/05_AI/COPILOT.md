@@ -1,11 +1,11 @@
-# Colore Runtime - Copilot
+# Colore Runtime - Engineering Role
 
 ## UAOP Reference
 - Primary operating standard: `.colore/09_UAOP.md`.
-- This file defines Copilot-specific role scope only.
+- This file defines the Engineering role scope only.
 
 ## Current Source
-- Prompt file exists at .colore/PROMPTS/copilot.md.
+- Implementation guidance remains in the role-based runtime set.
 
 ## Role Scope
 - Implementation
@@ -26,6 +26,6 @@
 - Minimize repeated repository scans.
 
 ## TODO
-- Define Copilot start-of-day protocol.
-- Define Copilot end-of-day protocol.
+- Define Engineering start-of-day protocol.
+- Define Engineering end-of-day protocol.
 - Define required verification commands and reporting format.

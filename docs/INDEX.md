@@ -63,7 +63,7 @@ System design, technology decisions, and operating principles.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [CLAUDE.md](CLAUDE.md) | Claude Lead Engineer operating manual; roles, rules, execution discipline | Active | 1.1 (2026-08-02) |
+| [CLAUDE.md](CLAUDE.md) | Engineering operating manual; roles, rules, execution discipline | Active | 1.1 (2026-08-02) |
 | [.colore/03_ARCHITECTURE.md](./../.colore/03_ARCHITECTURE.md) | Revenue architecture chain, system components, non-negotiable constraints | Active | — |
 | [.colore/04_STACK.md](./../.colore/04_STACK.md) | Technology stack (FastAPI, SQLAlchemy, PostgreSQL, Docker) | Active | — |
 | [.colore/09_UAOP.md](./../.colore/09_UAOP.md) | Universal AI Operating Protocol for all AI systems | Active | — |
@@ -118,8 +118,8 @@ External integration and system interfaces.
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
 | [docs/ALTEGIO_API_CAPABILITIES.md](ALTEGIO_API_CAPABILITIES.md) | Altegio API read-only status, write-back deferred until post-FIRST REVENUE | Active | d55f516 |
-| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | ChatGPT (CTO) role, responsibilities, and operating principles | Active | — |
-| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | GitHub Copilot usage policy and constraints | Active | — |
+| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | Architect role responsibilities and operating principles | Active | — |
+| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | Engineering role policy and constraints | Active | — |
 
 ---
 
@@ -160,9 +160,9 @@ AI team structure, roles, and collaboration framework.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [CLAUDE.md](CLAUDE.md) | Claude Lead Engineer role, responsibilities, authority, constraints | Active | 1.1 |
-| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | ChatGPT CTO role (architecture, strategy, approvals) | Active | — |
-| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | GitHub Copilot usage policy (minimize, use Claude instead) | Active | — |
+| [CLAUDE.md](CLAUDE.md) | Engineering role responsibilities, authority, and constraints | Active | 1.1 |
+| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | Architect role (architecture, strategy, approvals) | Active | — |
+| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | Engineering role policy and implementation constraints | Active | — |
 | [docs/AI_CONSTITUTION.md](AI_CONSTITUTION.md) | AI operating principles (no hallucination, reality first, revenue first) | Active | — |
 | [docs/AI_EMPLOYEE_FRAMEWORK.md](AI_EMPLOYEE_FRAMEWORK.md) | Treating AI as team member with clear role and accountability | Active | — |
 
@@ -239,7 +239,7 @@ Project-level state, decisions, and verification.
 
 ## How to Use This Index
 
-### For Claude Sessions
+### For Engineering Sessions
 1. Start each session by reading this INDEX.md
 2. Navigate to the document you need based on category
 3. Check the "Source of Truth Hierarchy" if information conflicts

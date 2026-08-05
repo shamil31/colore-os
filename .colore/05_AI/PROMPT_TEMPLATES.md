@@ -22,7 +22,7 @@
 - Use project files as the source of truth.
 - Keep unknown values explicitly marked as TODO.
 - Do not restart completed work.
-- Keep prompts aligned with the Runtime role split between ChatGPT and Copilot.
+- Keep prompts aligned with the Runtime role split between Architect and Engineering.
 
 ## Template: Runtime Day Close
 1. Summarize completed work.

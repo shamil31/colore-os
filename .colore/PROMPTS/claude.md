@@ -1,6 +1,6 @@
-## Claude Ready Prompts
+## Engineering Ready Prompts
 
-This file contains ready-to-use prompts for Claude work inside this repository.
+This file contains ready-to-use prompts for Engineering work inside this repository.
 
 ## Start Of Day
 

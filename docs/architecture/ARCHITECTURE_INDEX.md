@@ -11,7 +11,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only place that describes full pipeline
 - **Depends On:** All layer designs (Intelligence Model, State Machine, NBA Engine, Conversation Engine)
 - **Used By:** Implementation teams (Sprint #5+), API design, database schema design
-- **Owner:** Engineering (Lead)
+- **Owner:** Architect
 - **Status:** Sprint #4 (Research & Design complete)
 
 ---
@@ -25,7 +25,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of intelligence layer
 - **Depends On:** None (foundational)
 - **Used By:** Lead State Machine, NBA Engine, Conversation Engine
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #1 (Integrated)
 
 #### LEAD_STATE_MACHINE.md
@@ -33,7 +33,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of state transitions
 - **Depends On:** Lead Intelligence Model (input)
 - **Used By:** NBA Engine, Conversation Engine
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #1 (Integrated)
 
 #### NEXT_BEST_ACTION_ENGINE.md
@@ -41,7 +41,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of decision logic
 - **Depends On:** Lead Intelligence Model, Lead State Machine, Business Context
 - **Used By:** Conversation Engine, Implementation
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #2 (Integrated)
 
 #### CONVERSATION_ENGINE.md
@@ -49,7 +49,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of message layer
 - **Depends On:** Next Best Action Engine (input)
 - **Used By:** Integrilla (delivery), Learning Loop
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #3 (Integrated)
 
 ---
@@ -63,7 +63,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of document workflow
 - **Depends On:** None (process document)
 - **Used By:** All documentation creation (Architecture Index, ADRs, etc.)
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #1 (Integrated)
 
 #### SOP_TASK_LIFECYCLE.md
@@ -71,7 +71,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only definition of task workflow
 - **Depends On:** None (process document)
 - **Used By:** All task execution
-- **Owner:** Claude
+- **Owner:** Engineering
 - **Status:** Sprint #1 (Integrated)
 
 ### docs/operations/governance/

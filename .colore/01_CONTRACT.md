@@ -1,8 +1,8 @@
-# Coloré OS - Universal LLM Operating Contract
+# Coloré OS - Universal Operating Contract
 
-Last updated: 2026-08-01
+Last updated: 2026-08-05
 
-This is a mandatory behavior contract for any LLM entering the project.
+This is a mandatory behavior contract for any actor entering the project.
 It is not a project description.
 
 ## 1) Start Of Work (Mandatory)
@@ -33,7 +33,7 @@ When information conflicts, use this precedence:
 
 Chat history is never a source of truth.
 
-## 3) Non-Revisable Decisions (Unless Owner Explicitly Reopens)
+## 3) Non-Revisable Decisions (Unless Role Owner Explicitly Reopens)
 
 - Revenue First.
 - Reality First.
@@ -44,9 +44,9 @@ Chat history is never a source of truth.
 - Use existing infrastructure.
 - AI Administrator development is postponed.
 - Role split:
-	- Claude = Independent Reviewer
-	- Copilot = Implementation
-	- GPT = CTO
+	- Reviewer = Independent Review
+	- Engineering = Implementation
+	- Architect = Architecture Governance
 
 ## 4) Execution Model
 
@@ -91,4 +91,4 @@ When running Sync Project, LLM must:
 
 ## 9) Amendment Rule
 
-This contract can be changed only by explicit owner decision recorded in decisions log.
+This contract can be changed only by explicit role-based decision recorded in the decisions log.
