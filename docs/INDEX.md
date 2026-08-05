@@ -156,7 +156,37 @@ AI team structure, roles, and collaboration framework.
 
 ---
 
-## 10. Project State & Governance
+## 10. Customer Intelligence
+
+Decision models and lead handling frameworks. How Coloré OS understands clients and makes decisions.
+
+### Lead Intelligence (Sprint #1)
+
+| Document | Purpose | Status | Commit |
+|----------|---------|--------|--------|
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | Sprint #1 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → action | Integrated | Sprint #1 |
+
+**Usage:** Lead State Machine is the operational model (what happens at each stage). Lead Intelligence Model is the strategic model (how we understand the person).
+
+---
+
+## 11. Execution SOPs
+
+Standard Operating Procedures for recurring operations.
+
+| Document | Purpose | Status | Commit |
+|----------|---------|--------|--------|
+| [docs/02_EXECUTION/SOP_DOCUMENT_LIFECYCLE.md](02_EXECUTION/SOP_DOCUMENT_LIFECYCLE.md) | How documents move from IDEA → DESIGN → REVIEW → APPROVED → INTEGRATED | Integrated | Sprint #1 |
+| [docs/02_EXECUTION/SOP_TASK_LIFECYCLE.md](02_EXECUTION/SOP_TASK_LIFECYCLE.md) | How tasks move from IDEA → RESEARCH → DESIGN → REVIEW → BUILD → VERIFY → DEPLOY → LEARN | Integrated | Sprint #1 |
+| [docs/FIRST_CAMPAIGN_CHECKLIST.md](FIRST_CAMPAIGN_CHECKLIST.md) | Step-by-step execution checklist for first campaign launch | Active | 7b3ca59 |
+| [docs/CAMPAIGN_PIPELINE.md](CAMPAIGN_PIPELINE.md) | End-to-end campaign generation pipeline; all 10 stages documented | Active | b0d1eed |
+
+**Usage:** Use SOP_TASK_LIFECYCLE to manage any task. Use SOP_DOCUMENT_LIFECYCLE to manage document creation. Use CAMPAIGN_PIPELINE and FIRST_CAMPAIGN_CHECKLIST for campaign-specific execution.
+
+---
+
+## 12. Project State & Governance
 
 Project-level state, decisions, and verification.
 

@@ -63,9 +63,15 @@ Proof of concept. One booking validates the model before scaling.
 - ✅ Campaign pipeline implemented (9 of 10 stages)
 - ✅ Conversation playbook approved
 - ✅ Integrilla export working
-- ⏳ Awaiting launch decision
+- ✅ **Sprint #1 Complete:** Lead Intelligence MVP (2026-08-05)
+  - Lead State Machine v1 (10-state operational model)
+  - Lead Intelligence Model v1 (decision framework)
+  - SOP Document Lifecycle (document governance)
+  - SOP Task Lifecycle (task execution governance)
 
 **For current sprint details, read:** [.colore/00_Master/TODAY.md](./TODAY.md) | [.colore/00_Master/NEXT.md](./NEXT.md)
+
+**For Lead Intelligence details, read:** [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/](../../docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/)
 
 ---
 

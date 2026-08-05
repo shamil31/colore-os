@@ -1,6 +1,6 @@
 # Colore Runtime - Today
 
-Date: 2026-08-01
+Date: 2026-08-05
 
 This file must contain exactly two sections.
 
@@ -11,6 +11,7 @@ This file must contain exactly two sections.
 	- Первая выручка.
 
 ## Active Product Task
-- Exactly one development task: Priority -> Integrilla transport loop for real campaign execution.
+- Exactly one development task: Build Priority -> Integrilla message transport loop.
 - Status: TODO
 - Rule: Follow Finish Before Improve.
+- NOTE: Sprint #1 (Lead Intelligence MVP) is complete. Integrated documentation is in docs/01_CUSTOMER_INTELLIGENCE/ and docs/02_EXECUTION/
