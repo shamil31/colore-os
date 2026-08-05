@@ -41,7 +41,10 @@ Complete the current task. Refactoring and optimization come after.
 ### 5. Use Existing Infrastructure
 No platform replacement work. Build within constraints.
 
-### 6. Architecture Integration Mandatory
+### 6. Model Independence
+The structure of the project, its architecture, documentation, processes, contracts, and ADRs must not depend on any specific AI model. When the executor of a role changes, the project structure and governance remain unchanged.
+
+### 7. Architecture Integration Mandatory
 Every approved artifact must complete Architecture Integration before any new work begins.
 
 **Process:** Approved → Architecture Review → Integration → Next Work
@@ -123,7 +126,7 @@ When information conflicts, use this hierarchy:
 ### 2. Read Mandatory Runtime Docs
 In order:
 - [ ] [.colore/09_UAOP.md](../09_UAOP.md) — Universal AI Operating Protocol
-- [ ] [.colore/01_CONTRACT.md](../01_CONTRACT.md) — LLM Operating Contract
+- [ ] [.colore/01_CONTRACT.md](../01_CONTRACT.md) — Operating Contract
 - [ ] [.colore/03_ARCHITECTURE.md](../03_ARCHITECTURE.md) — System Architecture
 
 ### 3. Read Current State
@@ -182,7 +185,7 @@ This learning feeds back into the next campaign cycle.
 
 1. Check [.colore/00_Master/KNOWN_STATE.md](./KNOWN_STATE.md) for verified facts
 2. Check [.colore/00_Master/DECISIONS.md](./DECISIONS.md) for active rules
-3. Read [CLAUDE.md](../../CLAUDE.md) Section XXIII (Escalation Path)
+3. Read [REVIEWER.md](../../REVIEWER.md) Section XXIII (Escalation Path)
 4. Ask, don't assume
 
 ---

@@ -16,7 +16,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 - Runtime: the `.colore/` operating system that tells AI agents how to work with the project day to day.
 - UAOP: the highest-level AI operating standard in `.colore/09_UAOP.md`.
 - Verified History: the historical record of confirmed project events stored in `.colore/08_VERIFIED_HISTORY.md`.
-- AI Instructions: the role and operating rules stored in `.colore/05_AI/` and `.github/copilot-instructions.md`.
+- AI Instructions: the role and operating rules stored in `.colore/05_AI/` and `.github/engineering-instructions.md`.
 - Prompt Library: the ready-to-use prompts stored in `.colore/PROMPTS/`.
 
 ## Top-Level Files
@@ -49,19 +49,19 @@ Use it before every task to understand the current state of the project without 
 - `ROADMAP.md` - synchronized execution stages.
 - `DECISIONS.md` - currently active decisions used during execution.
 - `WORKFLOW.md` - current execution workflow rules.
-- `NEXT.md` - session entry point for any new LLM session.
+- `NEXT.md` - session entry point for any new role-based session.
 
 ## 05_AI
 
 - `05_AI/` defines role-specific operating guidance.
 
-- `CHATGPT.md` - architecture-role operating responsibilities.
-- `COPILOT.md` - implementation-focused operating responsibilities.
+- `ARCHITECT.md` - architecture-role operating responsibilities.
+- `ENGINEERING.md` - implementation-focused operating responsibilities.
 - `PROMPT_TEMPLATES.md` - reusable prompt patterns and prompt-writing guidance.
 
 ## PROMPTS
 
-`PROMPTS/` contains ready-to-use prompts for specific AI tools.
+`PROMPTS/` contains ready-to-use prompts for specific roles.
 
 These files are for direct use or copy-paste.
 

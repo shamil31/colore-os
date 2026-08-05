@@ -49,7 +49,7 @@ Never infer priorities from code structure alone.
 - Integrilla Export (XLSX generation) — 2026-08-02
 - Conversation Playbook (7 rules, 7 scenarios) — 2026-08-02
 - Project Knowledge Index — 2026-08-02
-- CLAUDE.md v1.1 (Architecture Review Applied) — 2026-08-02
+- REVIEWER.md v1.1 (Architecture Review Applied) — 2026-08-02
 - Altegio API Capabilities Audit — 2026-08-02
 - Session Entry Point (NEXT.md) — 2026-08-02
 

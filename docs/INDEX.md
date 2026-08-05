@@ -63,7 +63,7 @@ System design, technology decisions, and operating principles.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [CLAUDE.md](CLAUDE.md) | Engineering operating manual; roles, rules, execution discipline | Active | 1.1 (2026-08-02) |
+| [REVIEWER.md](REVIEWER.md) | Engineering operating manual; roles, rules, execution discipline | Active | 1.1 (2026-08-02) |
 | [.colore/03_ARCHITECTURE.md](./../.colore/03_ARCHITECTURE.md) | Revenue architecture chain, system components, non-negotiable constraints | Active | — |
 | [.colore/04_STACK.md](./../.colore/04_STACK.md) | Technology stack (FastAPI, SQLAlchemy, PostgreSQL, Docker) | Active | — |
 | [.colore/09_UAOP.md](./../.colore/09_UAOP.md) | Universal AI Operating Protocol for all AI systems | Active | — |
@@ -118,8 +118,8 @@ External integration and system interfaces.
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
 | [docs/ALTEGIO_API_CAPABILITIES.md](ALTEGIO_API_CAPABILITIES.md) | Altegio API read-only status, write-back deferred until post-FIRST REVENUE | Active | d55f516 |
-| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | Architect role responsibilities and operating principles | Active | — |
-| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | Engineering role policy and constraints | Active | — |
+| [.colore/05_AI/ARCHITECT.md](./../.colore/05_AI/ARCHITECT.md) | Architect role responsibilities and operating principles | Active | — |
+| [.colore/05_AI/ENGINEERING.md](./../.colore/05_AI/ENGINEERING.md) | Engineering role policy and constraints | Active | — |
 
 ---
 
@@ -160,9 +160,9 @@ AI team structure, roles, and collaboration framework.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [CLAUDE.md](CLAUDE.md) | Engineering role responsibilities, authority, and constraints | Active | 1.1 |
-| [.colore/05_AI/CHATGPT.md](./../.colore/05_AI/CHATGPT.md) | Architect role (architecture, strategy, approvals) | Active | — |
-| [.colore/05_AI/COPILOT.md](./../.colore/05_AI/COPILOT.md) | Engineering role policy and implementation constraints | Active | — |
+| [REVIEWER.md](REVIEWER.md) | Engineering role responsibilities, authority, and constraints | Active | 1.1 |
+| [.colore/05_AI/ARCHITECT.md](./../.colore/05_AI/ARCHITECT.md) | Architect role (architecture, strategy, approvals) | Active | — |
+| [.colore/05_AI/ENGINEERING.md](./../.colore/05_AI/ENGINEERING.md) | Engineering role policy and implementation constraints | Active | — |
 | [docs/AI_CONSTITUTION.md](AI_CONSTITUTION.md) | AI operating principles (no hallucination, reality first, revenue first) | Active | — |
 | [docs/AI_EMPLOYEE_FRAMEWORK.md](AI_EMPLOYEE_FRAMEWORK.md) | Treating AI as team member with clear role and accountability | Active | — |
 
@@ -280,12 +280,12 @@ Project-level state, decisions, and verification.
 
 ## Quick Navigation
 
-- **Just starting?** → Read CLAUDE.md + TODAY.md + PROJECT_STATE.md
-- **Need architecture rules?** → Read CLAUDE.md Section III + ARCHITECTURE.md
+- **Just starting?** → Read REVIEWER.md + TODAY.md + PROJECT_STATE.md
+- **Need architecture rules?** → Read REVIEWER.md Section III + ARCHITECTURE.md
 - **Running a campaign?** → Read FIRST_CAMPAIGN_CHECKLIST.md + CAMPAIGN_PIPELINE.md
 - **Checking integrations?** → Read ALTEGIO_API_CAPABILITIES.md + INTEGRATION_STATUS.md
 - **Understanding decisions?** → Read DECISIONS.md + KNOWN_STATE.md
-- **Need to escalate?** → Read CLAUDE.md Section XXIII (Escalation Path)
+- **Need to escalate?** → Read REVIEWER.md Section XXIII (Escalation Path)
 
 ---
 

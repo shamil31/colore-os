@@ -110,7 +110,7 @@ Launch first Long Absence campaign.
 2. Check PROJECT_STATE.md for current status
 3. Check TODAY.md for daily focus
 4. Check DECISIONS.md for active rules
-5. Check CLAUDE.md Section XXIII (Escalation Path)
+5. Check REVIEWER.md Section XXIII (Escalation Path)
 
 ---
 
