@@ -140,6 +140,8 @@ Each stage adds information that previous stages don't capture.
 
 **Output:** Decision readiness score (ready now, ready soon, needs more info, not ready, rejected)
 
+> **⚠️ REVIEW NOTE:** The specific Decision Readiness Categories (Ready Now/Soon/Needs Info/Not Ready/Rejected) were formulated operationally beyond the approved model. See Architecture Review in next cycle.
+
 **Categories:**
 
 ### Ready Now (High Decision Readiness)

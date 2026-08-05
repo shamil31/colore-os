@@ -41,6 +41,13 @@ Complete the current task. Refactoring and optimization come after.
 ### 5. Use Existing Infrastructure
 No platform replacement work. Build within constraints.
 
+### 6. Architecture Integration Mandatory
+Every approved artifact must complete Architecture Integration before any new work begins.
+
+**Process:** Approved → Architecture Review → Integration → Next Work
+
+This ensures consistency, prevents rework, and maintains architectural coherence as the project scales.
+
 **For architectural context, read:** [.colore/03_ARCHITECTURE.md](../03_ARCHITECTURE.md)
 
 ---

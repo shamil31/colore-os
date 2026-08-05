@@ -26,6 +26,12 @@ Source baseline: .colore/05_TASKS.md
 - Execution order follows the lifecycle:
   - BACKLOG -> TODO -> DOING -> REVIEW -> DONE
 
+## Architecture Backlog
+- [ ] Rename `docs/01_CUSTOMER_INTELLIGENCE/` to `docs/01_DECISION_INTELLIGENCE/` (future consolidation)
+  - Status: Deferred pending consolidation with Active Client Intelligence and other decision models
+  - Reason: "Decision Intelligence" more accurately describes the parent category (leads, active clients, VIP, lost clients all make decisions)
+  - Timing: After completing at least 2 Customer Intelligence subtypes (Lead + Active/Lost/VIP)
+
 ## New Backlog Candidates
 - TODO
 
