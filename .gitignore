@@ -14,3 +14,7 @@ __pycache__/
 
 # Windows
 Thumbs.db
+
+# Generated campaign export artifacts
+backend/campaign.xlsx
+exports/
