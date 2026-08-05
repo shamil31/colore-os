@@ -2,7 +2,8 @@
 
 **Status:** Accepted  
 **Date:** 2026-08-05  
-**Deciders:** Claude (Lead Engineer), ChatGPT (CTO), Shamil (CEO)
+**Decision Owner:** Architecture  
+**Stakeholders:** Engineering, Product
 
 ---
 
@@ -62,5 +63,5 @@ The repository is the permanent record of what was built and decided. Everything
 
 ---
 
-**Reviewer:** ChatGPT (CTO) ✓  
+**Approval Authority:** Architecture  
 **Approval Date:** 2026-08-05

@@ -11,7 +11,7 @@ Navigation guide for system architecture documents.
 - **Single Source of Truth:** Yes — only place that describes full pipeline
 - **Depends On:** All layer designs (Intelligence Model, State Machine, NBA Engine, Conversation Engine)
 - **Used By:** Implementation teams (Sprint #5+), API design, database schema design
-- **Owner:** Claude (Lead Engineer)
+- **Owner:** Engineering (Lead)
 - **Status:** Sprint #4 (Research & Design complete)
 
 ---
@@ -135,13 +135,13 @@ SOP_TASK_LIFECYCLE (Governs)
 
 | Document | Owner | Type | Status |
 |----------|-------|------|--------|
-| RUNTIME_ARCHITECTURE.md | Claude | Architecture | Sprint #4 |
-| LEAD_INTELLIGENCE_MODEL.md | Claude | Domain | Sprint #1 |
-| LEAD_STATE_MACHINE.md | Claude | Domain | Sprint #1 |
-| NEXT_BEST_ACTION_ENGINE.md | Claude | Domain | Sprint #2 |
-| CONVERSATION_ENGINE.md | Claude | Domain | Sprint #3 |
-| SOP_DOCUMENT_LIFECYCLE.md | Claude | Process | Sprint #1 |
-| SOP_TASK_LIFECYCLE.md | Claude | Process | Sprint #1 |
+| RUNTIME_ARCHITECTURE.md | Engineering | Architecture | Sprint #4 |
+| LEAD_INTELLIGENCE_MODEL.md | Engineering | Domain | Sprint #1 |
+| LEAD_STATE_MACHINE.md | Engineering | Domain | Sprint #1 |
+| NEXT_BEST_ACTION_ENGINE.md | Engineering | Domain | Sprint #2 |
+| CONVERSATION_ENGINE.md | Engineering | Domain | Sprint #3 |
+| SOP_DOCUMENT_LIFECYCLE.md | Engineering | Process | Sprint #1 |
+| SOP_TASK_LIFECYCLE.md | Engineering | Process | Sprint #1 |
 
 ---
 

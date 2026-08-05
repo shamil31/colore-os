@@ -2,7 +2,8 @@
 
 **Status:** Accepted  
 **Date:** 2026-08-05  
-**Deciders:** Claude (Lead Engineer), ChatGPT (CTO), Shamil (CEO)
+**Decision Owner:** Architecture  
+**Stakeholders:** Engineering, Product
 
 ---
 
@@ -76,5 +77,5 @@ Violations are caught in document review (SOP_DOCUMENT_LIFECYCLE).
 
 ---
 
-**Reviewer:** ChatGPT (CTO) ✓  
+**Approval Authority:** Architecture  
 **Approval Date:** 2026-08-05

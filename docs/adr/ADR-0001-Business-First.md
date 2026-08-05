@@ -2,7 +2,8 @@
 
 **Status:** Accepted  
 **Date:** 2026-08-05  
-**Deciders:** Claude (Lead Engineer), ChatGPT (CTO), Shamil (CEO)
+**Decision Owner:** Architecture + Product  
+**Stakeholders:** Engineering, Operations
 
 ---
 
@@ -55,5 +56,5 @@ The company mission is to increase salon revenue. Engineering exists to serve bu
 
 ---
 
-**Reviewer:** ChatGPT (CTO) ✓  
+**Approval Authority:** Architecture  
 **Approval Date:** 2026-08-05
