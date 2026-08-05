@@ -160,14 +160,15 @@ AI team structure, roles, and collaboration framework.
 
 Decision models and lead handling frameworks. How Coloré OS understands clients and makes decisions.
 
-### Lead Intelligence (Sprint #1)
+### Lead Intelligence (Sprint #1 + Sprint #2)
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → trust | Integrated | Sprint #1 |
 | [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | Sprint #1 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → action | Integrated | Sprint #1 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md) | Decision layer: selects one next action based on lead understanding and business context | Integrated | Sprint #2 |
 
-**Usage:** Lead State Machine is the operational model (what happens at each stage). Lead Intelligence Model is the strategic model (how we understand the person).
+**Architecture Chain:** Lead Intelligence Model (understand) → Lead State Machine (position) → Next Best Action Engine (decide) → Conversation Engine (speak)
 
 ---
 

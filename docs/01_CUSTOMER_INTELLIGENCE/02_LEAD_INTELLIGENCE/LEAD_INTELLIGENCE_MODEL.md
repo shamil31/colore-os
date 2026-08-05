@@ -267,7 +267,7 @@ These decisions are never AI-only:
 
 ---
 
-## Relationship to Lead State Machine
+## Relationship to Lead State Machine and Next Best Action Engine
 
 **Lead Intelligence Model** = How do we understand this person?
 - High-level reasoning about intent, emotion, readiness
@@ -279,20 +279,31 @@ These decisions are never AI-only:
 - Defines transition criteria
 - Defines success criteria
 
-**Integration:**
+**Next Best Action Engine** = What specific action should we take?
+- Decision layer between understanding (Intelligence Model) and communication (Conversation Engine)
+- Uses Lead Intelligence Model outputs (Intent, Emotion, Readiness)
+- Uses Lead State Machine outputs (current state)
+- Adds Trust and Business Context to make action decision
+- Outputs: one specific action type from fixed catalog
+
+**Integrated Architecture:**
 ```
 Raw Message
     ↓ (Intelligence Model)
-Understand Intent + Emotion + Readiness
+Understand Intent + Emotion + Readiness + Historical Trust
     ↓
 Select Starting State (or next state)
     ↓ (State Machine)
-Execute state-specific actions
+Define state context and constraints
+    ↓ (Next Best Action Engine)
+Evaluate all inputs + Business Context + Confidence
     ↓
-Monitor for transition criteria
-    ↓
-Escalate or move to next state
+Select one action type from catalog
+    ↓ (Conversation Engine)
+Formulate and deliver the action
 ```
+
+**For decision logic details, see:** [NEXT_BEST_ACTION_ENGINE.md](NEXT_BEST_ACTION_ENGINE.md)
 
 ---
 
