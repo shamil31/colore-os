@@ -31,6 +31,18 @@ Repository Code & Commits (HIGHEST AUTHORITY)
 
 ---
 
+## 0. System Architecture
+
+Foundation of how Coloré OS processes data end-to-end.
+
+| Document | Purpose | Status | Sprint |
+|----------|---------|--------|--------|
+| [docs/00_SYSTEM_ARCHITECTURE/RUNTIME_ARCHITECTURE.md](00_SYSTEM_ARCHITECTURE/RUNTIME_ARCHITECTURE.md) | Complete data flow through system: sources → processing layers → delivery → learning | Integrated | #4 |
+
+**Foundation for:** All technical implementation decisions, service architecture, database schema design.
+
+---
+
 ## 1. Active Sprint
 
 Current business focus and execution state.
