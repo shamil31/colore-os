@@ -18,6 +18,7 @@
 ## Day Start
 - Every workday starts with Open Day procedure.
 - Open repository at /root/colore-os.
+- Read .colore/bootstrap.md first to restore runtime context.
 - Read runtime docs in strict order:
   - .colore/09_UAOP.md
   - .colore/01_CONTRACT.md
@@ -34,10 +35,11 @@
 
 ## Open Day Procedure
 1. Verify workspace and git state.
-2. Read Source Of Truth in required order.
-3. Confirm current sprint and P0 task.
-4. Move only one task to DOING.
-5. Record start context in TODAY.md.
+2. Read .colore/bootstrap.md as the authoritative runtime contract.
+3. Restore runtime context and execute the Open Day protocol from bootstrap.
+4. Confirm current sprint and P0 task.
+5. Move only one task to DOING.
+6. Record start context in TODAY.md.
 
 ## Sync Project Procedure
 1. Update all Source Of Truth docs.
@@ -55,9 +57,10 @@
 ## Close Day Procedure
 1. Check status of current DOING task.
 2. Record verified outcomes only.
-3. Update next-day first task.
-4. Ensure no open contradiction in Source Of Truth.
-5. Commit day-close documentation.
+3. Update .colore/bootstrap.md with current phase, sprint, completed work, risks, next decision, and first task.
+4. Update next-day first task.
+5. Ensure no open contradiction in Source Of Truth.
+6. Commit day-close documentation.
 
 ## Unknown Process Details
 - Automation steps for status transitions: TODO

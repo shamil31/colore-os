@@ -1,62 +1,95 @@
-# Colore OS Bootstrap
+# Coloré OS Runtime Bootstrap
 
-This file is the single entry point for the Colore OS project runtime. Read it first for context, status, and next actions.
+## RUNTIME HEADER
 
-## Project
-- Name: Colore OS
-- Product: AI Administrator for Beauty Salons
-- Mission: Help salon operators manage clients, visits, revenue insights, and campaign operations with reliable automation.
+This document is the runtime contract for Coloré OS development.
+Reading it means entering the Coloré OS development runtime.
+The LLM must restore context before answering.
 
-## Current State
-- Core backend service is in place under backend/.
-- Revenue and client integration workflows are active.
-- Export and reporting artifacts are generated in exports/ and backend/campaign.xlsx.
-- Runtime guidance is maintained in .colore/.
+## OPEN DAY PROTOCOL
 
-## Active Sprint
-- Focus: stabilize backend workflows, imports, and reporting outputs.
-- Priority: keep generated artifacts out of version control and preserve repository clarity.
-- Exit criteria: key workflows run without blocking issues and documentation stays current.
+If this document has been loaded, automatically execute Open Day without waiting for additional commands.
 
-## Last Accepted Decisions
-- Keep this bootstrap file as the primary daily entry point.
-- Prefer repository files over runtime notes when they differ.
-- Keep generated exports ignored by Git.
-- Maintain architecture and runtime guidance in .colore/.
+1. Confirm successful context loading.
+2. Summarize the current project state.
+3. Summarize completed work.
+4. Summarize active architectural decisions.
+5. Identify the current development phase.
+6. Identify the current sprint.
+7. Identify today’s objective.
+8. Identify architectural risks.
+9. Propose the next engineering task.
+10. Wait for the user.
 
-## Next Tasks
-- [ ] Review current backend workflow status.
-- [ ] Confirm any open blockers from integrations and exports.
-- [ ] Update this file with the latest progress and next actions.
+## COMMANDS
 
-## Rules for the Architect
-1. Read this file before starting work.
-2. Prefer minimal, verified changes.
-3. Keep implementation aligned with the repository structure.
-4. Update this file at the start and end of each workday.
-5. Preserve clarity for both humans and LLMs.
+Open Day = Execute the Open Day protocol.
 
-## Open Day
-- Review status, blockers, and priorities.
-- Confirm the task for the day.
-- Record the expected outcome before work begins.
+Close Day = Analyze the current session, update bootstrap.md, generate the next runtime state, and prepare tomorrow’s entry point.
 
-## Close Day
-- Summarize completed work.
-- Note unresolved issues and next steps.
-- Update this file so the next session starts from a clear state.
+## PROJECT SNAPSHOT
 
-## Main Project Directories
-- [backend/](../backend)
-- [docs/](../docs)
-- [infrastructure/](../infrastructure)
-- [.colore/](.)
-- [exports/](../exports)
+Current Phase: Launch readiness and revenue validation.
 
-## Key Repository Documents
-- [README.md](../README.md)
-- [.colore/README.md](README.md)
-- [.colore/00_START.md](00_START.md)
-- [.colore/02_PROJECT.md](02_PROJECT.md)
-- [.colore/03_ARCHITECTURE.md](03_ARCHITECTURE.md)
-- [backend/app/main.py](../backend/app/main.py)
+Current Sprint: FIRST REVENUE.
+
+Current Position: Campaign infrastructure is complete and the project is waiting for the first real campaign launch decision. The immediate goal remains to prove one real booking path from lead to appointment.
+
+Completed Since Last Session:
+- Runtime bootstrap was converted into a runtime contract.
+- Role-based operating docs were synchronized with the new entry-point model.
+- The repository reached a model-independent runtime structure.
+- Sprint #1 lead-intelligence work was completed and documented.
+
+Open Questions:
+- Whether the first campaign launch should proceed now.
+- Which client segment should be used for the first live message sequence.
+- Whether the next task should be launch execution or campaign validation.
+
+Architecture Decisions:
+- Coloré OS remains above existing systems and does not replace Altegio or Integrilla.
+- Revenue delivery is prioritized over architectural optimization.
+- Runtime state is maintained through bootstrap and master runtime documents.
+
+Blocked Items:
+- No code-level blocker is currently blocking runtime readiness.
+- The main execution blocker is the decision to begin the first live campaign.
+
+Risks:
+- Launching before verified message flow readiness could create false confidence.
+- Weak campaign execution discipline could reduce the value of the first revenue test.
+- Incomplete runtime synchronization could cause mixed operating guidance.
+
+Next Decision:
+- Decide whether the next task is campaign launch execution or validation of the transport loop.
+
+First Task Today:
+- Confirm the next execution step and begin from the current runtime state.
+
+## PROJECT PRINCIPLES
+
+Single Source of Truth
+
+One Document One Responsibility
+
+Role-Based Governance
+
+Model Independence
+
+Contract First
+
+## CURRENT ARCHITECTURE
+
+Coloré OS operates as a revenue orchestration layer above existing business systems. Its architecture is centered on a runtime contract that establishes the operating context for any participant, a set of role-based governance documents that define accountability, and a master state layer that preserves the current sprint, active decisions, and execution focus. The system’s business logic is organized around revenue-oriented flows, while integration boundaries remain explicit so that existing operational platforms stay authoritative. The architecture is intentionally governed by contracts, verified state, and disciplined execution rather than by implementation detail or tool preference.
+
+## SESSION MEMORY
+
+The previous working session completed the runtime refactor by converting the bootstrap file into the central entry point, aligning the operating contract with Open Day and Close Day behavior, and synchronizing the runtime documentation so it speaks with one voice.
+
+## DO NOT INCLUDE
+
+- Long explanations
+- README-like information
+- Marketing text
+- Technology stack details
+- Backend implementation details

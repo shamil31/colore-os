@@ -2,7 +2,7 @@
 
 ## First Runtime Rule
 
-Before any work, every AI must read .colore/09_UAOP.md and .colore/01_CONTRACT.md.
+Before any work, every AI must read .colore/bootstrap.md, .colore/09_UAOP.md, and .colore/01_CONTRACT.md.
 
 ## Workspace Check
 
@@ -20,10 +20,11 @@ Before any work, every AI must read .colore/09_UAOP.md and .colore/01_CONTRACT.m
 ## Open Day
 
 1. Открыть проект /root/colore-os.
-2. Прочитать Source Of Truth в порядке из .colore/01_CONTRACT.md.
-3. Подтвердить текущий sprint и KPI.
-4. Выбрать только одну активную задачу и зафиксировать ее в .colore/00_Master/TODAY.md.
-5. Перевести задачу в DOING.
+2. Прочитать .colore/bootstrap.md как авторитетный runtime contract.
+3. Восстановить runtime context и выполнить Open Day protocol из bootstrap.
+4. Подтвердить текущий sprint и KPI.
+5. Выбрать только одну активную задачу и зафиксировать ее в .colore/00_Master/TODAY.md.
+6. Перевести задачу в DOING.
 
 ---
 
@@ -52,9 +53,11 @@ BACKLOG → TODO → DOING → REVIEW → DONE
 ## Close Day
 
 1. Зафиксировать только подтвержденные результаты.
-2. Обновить .colore/06_SESSION.md и .colore/07_DECISIONS.md.
-3. Выполнить Sync Project по правилам контракта.
-4. Определить первую задачу следующего дня.
+2. Обновить .colore/bootstrap.md, .colore/06_SESSION.md и .colore/07_DECISIONS.md.
+3. Обновить текущий phase, sprint, completed work, next task и blocked items.
+4. Выполнить Sync Project по правилам контракта.
+5. Определить первую задачу следующего дня.
+6. Зафиксировать изменения коммитом.
 
 ---
 

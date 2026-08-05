@@ -68,19 +68,19 @@ When running Sync Project, LLM must:
 
 ## 6) Open Day Procedure
 
-1. Read Source Of Truth in mandatory order.
-2. Confirm current sprint and current KPI.
-3. Confirm one active product task.
-4. Set TODAY.md with exact active task.
-5. Start execution.
+1. Read .colore/bootstrap.md as the authoritative runtime contract.
+2. Restore runtime context before answering.
+3. Execute the Open Day protocol defined in bootstrap.
+4. Confirm current sprint, current KPI, and one active product task.
+5. Continue work from the restored state.
 
 ## 7) Close Day Procedure
 
-1. Record only verified outcomes.
-2. Update session and decision logs.
-3. Update project state and backlog ordering.
-4. Set first task for next day.
-5. Commit day-close state.
+1. Review the session and record only verified outcomes.
+2. Update .colore/bootstrap.md with current phase, sprint, completed work, risks, next decision, and first task.
+3. Update the current phase, sprint, completed work, and next task in the runtime state.
+4. Update any blocked items and open questions.
+5. Commit the day-close state with a meaningful message.
 
 ## 8) Failure Prevention Rules
 

@@ -23,6 +23,7 @@ If Runtime notes, prompts, or AI memory conflict with repository files, use the 
 
 - `00_START.md` - workspace check, workday start rule, and core execution flow.
 - `01_CONTRACT.md` - mandatory universal operating contract for any assigned role performer.
+- `bootstrap.md` - authoritative runtime contract and daily entry point for any participant.
 - `02_PROJECT.md` - project purpose, scope, users, modules, and success criteria.
 - `03_ARCHITECTURE.md` - system architecture and layer responsibilities.
 - `04_STACK.md` - current technology stack.
@@ -73,9 +74,10 @@ They are also not the same as project documentation or verified history.
 
 **For any new work session, start here:**
 
-1. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
-2. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
-3. Read `.colore/01_CONTRACT.md` — follow the operating contract
+1. Read `.colore/bootstrap.md` — enter the runtime contract and restore context
+2. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
+3. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
+4. Read `.colore/01_CONTRACT.md` — follow the operating contract
 
 **Before every task, read:**
 
