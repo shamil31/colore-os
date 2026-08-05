@@ -298,12 +298,16 @@ Define state context and constraints
     ↓ (Next Best Action Engine)
 Evaluate all inputs + Business Context + Confidence
     ↓
-Select one action type from catalog
+Select one action type from catalog + Reason
     ↓ (Conversation Engine)
-Formulate and deliver the action
+Transform action into one message, respecting Tone of Brand
+    ↓
+Deliver message to client
 ```
 
 **For decision logic details, see:** [NEXT_BEST_ACTION_ENGINE.md](NEXT_BEST_ACTION_ENGINE.md)
+
+**For message formulation details, see:** [CONVERSATION_ENGINE.md](CONVERSATION_ENGINE.md)
 
 ---
 

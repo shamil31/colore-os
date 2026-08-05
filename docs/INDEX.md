@@ -160,15 +160,25 @@ AI team structure, roles, and collaboration framework.
 
 Decision models and lead handling frameworks. How Coloré OS understands clients and makes decisions.
 
-### Lead Intelligence (Sprint #1 + Sprint #2)
+### Lead Intelligence (Sprint #1 + Sprint #2 + Sprint #3)
 
-| Document | Purpose | Status | Commit |
+| Document | Purpose | Status | Sprint |
 |----------|---------|--------|--------|
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → trust | Integrated | Sprint #1 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | Sprint #1 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md) | Decision layer: selects one next action based on lead understanding and business context | Integrated | Sprint #2 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → trust | Integrated | #1 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | #1 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md) | Decision layer: selects one next action based on lead understanding and business context | Integrated | #2 |
+| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/CONVERSATION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/CONVERSATION_ENGINE.md) | Communication layer: transforms action into message respecting brand voice | Integrated | #3 |
 
-**Architecture Chain:** Lead Intelligence Model (understand) → Lead State Machine (position) → Next Best Action Engine (decide) → Conversation Engine (speak)
+**Complete Architecture Chain:** 
+```
+Lead Intelligence Model (understand: Intent, Emotion, Readiness, Trust)
+    ↓
+Lead State Machine (position: 10 states)
+    ↓
+Next Best Action Engine (decide: action + reason)
+    ↓
+Conversation Engine (speak: message + tone)
+```
 
 ---
 

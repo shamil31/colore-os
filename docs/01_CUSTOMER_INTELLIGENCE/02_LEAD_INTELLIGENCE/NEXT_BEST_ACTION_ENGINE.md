@@ -23,10 +23,12 @@ Lead State Machine       →  определяет, в каком состоян
                     ↓
         Next Best Action Engine
                     ↓
-        Conversation Engine  →  формулирует и произносит действие (вне этого документа)
+        Conversation Engine  →  превращает Action в сообщение клиенту
 ```
 
 NBA Engine — чистый слой принятия решения между «пониманием» и «речью». Он не дублирует работу Lead Intelligence Model (не переоценивает эмоции заново) и не подменяет Conversation Engine (не формулирует ответ).
+
+**Для деталей формулирования сообщений, см:** [CONVERSATION_ENGINE.md](CONVERSATION_ENGINE.md)
 
 ## Новое измерение: Trust
 
