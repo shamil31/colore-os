@@ -17,11 +17,11 @@ Before any work, every AI must read .colore/bootstrap.md, .colore/09_UAOP.md, an
 
 ---
 
-## Open Day
+## Runtime Entry
 
 1. Открыть проект /root/colore-os.
 2. Прочитать .colore/bootstrap.md как авторитетный runtime contract.
-3. Восстановить runtime context и выполнить Open Day protocol из bootstrap.
+3. Восстановить runtime context и выполнить Runtime Entry Procedure из bootstrap.
 4. Подтвердить текущий sprint и KPI.
 5. Выбрать только одну активную задачу и зафиксировать ее в .colore/00_Master/TODAY.md.
 6. Перевести задачу в DOING.

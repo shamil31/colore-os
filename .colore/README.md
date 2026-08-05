@@ -74,7 +74,7 @@ They are also not the same as project documentation or verified history.
 
 **For any new work session, start here:**
 
-1. Read `.colore/bootstrap.md` — enter the runtime contract and restore context
+1. Read `.colore/bootstrap.md` — enter the runtime contract and trigger the Runtime Entry Procedure
 2. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
 3. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
 4. Read `.colore/01_CONTRACT.md` — follow the operating contract

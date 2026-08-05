@@ -16,7 +16,7 @@
 - Never reopen closed decisions without explicit owner approval.
 
 ## Day Start
-- Every workday starts with Open Day procedure.
+- Every workday starts with the Runtime Entry Procedure.
 - Open repository at /root/colore-os.
 - Read .colore/bootstrap.md first to restore runtime context.
 - Read runtime docs in strict order:
@@ -33,10 +33,10 @@
 - Verify workspace and git state.
 - Identify current active task.
 
-## Open Day Procedure
+## Runtime Entry Procedure
 1. Verify workspace and git state.
 2. Read .colore/bootstrap.md as the authoritative runtime contract.
-3. Restore runtime context and execute the Open Day protocol from bootstrap.
+3. Restore runtime context and execute the Runtime Entry Procedure from bootstrap.
 4. Confirm current sprint and P0 task.
 5. Move only one task to DOING.
 6. Record start context in TODAY.md.

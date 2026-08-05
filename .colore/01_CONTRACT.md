@@ -66,21 +66,20 @@ When running Sync Project, LLM must:
 5. Run consistency check across Source Of Truth.
 6. Commit with meaningful message.
 
-## 6) Open Day Procedure
+## 6) Runtime Entry Procedure
 
 1. Read .colore/bootstrap.md as the authoritative runtime contract.
 2. Restore runtime context before answering.
-3. Execute the Open Day protocol defined in bootstrap.
+3. Execute the Runtime Entry Procedure defined in bootstrap immediately.
 4. Confirm current sprint, current KPI, and one active product task.
 5. Continue work from the restored state.
 
 ## 7) Close Day Procedure
 
 1. Review the session and record only verified outcomes.
-2. Update .colore/bootstrap.md with current phase, sprint, completed work, risks, next decision, and first task.
-3. Update the current phase, sprint, completed work, and next task in the runtime state.
-4. Update any blocked items and open questions.
-5. Commit the day-close state with a meaningful message.
+2. Update .colore/bootstrap.md with the current runtime snapshot, sprint, architecture state, unresolved questions, next engineering task, and next bootstrap state.
+3. Update any blocked items and open questions.
+4. Commit the day-close state with a meaningful message.
 
 ## 8) Failure Prevention Rules
 

@@ -2,69 +2,55 @@
 
 ## RUNTIME HEADER
 
-This document is the runtime contract for Coloré OS development.
-Reading it means entering the Coloré OS development runtime.
-The LLM must restore context before answering.
+This document is the Runtime Entry Contract.
+Reading this document automatically starts a new development session.
+The LLM MUST execute the Runtime Entry Procedure before answering anything else.
 
-## OPEN DAY PROTOCOL
+## RUNTIME ENTRY PROCEDURE
 
-If this document has been loaded, automatically execute Open Day without waiting for additional commands.
+Immediately after reading this document, the LLM must:
 
-1. Confirm successful context loading.
+1. Confirm runtime loaded.
 2. Summarize the current project state.
-3. Summarize completed work.
-4. Summarize active architectural decisions.
-5. Identify the current development phase.
-6. Identify the current sprint.
-7. Identify today’s objective.
-8. Identify architectural risks.
-9. Propose the next engineering task.
+3. Summarize the current architecture.
+4. Summarize completed work.
+5. Summarize the active sprint.
+6. Summarize accepted ADR decisions.
+7. List unresolved architectural questions.
+8. Determine today’s first engineering task.
+9. Recommend the logical continuation.
 10. Wait for the user.
 
 ## COMMANDS
 
-Open Day = Execute the Open Day protocol.
+Open Day = Human alias for the same runtime entry behavior.
 
-Close Day = Analyze the current session, update bootstrap.md, generate the next runtime state, and prepare tomorrow’s entry point.
+Close Day = Review today’s work, update the runtime snapshot, update sprint and architecture state, update unresolved questions, update the next engineering task, and generate the next bootstrap state.
 
 ## PROJECT SNAPSHOT
 
-Current Phase: Launch readiness and revenue validation.
+Where are we?
+- The project is in the FIRST REVENUE sprint and is preparing for the first real revenue-oriented campaign execution path.
 
-Current Sprint: FIRST REVENUE.
+What has been completed?
+- The runtime entry contract is now the authoritative bootstrap state.
+- The runtime documentation has been aligned around a single entry model.
+- The project’s role-based governance and model-independent structure are in place.
 
-Current Position: Campaign infrastructure is complete and the project is waiting for the first real campaign launch decision. The immediate goal remains to prove one real booking path from lead to appointment.
+What are we designing now?
+- The next design focus is the transition from runtime readiness to the first real revenue execution path.
 
-Completed Since Last Session:
-- Runtime bootstrap was converted into a runtime contract.
-- Role-based operating docs were synchronized with the new entry-point model.
-- The repository reached a model-independent runtime structure.
-- Sprint #1 lead-intelligence work was completed and documented.
+What is blocked?
+- The main blocker is the decision to proceed with the first live campaign step.
 
-Open Questions:
-- Whether the first campaign launch should proceed now.
-- Which client segment should be used for the first live message sequence.
-- Whether the next task should be launch execution or campaign validation.
+What decision is next?
+- Decide whether the next task is launch execution or validation of the next engineering step.
 
-Architecture Decisions:
-- Coloré OS remains above existing systems and does not replace Altegio or Integrilla.
-- Revenue delivery is prioritized over architectural optimization.
-- Runtime state is maintained through bootstrap and master runtime documents.
+## AUTHORITATIVE STATE
 
-Blocked Items:
-- No code-level blocker is currently blocking runtime readiness.
-- The main execution blocker is the decision to begin the first live campaign.
-
-Risks:
-- Launching before verified message flow readiness could create false confidence.
-- Weak campaign execution discipline could reduce the value of the first revenue test.
-- Incomplete runtime synchronization could cause mixed operating guidance.
-
-Next Decision:
-- Decide whether the next task is campaign launch execution or validation of the transport loop.
-
-First Task Today:
-- Confirm the next execution step and begin from the current runtime state.
+This file is the authoritative runtime state.
+Other runtime documents may extend it.
+None may contradict it.
 
 ## PROJECT PRINCIPLES
 
@@ -80,11 +66,19 @@ Contract First
 
 ## CURRENT ARCHITECTURE
 
-Coloré OS operates as a revenue orchestration layer above existing business systems. Its architecture is centered on a runtime contract that establishes the operating context for any participant, a set of role-based governance documents that define accountability, and a master state layer that preserves the current sprint, active decisions, and execution focus. The system’s business logic is organized around revenue-oriented flows, while integration boundaries remain explicit so that existing operational platforms stay authoritative. The architecture is intentionally governed by contracts, verified state, and disciplined execution rather than by implementation detail or tool preference.
+Coloré OS operates as a revenue orchestration layer above existing business systems. Its architecture is governed by a runtime contract, role-based governance, and a master state layer that preserves the current sprint, active decisions, and execution focus. Business flows are organized around revenue outcomes, while integration boundaries remain explicit so that existing operational platforms stay authoritative. The architecture is designed for disciplined execution and state continuity rather than implementation detail.
 
 ## SESSION MEMORY
 
-The previous working session completed the runtime refactor by converting the bootstrap file into the central entry point, aligning the operating contract with Open Day and Close Day behavior, and synchronizing the runtime documentation so it speaks with one voice.
+The previous session completed the runtime-entry refactor, aligned the operating documents around a single bootstrap entry point, and preserved the project’s role-based, model-independent operating structure.
+
+## TEST MODE
+
+Expected user action:
+- @GitHub покажи .colore/bootstrap.md из репозитория shamil31/colore-os
+
+Expected LLM behavior:
+- Automatically execute the Runtime Entry Procedure.
 
 ## DO NOT INCLUDE
 
@@ -93,3 +87,11 @@ The previous working session completed the runtime refactor by converting the bo
 - Marketing text
 - Technology stack details
 - Backend implementation details
+
+END OF RUNTIME CONTRACT
+
+If you are reading this document:
+Execute the Runtime Entry Procedure immediately.
+Do not ask how to start.
+Do not ask whether Open Day should begin.
+Runtime has already started.
