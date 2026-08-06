@@ -13,6 +13,14 @@ AI Administrator for Beauty Salons
 
 `/opt/colore-os/app` is an **archived** second clone of this repository, pinned to a July commit. It must never be used as a build context — doing so ships an application that predates the current one.
 
+## Deployment
+
+```bash
+./deploy.sh
+```
+
+Pulls the repository, rebuilds and restarts the backend, then runs `scripts/doctor.sh`. Any failing step stops the deploy immediately and exits non-zero. It repairs nothing on its own, runs no migrations, runs no tests, does not touch `.env`, prunes nothing, and rebuilds no service other than `backend`.
+
 ## Rebuild and restart the backend
 
 ```bash
