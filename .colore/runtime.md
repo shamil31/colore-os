@@ -13,11 +13,18 @@ Every agent MUST read these files in this exact order before doing any work:
 
 1. `.colore/bootstrap.md` — Runtime Entry Procedure
 2. `.colore/state.md` — Verified current project state
-3. `.colore/sprint.md` — Active sprint definition
-4. `.colore/next.md` — Active task
-5. `.colore/architecture.md` — System architecture
+3. `.colore/research.md` — Open findings and unfinished investigations
+4. `.colore/sprint.md` — Active sprint definition
+5. `.colore/next.md` — Active task
+6. `.colore/architecture.md` — System architecture
+
+```
+bootstrap -> state -> research -> sprint -> next -> architecture
+```
 
 No step may be skipped. No step may be reordered.
+
+`research.md` is read **before** sprint and task on purpose: a finding that already solves the work about to start must be known before that work is planned, not after it has been rebuilt.
 
 If any file is missing or contradicts another, stop and escalate through the Architecture role — do not guess.
 
@@ -60,6 +67,7 @@ BACKLOG -> TODO -> DOING -> REVIEW -> DONE
 | `state.md` | Verified current state |
 | `sprint.md` | Active sprint |
 | `next.md` | Active task |
+| `research.md` | Project memory: findings and unfinished investigations |
 | `roadmap.md` | Stages, backlog, long-term direction |
 | `architecture.md` | System architecture and guardrails |
 | `changelog.md` | Historical decisions and verified events |

@@ -33,6 +33,19 @@ Unlocked only after Stage 1 exit criteria is met.
 - Messenger extensions
 - Event sourcing
 
+## Research Dependencies
+
+Some roadmap items are blocked on an open finding in [`research.md`](research.md). Check the listed entry **before** implementing the item — not after.
+
+| Before implementing | Check | Why |
+|---|---|---|
+| Production Booking | **R-001** | `schedule` module already models working hours, slots and appointments; current slots are hardcoded |
+| Altegio integration | **R-001** | `identity` and `client` modules already model cross-channel identity and client state |
+| Knowledge Base | **R-001** | `knowledge` module already holds the service catalogue, masters and FAQ |
+| Conversation Engine | **R-001** | `conversation` module already extracts service, master, date and time from a message |
+
+Skipping this check means rebuilding work the project has already produced once.
+
 ## Backlog
 
 ### P0 — Execute First
