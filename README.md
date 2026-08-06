@@ -26,8 +26,12 @@ docker compose up -d backend
 ## Verify
 
 ```bash
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8000/docs
-curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8000/ui/
+scripts/doctor.sh
+```
+
+Checks build context, image and commit, configuration, `/docs`, `/ui/`, PostgreSQL, the conversation endpoint and pytest database isolation. Prints `✅ SYSTEM HEALTHY` (exit 0) or a numbered list of problems (exit 1). It only reads — it never fixes, rebuilds, restarts or creates data. Run it before a demo.
+
+```bash
 docker logs colore-backend 2>&1 | head -20
 ```
 

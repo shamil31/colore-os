@@ -1,0 +1,252 @@
+#!/usr/bin/env bash
+#
+# Coloré OS system doctor.
+#
+# Diagnostic only: this script never writes, fixes, rebuilds or restarts
+# anything. It reports what is wrong and exits non-zero so it can be used
+# as a gate before a demo.
+#
+# Usage:  scripts/doctor.sh
+
+set -uo pipefail
+
+REPO="${REPO:-/root/colore-os}"
+BACKEND="$REPO/backend"
+COMPOSE_FILE="${COMPOSE_FILE:-/opt/colore-os/docker/docker-compose.yml}"
+CONTAINER="${CONTAINER:-colore-backend}"
+BASE_URL="${BASE_URL:-http://localhost:8000}"
+EXPECTED_CONTEXT="$BACKEND"
+PY="$BACKEND/.venv/bin/python"
+
+PROBLEMS=()
+
+if [ -t 1 ]; then
+  G=$'\033[32m'; R=$'\033[31m'; Y=$'\033[33m'; B=$'\033[1m'; N=$'\033[0m'
+else
+  G=''; R=''; Y=''; B=''; N=''
+fi
+
+ok()   { printf "  %s✓%s %s\n" "$G" "$N" "$1"; }
+bad()  { printf "  %s✗%s %s\n" "$R" "$N" "$1"; PROBLEMS+=("$1"); }
+warn() { printf "  %s!%s %s\n" "$Y" "$N" "$1"; }
+note() { printf "      %s\n" "$1"; }
+head_() { printf "\n%s%s%s\n" "$B" "$1" "$N"; }
+
+http_code() {
+  local code
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$1" 2>/dev/null)
+  printf '%s' "${code:-000}"
+}
+
+# ---------------------------------------------------------------- deployment
+
+head_ "Deployment"
+
+if [ ! -f "$COMPOSE_FILE" ]; then
+  bad "compose file not found: $COMPOSE_FILE"
+  CONFIGURED_CONTEXT=""
+else
+  CONFIGURED_CONTEXT=$(grep -A12 '^  backend:' "$COMPOSE_FILE" \
+    | grep -E '^\s*context:' | head -1 | sed 's/.*context:[[:space:]]*//')
+  if [ "$CONFIGURED_CONTEXT" = "$EXPECTED_CONTEXT" ]; then
+    ok "build context in compose: $CONFIGURED_CONTEXT"
+  else
+    bad "build context in compose is '$CONFIGURED_CONTEXT', expected '$EXPECTED_CONTEXT'"
+    note "the archived clone at /opt/colore-os/app/backend must never be built"
+  fi
+fi
+
+STRAY=$(grep -rln "/opt/colore-os/app/backend" "$REPO" \
+          --include="*.yml" --include="*.yaml" --include="*.py" 2>/dev/null \
+        | xargs -r grep -l "context:.*opt/colore-os/app/backend" 2>/dev/null)
+if [ -z "$STRAY" ]; then
+  ok "no compose file in the repository builds from the archived clone"
+else
+  bad "these files still build from the archived clone: $(echo "$STRAY" | tr '\n' ' ')"
+fi
+
+# ---------------------------------------------------------------- container
+
+head_ "Container and image"
+
+if ! command -v docker >/dev/null 2>&1; then
+  bad "docker is not available on PATH"
+  CONTAINER_UP=""
+elif ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$CONTAINER"; then
+  bad "container '$CONTAINER' is not running"
+  CONTAINER_UP=""
+else
+  CONTAINER_UP=1
+  ok "container '$CONTAINER' is running ($(docker ps --filter "name=^${CONTAINER}$" --format '{{.Status}}'))"
+fi
+
+if [ -n "$CONTAINER_UP" ]; then
+  IMAGE_ID=$(docker inspect "$CONTAINER" --format '{{.Image}}' 2>/dev/null | cut -c8-19)
+  IMAGE_NAME=$(docker inspect "$CONTAINER" --format '{{.Config.Image}}' 2>/dev/null)
+  IMAGE_CREATED=$(docker image inspect "$IMAGE_NAME" --format '{{.Created}}' 2>/dev/null | cut -c1-19)
+  LATEST_ID=$(docker image inspect "$IMAGE_NAME" --format '{{.Id}}' 2>/dev/null | cut -c8-19)
+  ok "image $IMAGE_NAME built $IMAGE_CREATED"
+  if [ -n "$LATEST_ID" ] && [ "$IMAGE_ID" != "$LATEST_ID" ]; then
+    bad "container runs image $IMAGE_ID but $IMAGE_NAME is now $LATEST_ID — container is stale"
+    note "rebuild picked up but 'docker compose up -d backend' was not run"
+  else
+    ok "container runs the current $IMAGE_NAME image ($IMAGE_ID)"
+  fi
+
+  RUNTIME_CONTEXT=$(docker exec "$CONTAINER" printenv BUILD_CONTEXT 2>/dev/null)
+  if [ "$RUNTIME_CONTEXT" = "$EXPECTED_CONTEXT" ]; then
+    ok "image reports build context: $RUNTIME_CONTEXT"
+  elif [ -z "$RUNTIME_CONTEXT" ]; then
+    bad "image does not report BUILD_CONTEXT — built before hardening, or built elsewhere"
+  else
+    bad "image reports build context '$RUNTIME_CONTEXT', expected '$EXPECTED_CONTEXT'"
+  fi
+fi
+
+# ---------------------------------------------------------------- git commit
+
+head_ "Code version"
+
+REPO_COMMIT=$(git -C "$REPO" rev-parse --short HEAD 2>/dev/null || echo "")
+if [ -n "$REPO_COMMIT" ]; then
+  ok "repository HEAD: $REPO_COMMIT ($(git -C "$REPO" log -1 --format=%s | cut -c1-50))"
+  DIRTY=$(git -C "$REPO" status --porcelain 2>/dev/null | grep -c . || true)
+  [ "$DIRTY" -gt 0 ] && warn "$DIRTY uncommitted file(s) in the repository"
+else
+  bad "cannot read git HEAD in $REPO"
+fi
+
+if [ -n "$CONTAINER_UP" ]; then
+  IMAGE_COMMIT=$(docker exec "$CONTAINER" printenv GIT_COMMIT 2>/dev/null)
+  if [ -z "$IMAGE_COMMIT" ] || [ "$IMAGE_COMMIT" = "unknown" ]; then
+    warn "image does not record a git commit (build without GIT_COMMIT arg)"
+  elif [ "$IMAGE_COMMIT" = "$REPO_COMMIT" ]; then
+    ok "image commit matches repository HEAD: $IMAGE_COMMIT"
+  else
+    bad "image was built from $IMAGE_COMMIT but repository HEAD is $REPO_COMMIT"
+    note "the running container does not contain the current code"
+  fi
+fi
+
+# ---------------------------------------------------------------- config
+
+head_ "Configuration"
+
+if [ -n "$CONTAINER_UP" ]; then
+  # Presence only. The key value is never read or printed.
+  if docker exec "$CONTAINER" sh -c '[ -n "$OPENAI_API_KEY" ]' 2>/dev/null; then
+    ok "OPENAI_API_KEY: YES"
+  else
+    bad "OPENAI_API_KEY: NO — /ai and /process endpoints will return 503"
+  fi
+
+  ALTEGIO=$(docker exec "$CONTAINER" printenv ALTEGIO_BASE_URL 2>/dev/null)
+  if [ -n "$ALTEGIO" ]; then
+    ok "ALTEGIO_BASE_URL: $ALTEGIO"
+  else
+    bad "ALTEGIO_BASE_URL is not set — startup validation will stop the app"
+  fi
+
+  MODEL=$(docker exec "$CONTAINER" printenv OPENAI_MODEL 2>/dev/null)
+  [ -n "$MODEL" ] && ok "OPENAI_MODEL: $MODEL"
+fi
+
+# ---------------------------------------------------------------- http
+
+head_ "HTTP endpoints"
+
+for path in /docs /ui/; do
+  code=$(http_code "${BASE_URL}${path}")
+  if [ "$code" = "200" ]; then
+    ok "GET $path → 200"
+  else
+    bad "GET $path → $code (expected 200)"
+    [ "$path" = "/ui/" ] && note "UI missing usually means app/static/ did not reach the image"
+  fi
+done
+
+# ---------------------------------------------------------------- database
+
+head_ "Database"
+
+DB_CODE=$(http_code "${BASE_URL}/db")
+if [ "$DB_CODE" = "200" ]; then
+  PGVER=$(curl -s --max-time 10 "${BASE_URL}/db" 2>/dev/null | sed -n 's/.*"postgres":"\([^"]*\).*/\1/p' | cut -c1-40)
+  ok "PostgreSQL reachable from the app (${PGVER:-connected})"
+else
+  bad "GET /db → $DB_CODE — the app cannot reach PostgreSQL"
+fi
+
+# ---------------------------------------------------------------- endpoints
+
+head_ "Conversation endpoint"
+
+# Read-only on purpose: the doctor must not create demo data.
+CONV_CODE=$(http_code "${BASE_URL}/conversations")
+if [ "$CONV_CODE" = "200" ]; then
+  COUNT=$(curl -s --max-time 10 "${BASE_URL}/conversations" 2>/dev/null | grep -o '"id"' | grep -c . || echo 0)
+  ok "GET /conversations → 200 ($COUNT conversation(s))"
+else
+  bad "GET /conversations → $CONV_CODE (expected 200)"
+fi
+
+if [ -f "$REPO/backend/app/api/conversations.py" ]; then
+  MISSING=""
+  for route in '"/{conversation_id}/messages"' '"/{conversation_id}/process"' '"/{conversation_id}/reply"'; do
+    grep -q "$route" "$REPO/backend/app/api/conversations.py" || MISSING="$MISSING $route"
+  done
+  [ -z "$MISSING" ] && ok "conversation routes present in source" \
+                    || bad "routes missing from source:$MISSING"
+fi
+
+# ---------------------------------------------------------------- tests
+
+head_ "pytest database isolation"
+
+if [ ! -x "$PY" ]; then
+  bad "virtualenv python not found at $PY — cannot verify test isolation"
+else
+  ISO=$(cd "$BACKEND" && "$PY" - <<'PY' 2>/dev/null
+try:
+    from app.core.config import settings
+    from app.tests.testdb import TEST_DATABASE_URL
+except Exception as exc:  # noqa: BLE001
+    print("ERROR", exc)
+else:
+    working = settings.DATABASE_URL
+    if TEST_DATABASE_URL == working:
+        print("SAME")
+    elif TEST_DATABASE_URL.startswith("sqlite"):
+        print("OK sqlite fallback")
+    else:
+        print("OK", TEST_DATABASE_URL.rsplit("/", 1)[-1])
+PY
+)
+  case "$ISO" in
+    "OK sqlite fallback") ok "tests use a temporary SQLite database (TEST_DATABASE_URL unset)" ;;
+    OK*)                  ok "tests use a separate database: ${ISO#OK }" ;;
+    SAME)                 bad "tests would run against the WORKING database and drop its tables" ;;
+    ERROR*)               bad "cannot resolve the test database: ${ISO#ERROR }" ;;
+    *)                    bad "test database isolation could not be determined" ;;
+  esac
+
+  if [ -f "$BACKEND/app/tests/testdb.py" ]; then
+    grep -q "must not point at the working database" "$BACKEND/app/tests/testdb.py" \
+      && ok "guard against TEST_DATABASE_URL == DATABASE_URL is in place" \
+      || bad "guard against TEST_DATABASE_URL == DATABASE_URL is missing"
+  fi
+fi
+
+# ---------------------------------------------------------------- verdict
+
+printf "\n"
+if [ ${#PROBLEMS[@]} -eq 0 ]; then
+  printf "%s✅ SYSTEM HEALTHY%s\n" "$G" "$N"
+  exit 0
+fi
+
+printf "%s❌ %d PROBLEM(S)%s\n" "$R" "${#PROBLEMS[@]}" "$N"
+for p in "${PROBLEMS[@]}"; do
+  printf "   - %s\n" "$p"
+done
+exit 1
