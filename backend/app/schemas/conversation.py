@@ -17,6 +17,11 @@ class MessageResponse(BaseModel):
     created_at: datetime
 
 
+class ConversationReplyResponse(BaseModel):
+    reply: str
+    message_id: int
+
+
 class ConversationCreate(BaseModel):
     customer_id: int
     primary_channel: str
