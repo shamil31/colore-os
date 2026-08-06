@@ -47,6 +47,27 @@ Maintained manually. Never infer state from code structure alone.
 - Conversation Flows: Scenarios 001–013 (Book Appointment, Reschedule, Cancel, Consultation, Price Inquiry, Service Selection, Lead Qualification, Objection Handling, Human Handoff, Promotion Inquiry, Master Selection, First Contact, Follow Up) — see `docs/domain/scenarios/`
 - Product Vision v1.0, AI Constitution v1.0, AI Employee Framework v1.0, Conversation Principles v1.0, Intent Map v1.0, Decision Model v1.0 — see `docs/research/`
 
+## Deployment Source of Truth
+
+| | |
+|---|---|
+| **Working repository** | `/root/colore-os` |
+| **Working compose** | `/opt/colore-os/docker/docker-compose.yml` |
+| **Build context** | `/root/colore-os/backend` |
+| **Container env file** | `/opt/colore-os/docker/.env` |
+
+`/opt/colore-os/app` is an **archived** second clone of this repository, pinned to a July commit. It is not the source of truth and must never be used as a build context. It still holds ~1700 lines of uncommitted parallel work that exists nowhere else — do not delete it without reviewing that work first.
+
+Rebuild and restart:
+
+```bash
+cd /opt/colore-os/docker
+GIT_COMMIT=$(git -C /root/colore-os rev-parse --short HEAD) docker compose build backend
+docker compose up -d backend
+```
+
+The container logs its version, git commit, build context and whether `OPENAI_API_KEY` is present on every start — check those lines first if the running code looks wrong.
+
 ## Architecture Guardrails
 
 See [`architecture.md`](architecture.md) for full detail.

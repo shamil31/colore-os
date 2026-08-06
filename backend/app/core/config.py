@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-5"
 
+    ALTEGIO_BASE_URL: str = ""
+
     TEST_DATABASE_URL: str = ""
 
     model_config = SettingsConfigDict(

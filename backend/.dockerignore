@@ -1,7 +1,14 @@
-.venv
+# Keep the build context minimal and keep secrets out of the image.
 .env
+.env.*
+.venv
+
+# Bare names only match the context root, so these need **/ to match nested dirs.
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+
 *.log
 *.xlsx
-__pycache__
-*.pyc
-.pytest_cache
+.git

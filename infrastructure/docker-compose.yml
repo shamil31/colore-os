@@ -59,8 +59,14 @@ services:
 
   backend:
     build:
-      context: /opt/colore-os/app/backend
+      # Deployment Source of Truth: the working repository is /root/colore-os.
+      # Never point this at /opt/colore-os/app/backend — that is an archived
+      # clone stuck on a July commit and does not contain the current app.
+      context: /root/colore-os/backend
       dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+        BUILD_CONTEXT: /root/colore-os/backend
 
     container_name: colore-backend
     restart: unless-stopped
