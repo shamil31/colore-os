@@ -25,6 +25,16 @@ This folder is the Runtime: the authoritative operating system that tells any ag
 
 ## Project Memory
 
+### Mandatory Project Memory Report
+
+Every working session that begins with open research **must** open with a `=== PROJECT MEMORY REPORT ===` block, followed by an explicit `Acknowledged R-XXX.` line for each open entry. The exact format lives in [`bootstrap.md`](bootstrap.md).
+
+**This blocks everything after it.** No sprint, no next task, no development, no code, no file changes may begin until the report has been emitted and acknowledged. Without the acknowledgement line the Runtime Entry Procedure is not complete.
+
+The reason is narrow and practical: a finding survives only if it is read out loud at the start of the session that might otherwise rebuild or destroy it. Reading `research.md` silently is not enough — silent reading leaves no evidence and no commitment.
+
+### Roadmap, Backlog, Research, ADR
+
 Four documents hold forward-looking information, and they are routinely confused. They are not interchangeable.
 
 | Document | Holds | Question it answers | Who decides what goes in |

@@ -9,16 +9,67 @@ Any agent MUST execute the Runtime Entry Procedure before answering or acting on
 ## Runtime Entry Procedure
 
 1. Confirm workspace: `/root/colore-os`, git repository present.
-2. Read, in order, per [`runtime.md`](runtime.md):
-   - [`state.md`](state.md)
-   - [`research.md`](research.md)
-   - [`sprint.md`](sprint.md)
-   - [`next.md`](next.md)
-   - [`architecture.md`](architecture.md)
-3. Confirm current sprint and active task.
-4. Confirm no unresolved contradiction between the five files above.
-5. Report exactly: Current Goal, Current Sprint, Critical Path, Today's Task, Responsible, Expected Result.
-6. Wait for the user before starting new work.
+2. Read [`state.md`](state.md).
+3. Read [`research.md`](research.md).
+4. **Emit the Project Memory Report** (format below) and acknowledge every open entry.
+   **This step is blocking.** Steps 5 onward may not begin until it is done.
+5. Read [`sprint.md`](sprint.md), [`next.md`](next.md), [`architecture.md`](architecture.md).
+6. Confirm current sprint and active task.
+7. Confirm no unresolved contradiction between the five files above.
+8. Report exactly: Current Goal, Current Sprint, Critical Path, Today's Task, Responsible, Expected Result.
+9. Wait for the user before starting new work.
+
+## Project Memory Report
+
+After reading [`research.md`](research.md), and before anything else, emit this block. The format is fixed — do not reword, summarise or reorder it.
+
+**When there are no open research entries:**
+
+```
+=== PROJECT MEMORY REPORT ===
+
+Project Memory:
+No open research.
+```
+
+**When open entries exist**, emit the header once, then one block per open entry:
+
+```
+=== PROJECT MEMORY REPORT ===
+
+Project Memory
+
+Open Research
+
+R-001
+Recovered OpenHands Domain Model
+
+When to revisit:
+Before Altegio integration
+and Production Booking Engine.
+
+Status:
+Pending Review.
+
+Required action:
+Acknowledge.
+```
+
+Then write the acknowledgement explicitly, one line per entry:
+
+```
+Acknowledged R-001.
+```
+
+**Without that line the Runtime Entry Procedure is not complete.**
+
+An entry is open when its Status is `Pending Review`, `Under Review` or `Adopted`. Entries marked `Rejected` or `Closed` are not reported.
+
+## Blocking Rule
+
+No Sprint, no Next Task, no development, no code, no file changes — nothing — may begin until the Project Memory Report has been emitted and every open entry acknowledged.
+
+An agent that starts work without it has not entered the Runtime. Stop and emit the report.
 
 ## Project Memory Rule
 
@@ -53,3 +104,5 @@ Project state lives in `state.md`. Open findings live in `research.md`. Sprint l
 END OF RUNTIME CONTRACT
 
 If you are reading this document: execute the Runtime Entry Procedure immediately. Do not ask whether to start. Runtime has already started.
+
+Your first output of the session must contain `=== PROJECT MEMORY REPORT ===`.
