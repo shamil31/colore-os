@@ -30,6 +30,15 @@ def get_conversation_by_id(db: Session, conversation_id: int) -> Conversation | 
     return db.query(Conversation).filter(Conversation.id == conversation_id).first()
 
 
+def get_messages_by_conversation_id(db: Session, conversation_id: int) -> list[Message]:
+    return (
+        db.query(Message)
+        .filter(Message.conversation_id == conversation_id)
+        .order_by(Message.created_at)
+        .all()
+    )
+
+
 def create_message(
     db: Session,
     conversation_id: int,

@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: int
 
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-5"
+
     model_config = SettingsConfigDict(
         case_sensitive=True,
         extra="ignore",
