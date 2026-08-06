@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.ai import router as ai_router
+from app.api.booking import router as booking_router
 from app.api.clients import router as clients_router
 from app.api.conversations import router as conversations_router
 from app.core.config import settings
@@ -31,3 +32,4 @@ def database_status():
 app.include_router(clients_router)
 app.include_router(conversations_router)
 app.include_router(ai_router)
+app.include_router(booking_router)
