@@ -46,7 +46,7 @@
 <script>
 const API = "";
 let current = null;          // current conversation object
-const history = {};          // conversationId -> [{direction, content}]
+let messages = [];           // history of the current conversation, loaded from the server
 
 async function api(method, path, body) {
   const res = await fetch(API + path, {
@@ -84,22 +84,26 @@ async function newConversation() {
     current_channel: "whatsapp",
     status: "active",
   });
-  history[conv.id] = [];
   await selectConversation(conv.id);
 }
 
 async function selectConversation(id) {
   current = await api("GET", "/conversations/" + id);
-  if (!history[id]) history[id] = [];
+  localStorage.setItem("conversation_id", id);
   document.getElementById("header").textContent =
     `Диалог #${current.id} · ${current.current_channel} · ${current.status}`;
   document.getElementById("slots").innerHTML = "";
-  render();
+  await loadMessages();
   await loadConversations();
 }
 
+async function loadMessages() {
+  messages = await api("GET", `/conversations/${current.id}/messages`);
+  render();
+}
+
 function render() {
-  document.getElementById("messages").innerHTML = (history[current.id] || []).map(m =>
+  document.getElementById("messages").innerHTML = messages.map(m =>
     `<div class="msg ${m.direction === "inbound" ? "in" : "out"}">${escapeHtml(m.content)}</div>`
   ).join("");
   const box = document.getElementById("messages");
@@ -129,14 +133,18 @@ async function send() {
       direction: "inbound",
       content,
     });
-    history[current.id].push({direction: "inbound", content});
-    render();
+    await loadMessages();
 
     const result = await api("POST", `/conversations/${current.id}/process`);
 
     if (result.reply) {
-      history[current.id].push({direction: "outbound", content: result.reply});
-      render();
+      // /process does not persist the reply, so store it as the AI message.
+      await api("POST", `/conversations/${current.id}/messages`, {
+        channel: current.current_channel,
+        direction: "outbound",
+        content: result.reply,
+      });
+      await loadMessages();
     }
 
     document.getElementById("header").textContent =
@@ -157,7 +165,19 @@ function pickSlot(slot) {
   document.getElementById("text").focus();
 }
 
-loadConversations();
+async function init() {
+  await loadConversations();
+  const saved = localStorage.getItem("conversation_id");
+  if (saved) {
+    try {
+      await selectConversation(Number(saved));
+    } catch (e) {
+      localStorage.removeItem("conversation_id");
+    }
+  }
+}
+
+init();
 </script>
 
 </body>

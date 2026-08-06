@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-5"
 
+    TEST_DATABASE_URL: str = ""
+
     model_config = SettingsConfigDict(
         case_sensitive=True,
         extra="ignore",

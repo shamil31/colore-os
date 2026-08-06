@@ -2,39 +2,12 @@ import uuid
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from app.api.booking import PROPOSAL_SLOTS
 from app.core.config import settings
-from app.db.base import Base
-from app.db.database import get_db
-from app.main import app
 from app.models.conversation import Message
 from app.services.llm_service import INTENTS
-
-engine_test = create_engine(settings.DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
-
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
-
-
-@pytest.fixture(scope="session")
-def setup_test_db():
-    Base.metadata.create_all(bind=engine_test)
-    yield
-    Base.metadata.drop_all(bind=engine_test)
+from app.tests.testdb import TestingSessionLocal, client
 
 
 def _create_conversation_with_messages() -> int:

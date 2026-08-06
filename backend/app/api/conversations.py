@@ -66,6 +66,22 @@ def get_conversation(
     return conversation
 
 
+@router.get("/{conversation_id}/messages", response_model=List[MessageResponse])
+def get_messages_endpoint(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+):
+    conversation = get_conversation_by_id(db, conversation_id)
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found",
+        )
+
+    return get_messages_by_conversation_id(db, conversation_id)
+
+
 @router.post("/{conversation_id}/messages", response_model=MessageResponse)
 def create_message_endpoint(
     conversation_id: int,
