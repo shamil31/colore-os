@@ -22,6 +22,8 @@ Any agent MUST execute the Runtime Entry Procedure before answering or acting on
 
 ## Project Memory Rule
 
+Check the Review Queue in [`research.md`](research.md) before starting work.
+
 Every agent — ChatGPT, Claude Code, GitHub Copilot, any future one, human included — **must read [`research.md`](research.md) before starting new development.**
 
 Before building anything, check whether an open entry already covers it. If one does, say so and raise it before writing code: the project has already paid for that work once.

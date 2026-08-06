@@ -12,6 +12,14 @@ Registry of every idea found, unfinished investigation, architectural discovery 
 
 **This is project memory.** It exists so that a finding survives the session that produced it — without depending on any model, any chat history, or any person remembering it.
 
+## Review Queue
+
+Research to come back to. Check this before starting work.
+
+| ID | Title | When to return | Status |
+|---|---|---|---|
+| R-001 | Recovered OpenHands Domain Model | Before Altegio | Pending |
+
 ## Rules
 
 - Every entry has a permanent ID: `R-001`, `R-002`, …
