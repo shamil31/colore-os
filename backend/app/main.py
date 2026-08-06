@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.api.ai import router as ai_router
 from app.api.booking import router as booking_router
@@ -33,3 +34,7 @@ app.include_router(clients_router)
 app.include_router(conversations_router)
 app.include_router(ai_router)
 app.include_router(booking_router)
+
+# Serves app/static/index.html at /ui/ from the same origin as the API,
+# so the browser does not block the UI's requests with CORS.
+app.mount("/ui", StaticFiles(directory="app/static", html=True), name="ui")

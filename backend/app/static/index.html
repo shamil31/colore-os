@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Coloré OS — Conversations</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 0; display: flex; height: 100vh; }
+  #left { width: 260px; border-right: 1px solid #ccc; display: flex; flex-direction: column; }
+  #right { flex: 1; display: flex; flex-direction: column; }
+  #convs { flex: 1; overflow-y: auto; }
+  .conv { padding: 8px 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+  .conv:hover { background: #f5f5f5; }
+  .conv.active { background: #e0e8f0; }
+  #header { padding: 8px 10px; border-bottom: 1px solid #ccc; background: #fafafa; }
+  #messages { flex: 1; overflow-y: auto; padding: 10px; }
+  .msg { margin-bottom: 8px; padding: 6px 10px; border-radius: 8px; max-width: 70%; white-space: pre-wrap; }
+  .in { background: #eee; }
+  .out { background: #d6e8ff; margin-left: auto; }
+  .err { color: #b00; padding: 6px 10px; }
+  #slots { padding: 0 10px 8px; }
+  #slots button { margin: 0 6px 6px 0; padding: 6px 10px; cursor: pointer; }
+  #composer { display: flex; border-top: 1px solid #ccc; padding: 8px; gap: 8px; }
+  #text { flex: 1; padding: 6px; }
+  button { font: inherit; }
+</style>
+</head>
+<body>
+
+<div id="left">
+  <div style="padding:8px; border-bottom:1px solid #ccc;">
+    <button onclick="newConversation()">+ Новый диалог</button>
+  </div>
+  <div id="convs"></div>
+</div>
+
+<div id="right">
+  <div id="header">Выберите диалог</div>
+  <div id="messages"></div>
+  <div id="slots"></div>
+  <div id="composer">
+    <input id="text" placeholder="Здравствуйте, хочу записаться" onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Отправить</button>
+  </div>
+</div>
+
+<script>
+const API = "";
+let current = null;          // current conversation object
+const history = {};          // conversationId -> [{direction, content}]
+
+async function api(method, path, body) {
+  const res = await fetch(API + path, {
+    method,
+    headers: body ? {"Content-Type": "application/json"} : {},
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new Error((data && data.detail) || (method + " " + path + " → " + res.status));
+  return data;
+}
+
+async function loadConversations() {
+  const convs = await api("GET", "/conversations");
+  document.getElementById("convs").innerHTML = convs.map(c =>
+    `<div class="conv ${current && current.id === c.id ? "active" : ""}" onclick="selectConversation(${c.id})">
+       #${c.id} · ${c.current_channel} · ${c.status}
+     </div>`
+  ).join("");
+}
+
+async function newConversation() {
+  let clients = await api("GET", "/clients");
+  if (!clients.length) {
+    await api("POST", "/clients", {
+      first_name: "Клиент",
+      last_name: "Тест",
+      phone: "+7" + Math.floor(Math.random() * 1e9),
+    });
+    clients = await api("GET", "/clients");
+  }
+  const conv = await api("POST", "/conversations", {
+    customer_id: clients[0].id,
+    primary_channel: "whatsapp",
+    current_channel: "whatsapp",
+    status: "active",
+  });
+  history[conv.id] = [];
+  await selectConversation(conv.id);
+}
+
+async function selectConversation(id) {
+  current = await api("GET", "/conversations/" + id);
+  if (!history[id]) history[id] = [];
+  document.getElementById("header").textContent =
+    `Диалог #${current.id} · ${current.current_channel} · ${current.status}`;
+  document.getElementById("slots").innerHTML = "";
+  render();
+  await loadConversations();
+}
+
+function render() {
+  document.getElementById("messages").innerHTML = (history[current.id] || []).map(m =>
+    `<div class="msg ${m.direction === "inbound" ? "in" : "out"}">${escapeHtml(m.content)}</div>`
+  ).join("");
+  const box = document.getElementById("messages");
+  box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function showError(msg) {
+  document.getElementById("messages").insertAdjacentHTML("beforeend",
+    `<div class="err">Ошибка: ${escapeHtml(msg)}</div>`);
+}
+
+async function send() {
+  if (!current) return alert("Сначала создайте или выберите диалог");
+  const input = document.getElementById("text");
+  const content = input.value.trim();
+  if (!content) return;
+  input.value = "";
+  document.getElementById("slots").innerHTML = "";
+
+  try {
+    await api("POST", `/conversations/${current.id}/messages`, {
+      channel: current.current_channel,
+      direction: "inbound",
+      content,
+    });
+    history[current.id].push({direction: "inbound", content});
+    render();
+
+    const result = await api("POST", `/conversations/${current.id}/process`);
+
+    if (result.reply) {
+      history[current.id].push({direction: "outbound", content: result.reply});
+      render();
+    }
+
+    document.getElementById("header").textContent =
+      `Диалог #${current.id} · ${current.current_channel} · intent: ${result.intent} (${result.confidence})`;
+
+    if (result.slots && result.slots.length) {
+      document.getElementById("slots").innerHTML = result.slots.map(s =>
+        `<button onclick="pickSlot('${escapeHtml(s)}')">${escapeHtml(s)}</button>`
+      ).join("");
+    }
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+function pickSlot(slot) {
+  document.getElementById("text").value = slot;
+  document.getElementById("text").focus();
+}
+
+loadConversations();
+</script>
+
+</body>
+</html>
