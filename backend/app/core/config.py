@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     TEST_DATABASE_URL: str = ""
 
     model_config = SettingsConfigDict(
+        env_file=".env",
         case_sensitive=True,
         extra="ignore",
     )
