@@ -36,6 +36,7 @@
 
 ---
 
-**Full context:** Read .colore/01_CONTRACT.md for operating agreements.  
-**Architecture context:** Read docs/adr/ for permanent decisions.  
-**Related:** PROJECT_CONSTITUTION.md (Section II: Identity)
+**Full context:** Read `.colore/runtime.md` for the operating contract and mandatory reading order.  
+**Current tool assignment:** Read `.colore/agents.md` (ChatGPT, Claude Code, GitHub Copilot, mapped by responsibility).  
+**Architecture context:** Read `docs/adr/` for permanent decisions.  
+**Related:** `.colore/state.md` (Project Identity)

@@ -1,93 +1,31 @@
-# Colore Runtime Map
+# Coloré OS — Runtime
 
-This folder contains the project Runtime.
+This folder is the Runtime: the authoritative operating system that tells any agent how to understand the project, how to work, and where state lives.
 
-Its purpose is to tell the AI agents how to understand the project, how to work, and where to record operating state.
+**Do not read files in this folder in arbitrary order.** The mandatory reading order, the operating principles, and the execution lifecycle are all defined in [`runtime.md`](runtime.md) — start there, or start at [`bootstrap.md`](bootstrap.md), which triggers the same procedure.
 
-## Source Of Truth
+## Structure
 
-Project files inside this repository are the source of truth.
+| File / Folder | Owns |
+|---|---|
+| [`bootstrap.md`](bootstrap.md) | Runtime entry procedure |
+| [`state.md`](state.md) | Verified current project state |
+| [`sprint.md`](sprint.md) | Active sprint |
+| [`next.md`](next.md) | Active task |
+| [`roadmap.md`](roadmap.md) | Stages, backlog, long-term direction |
+| [`architecture.md`](architecture.md) | System architecture and guardrails |
+| [`changelog.md`](changelog.md) | Historical decisions and verified events |
+| [`roles.md`](roles.md) | Model-independent role responsibilities |
+| [`agents.md`](agents.md) | Current tool-to-role assignment |
+| [`runtime.md`](runtime.md) | Mandatory reading order and operating contract |
+| [`adr/`](adr/) | Architecture Decision Records |
+| [`playbooks/`](playbooks/) | Operating procedures: Open Day, Close Day, Release |
+| [`templates/`](templates/) | Reusable document templates |
 
-If Runtime notes, prompts, or AI memory conflict with repository files, use the repository files.
+## Source of Truth
 
-## Knowledge Layers
+Repository code always wins over documentation. Within documentation, `.colore/` outranks everything else — see [`runtime.md`](runtime.md) for the full hierarchy.
 
-- Project Documentation: the repository files that describe the product, backend, infrastructure, and business logic.
-- Runtime: the `.colore/` operating system that tells AI agents how to work with the project day to day.
-- UAOP: the highest-level AI operating standard in `.colore/09_UAOP.md`.
-- Verified History: the historical record of confirmed project events stored in `.colore/08_VERIFIED_HISTORY.md`.
-- AI Instructions: the role and operating rules stored in `.colore/05_AI/` and `.github/engineering-instructions.md`.
-- Prompt Library: the ready-to-use prompts stored in `.colore/PROMPTS/`.
+## Version
 
-## Top-Level Files
-
-- `00_START.md` - workspace check, workday start rule, and core execution flow.
-- `01_CONTRACT.md` - mandatory universal operating contract for any assigned role performer.
-- `bootstrap.md` - authoritative runtime contract and daily entry point for any participant.
-- `02_PROJECT.md` - project purpose, scope, users, modules, and success criteria.
-- `03_ARCHITECTURE.md` - system architecture and layer responsibilities.
-- `04_STACK.md` - current technology stack.
-- `05_TASKS.md` - roadmap and backlog status at the project level.
-- `06_SESSION.md` - session history.
-- `07_DECISIONS.md` - historical architecture and operating decisions.
-- `08_VERIFIED_HISTORY.md` - confirmed historical project events only.
-- `09_UAOP.md` - Universal AI Operating Protocol (highest-level model-independent AI standard).
-
-## 00_Master
-
-`00_Master/` is the current working control layer.
-
-**⭐ BEFORE ANY SERIOUS WORK: Read `PROJECT_CONSTITUTION.md` first.**
-
-Use it before every task to understand the current state of the project without rewriting historical files.
-
-- **`PROJECT_CONSTITUTION.md`** - immutable project identity, principles, and strategic decisions. Read this before starting any task.
-- `PROJECT_STATE.md` - current project snapshot.
-- `CURRENT_SPRINT.md` - active sprint scope, KPI, and exit condition.
-- `KNOWN_STATE.md` - verified facts only.
-- `TODAY.md` - one active task for the current day.
-- `BACKLOG.md` - idea intake and backlog staging.
-- `ROADMAP.md` - synchronized execution stages.
-- `DECISIONS.md` - currently active decisions used during execution.
-- `WORKFLOW.md` - current execution workflow rules.
-- `NEXT.md` - session entry point for any new role-based session.
-
-## 05_AI
-
-- `05_AI/` defines role-specific operating guidance.
-
-- `ARCHITECT.md` - architecture-role operating responsibilities.
-- `ENGINEERING.md` - implementation-focused operating responsibilities.
-- `PROMPT_TEMPLATES.md` - reusable prompt patterns and prompt-writing guidance.
-
-## PROMPTS
-
-`PROMPTS/` contains ready-to-use prompts for specific roles.
-
-These files are for direct use or copy-paste.
-
-They are not the same as `05_AI/`, which explains roles and guidance.
-
-They are also not the same as project documentation or verified history.
-
-## Workday Start
-
-**For any new work session, start here:**
-
-1. Read `.colore/bootstrap.md` — enter the runtime contract and trigger the Runtime Entry Procedure
-2. Read `.colore/00_Master/PROJECT_CONSTITUTION.md` — understand immutable principles and current strategic focus
-3. Read `.colore/09_UAOP.md` — understand universal AI operating protocol
-4. Read `.colore/01_CONTRACT.md` — follow the operating contract
-
-**Before every task, read:**
-
-- `.colore/00_Master/PROJECT_CONSTITUTION.md` — project identity
-- `.colore/00_Master/NEXT.md` — session entry point
-- `.colore/00_Master/PROJECT_STATE.md` — current state
-- `.colore/00_Master/TODAY.md` — today's focus
-- `.colore/00_Master/DECISIONS.md` — active decisions
-- `.colore/00_Master/KNOWN_STATE.md` — verified facts
-
-## Workday Close
-
-Close the day with Close Day procedure from .colore/01_CONTRACT.md.
+**Runtime v1.0** — effective 2026-08-05. See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-development.md).

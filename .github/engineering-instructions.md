@@ -4,32 +4,27 @@
 - Applies to this repository only.
 
 ## First Instruction
-- Read 09_UAOP.md before reading any other Runtime document.
+- Read `.colore/bootstrap.md` before reading any other Runtime document. It triggers the Runtime Entry Procedure.
 
 ## Mandatory Read Before Work
-- .colore/09_UAOP.md
-- .colore/00_START.md
-- .colore/01_CONTRACT.md
-- .colore/02_PROJECT.md
-- .colore/03_ARCHITECTURE.md
-- .colore/04_STACK.md
-- .colore/05_TASKS.md
-- .colore/06_SESSION.md
-- .colore/07_DECISIONS.md
+In this exact order (see `.colore/runtime.md`):
+- .colore/bootstrap.md
+- .colore/state.md
+- .colore/sprint.md
+- .colore/next.md
+- .colore/architecture.md
 
 ## Every Workday Starts
-- Start the workday with: @GitHub Начинаем день
+- Start the workday with: @GitHub Начинаем день (Open Day — see `.colore/playbooks/Open Day.md`)
 
 ## Read Before Every Task
-- .colore/00_Master/PROJECT_STATE.md
-- .colore/00_Master/KNOWN_STATE.md
-- .colore/00_Master/TODAY.md
-- .colore/00_Master/DECISIONS.md
+- .colore/state.md
+- .colore/next.md
 
 ## Runtime Rules
 - Work on one task at a time.
 - Do not interrupt active work with new ideas.
-- Put new ideas into BACKLOG first.
+- Put new ideas into `.colore/roadmap.md` (Backlog) first.
 - Follow task lifecycle exactly:
   - BACKLOG -> TODO -> DOING -> REVIEW -> DONE
 - Main rule: Finish before Improve.
@@ -40,13 +35,13 @@
 - Never invent project facts.
 - Never infer project phase automatically.
 - Never convert historical events into current state.
-- VERIFIED_HISTORY contains historical facts only.
-- KNOWN_STATE contains current facts only.
+- `.colore/changelog.md` contains historical facts only.
+- `.colore/state.md` contains current facts only.
 
 ## Guardrails
 - Confirm workspace is /root/colore-os before changes.
 - Prefer repository files as source of truth when information conflicts.
-- Use `.colore/05_AI/` for AI role guidance and `.colore/PROMPTS/` for ready-to-use prompts.
+- Use `.colore/roles.md` for role guidance and `.colore/agents.md` for current tool assignment.
 - Keep unknown values explicitly marked as TODO.
 
 ## Backend Runtime Commands

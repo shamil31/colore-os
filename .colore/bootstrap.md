@@ -1,97 +1,44 @@
-# Coloré OS Runtime Bootstrap
+# Coloré OS — Runtime Bootstrap
 
-## RUNTIME HEADER
+## Runtime Header
 
 This document is the Runtime Entry Contract.
-Reading this document automatically starts a new development session.
-The LLM MUST execute the Runtime Entry Procedure before answering anything else.
+Reading this document starts a new working session.
+Any agent MUST execute the Runtime Entry Procedure before answering or acting on anything else.
 
-## RUNTIME ENTRY PROCEDURE
+## Runtime Entry Procedure
 
-Immediately after reading this document, the LLM must:
+1. Confirm workspace: `/root/colore-os`, git repository present.
+2. Read, in order, per [`runtime.md`](runtime.md):
+   - [`state.md`](state.md)
+   - [`sprint.md`](sprint.md)
+   - [`next.md`](next.md)
+   - [`architecture.md`](architecture.md)
+3. Confirm current sprint and active task.
+4. Confirm no unresolved contradiction between the four files above.
+5. Report exactly: Current Goal, Current Sprint, Critical Path, Today's Task, Responsible, Expected Result.
+6. Wait for the user before starting new work.
 
-1. Confirm runtime loaded.
-2. Summarize the current project state.
-3. Summarize the current architecture.
-4. Summarize completed work.
-5. Summarize the active sprint.
-6. Summarize accepted ADR decisions.
-7. List unresolved architectural questions.
-8. Determine today’s first engineering task.
-9. Recommend the logical continuation.
-10. Wait for the user.
+## Commands
 
-## COMMANDS
+- **Open Day** = execute this Runtime Entry Procedure. Full checklist: [`playbooks/Open Day.md`](playbooks/Open%20Day.md).
+- **Close Day** = review completed work, update `state.md`, `sprint.md`, `next.md`, `changelog.md`. Full checklist: [`playbooks/Close Day.md`](playbooks/Close%20Day.md).
+- **Release** = ship a sprint result. Full checklist: [`playbooks/Release.md`](playbooks/Release.md).
 
-Open Day = Human alias for the same runtime entry behavior.
+## Authoritative State
 
-Close Day = Review today’s work, update the runtime snapshot, update sprint and architecture state, update unresolved questions, update the next engineering task, and generate the next bootstrap state.
+This file defines the entry procedure only. It does not contain project state.
 
-## PROJECT SNAPSHOT
+Project state lives in `state.md`. Sprint lives in `sprint.md`. Active task lives in `next.md`. None of these may contradict `runtime.md`.
 
-Where are we?
-- The project is in the FIRST REVENUE sprint and is preparing for the first real revenue-oriented campaign execution path.
+## Do Not Include In This File
 
-What has been completed?
-- The runtime entry contract is now the authoritative bootstrap state.
-- The runtime documentation has been aligned around a single entry model.
-- The project’s role-based governance and model-independent structure are in place.
-
-What are we designing now?
-- The next design focus is the transition from runtime readiness to the first real revenue execution path.
-
-What is blocked?
-- The main blocker is the decision to proceed with the first live campaign step.
-
-What decision is next?
-- Decide whether the next task is launch execution or validation of the next engineering step.
-
-## AUTHORITATIVE STATE
-
-This file is the authoritative runtime state.
-Other runtime documents may extend it.
-None may contradict it.
-
-## PROJECT PRINCIPLES
-
-Single Source of Truth
-
-One Document One Responsibility
-
-Role-Based Governance
-
-Model Independence
-
-Contract First
-
-## CURRENT ARCHITECTURE
-
-Coloré OS operates as a revenue orchestration layer above existing business systems. Its architecture is governed by a runtime contract, role-based governance, and a master state layer that preserves the current sprint, active decisions, and execution focus. Business flows are organized around revenue outcomes, while integration boundaries remain explicit so that existing operational platforms stay authoritative. The architecture is designed for disciplined execution and state continuity rather than implementation detail.
-
-## SESSION MEMORY
-
-The previous session completed the runtime-entry refactor, aligned the operating documents around a single bootstrap entry point, and preserved the project’s role-based, model-independent operating structure.
-
-## TEST MODE
-
-Expected user action:
-- @GitHub покажи .colore/bootstrap.md из репозитория shamil31/colore-os
-
-Expected LLM behavior:
-- Automatically execute the Runtime Entry Procedure.
-
-## DO NOT INCLUDE
-
-- Long explanations
-- README-like information
+- Project snapshot or status
+- Long explanations or README-like content
 - Marketing text
 - Technology stack details
-- Backend implementation details
+- Implementation details
 
 END OF RUNTIME CONTRACT
 
-If you are reading this document:
-Execute the Runtime Entry Procedure immediately.
-Do not ask how to start.
-Do not ask whether Open Day should begin.
-Runtime has already started.
+If you are reading this document: execute the Runtime Entry Procedure immediately. Do not ask whether to start. Runtime has already started.

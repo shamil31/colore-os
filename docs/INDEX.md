@@ -37,7 +37,7 @@ Foundation of how Coloré OS processes data end-to-end.
 
 | Document | Purpose | Status | Sprint |
 |----------|---------|--------|--------|
-| [docs/00_SYSTEM_ARCHITECTURE/RUNTIME_ARCHITECTURE.md](00_SYSTEM_ARCHITECTURE/RUNTIME_ARCHITECTURE.md) | Complete data flow through system: sources → processing layers → delivery → learning | Integrated | #4 |
+| [docs/architecture/RUNTIME_ARCHITECTURE.md](architecture/RUNTIME_ARCHITECTURE.md) | Complete data flow through system: sources → processing layers → delivery → learning | Integrated | #4 |
 
 **Foundation for:** All technical implementation decisions, service architecture, database schema design.
 
@@ -49,9 +49,9 @@ Current business focus and execution state.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [.colore/00_Master/TODAY.md](./../.colore/00_Master/TODAY.md) | Daily revenue focus and active product task | Active | — |
-| [.colore/00_Master/PROJECT_STATE.md](./../.colore/00_Master/PROJECT_STATE.md) | Current sprint name, KPI, priorities, execution queue | Active | — |
-| [.colore/00_Master/CURRENT_SPRINT.md](./../.colore/00_Master/CURRENT_SPRINT.md) | Sprint details and status | Active | — |
+| [.colore/next.md](./../.colore/next.md) | Daily revenue focus and active product task | Active | — |
+| [.colore/state.md](./../.colore/state.md) | Current sprint name, KPI, priorities, execution queue | Active | — |
+| [.colore/sprint.md](./../.colore/sprint.md) | Sprint details and status | Active | — |
 
 **Entry point:** Start here each session. Read TODAY.md first for daily focus.
 
@@ -64,9 +64,9 @@ System design, technology decisions, and operating principles.
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
 | [REVIEWER.md](REVIEWER.md) | Engineering operating manual; roles, rules, execution discipline | Active | 1.1 (2026-08-02) |
-| [.colore/03_ARCHITECTURE.md](./../.colore/03_ARCHITECTURE.md) | Revenue architecture chain, system components, non-negotiable constraints | Active | — |
-| [.colore/04_STACK.md](./../.colore/04_STACK.md) | Technology stack (FastAPI, SQLAlchemy, PostgreSQL, Docker) | Active | — |
-| [.colore/09_UAOP.md](./../.colore/09_UAOP.md) | Universal AI Operating Protocol for all AI systems | Active | — |
+| [.colore/architecture.md](./../.colore/architecture.md) | Revenue architecture chain, system components, non-negotiable constraints | Active | — |
+| [.colore/architecture.md](./../.colore/architecture.md) | Technology stack (FastAPI, SQLAlchemy, PostgreSQL, Docker) | Active | — |
+| [.colore/runtime.md](./../.colore/runtime.md) | Universal AI Operating Protocol for all AI systems | Active | — |
 
 **Non-negotiable this sprint:** Coloré OS does not replace Altegio or Integrilla. Operating chain: Altegio → Coloré OS → Integrilla → Client → Altegio.
 
@@ -78,7 +78,7 @@ Permanent decisions that shape the system and cannot be revised mid-sprint.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [.colore/07_DECISIONS.md](./../.colore/07_DECISIONS.md) | Active working decisions and decision history | Active | — |
+| [.colore/changelog.md](./../.colore/changelog.md) | Active working decisions and decision history | Active | — |
 | [04_ADR/ADR-0011-Use-Altegio-as-Operational-CRM.md](04_ADR/ADR-0011-Use-Altegio-as-Operational-CRM.md) | Decision to use Altegio as operational CRM; no replacement | Active | 3d22c5c |
 
 **Rule:** Architecture changes require ADR. No implementation without CTO sign-off.
@@ -91,8 +91,8 @@ How we execute recurring operations and workflows.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [.colore/01_CONTRACT.md](./../.colore/01_CONTRACT.md) | AI engagement contract and working agreements | Active | — |
-| [.colore/02_PROJECT.md](./../.colore/02_PROJECT.md) | Project governance, workflow, and approval process | Active | — |
+| [.colore/runtime.md](./../.colore/runtime.md) | AI engagement contract and working agreements | Active | — |
+| [.colore/state.md](./../.colore/state.md) | Project governance, workflow, and approval process | Active | — |
 | [docs/FIRST_CAMPAIGN_CHECKLIST.md](FIRST_CAMPAIGN_CHECKLIST.md) | Step-by-step execution checklist for first campaign launch | Active | 7b3ca59 |
 | [docs/CAMPAIGN_PIPELINE.md](CAMPAIGN_PIPELINE.md) | End-to-end campaign generation pipeline; all 10 stages documented | Active | b0d1eed |
 
@@ -118,8 +118,8 @@ External integration and system interfaces.
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
 | [docs/ALTEGIO_API_CAPABILITIES.md](ALTEGIO_API_CAPABILITIES.md) | Altegio API read-only status, write-back deferred until post-FIRST REVENUE | Active | d55f516 |
-| [.colore/05_AI/ARCHITECT.md](./../.colore/05_AI/ARCHITECT.md) | Architect role responsibilities and operating principles | Active | — |
-| [.colore/05_AI/ENGINEERING.md](./../.colore/05_AI/ENGINEERING.md) | Engineering role policy and constraints | Active | — |
+| [.colore/roles.md](./../.colore/roles.md) | Architect role responsibilities and operating principles | Active | — |
+| [.colore/roles.md](./../.colore/roles.md) | Engineering role policy and constraints | Active | — |
 
 ---
 
@@ -146,10 +146,10 @@ Current state, progress tracking, and verified facts.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [.colore/00_Master/KNOWN_STATE.md](./../.colore/00_Master/KNOWN_STATE.md) | Verified facts only; last verified 2026-08-01 | Active | — |
-| [.colore/00_Master/BACKLOG.md](./../.colore/00_Master/BACKLOG.md) | Future work not in current sprint | Active | — |
-| [.colore/00_Master/ROADMAP.md](./../.colore/00_Master/ROADMAP.md) | Strategic direction and long-term vision | Active | — |
-| [.colore/08_VERIFIED_HISTORY.md](./../.colore/08_VERIFIED_HISTORY.md) | Historical log of verified events and decisions | Active | — |
+| [.colore/state.md](./../.colore/state.md) | Verified facts only; last verified 2026-08-01 | Active | — |
+| [.colore/roadmap.md](./../.colore/roadmap.md) | Future work not in current sprint | Active | — |
+| [.colore/roadmap.md](./../.colore/roadmap.md) | Strategic direction and long-term vision | Active | — |
+| [.colore/changelog.md](./../.colore/changelog.md) | Historical log of verified events and decisions | Active | — |
 | [docs/INTEGRATION_STATUS.md](INTEGRATION_STATUS.md) | Current status of all system integrations | Active | — |
 
 ---
@@ -161,8 +161,8 @@ AI team structure, roles, and collaboration framework.
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
 | [REVIEWER.md](REVIEWER.md) | Engineering role responsibilities, authority, and constraints | Active | 1.1 |
-| [.colore/05_AI/ARCHITECT.md](./../.colore/05_AI/ARCHITECT.md) | Architect role (architecture, strategy, approvals) | Active | — |
-| [.colore/05_AI/ENGINEERING.md](./../.colore/05_AI/ENGINEERING.md) | Engineering role policy and implementation constraints | Active | — |
+| [.colore/roles.md](./../.colore/roles.md) | Architect role (architecture, strategy, approvals) | Active | — |
+| [.colore/roles.md](./../.colore/roles.md) | Engineering role policy and implementation constraints | Active | — |
 | [docs/AI_CONSTITUTION.md](AI_CONSTITUTION.md) | AI operating principles (no hallucination, reality first, revenue first) | Active | — |
 | [docs/AI_EMPLOYEE_FRAMEWORK.md](AI_EMPLOYEE_FRAMEWORK.md) | Treating AI as team member with clear role and accountability | Active | — |
 
@@ -176,10 +176,10 @@ Decision models and lead handling frameworks. How Coloré OS understands clients
 
 | Document | Purpose | Status | Sprint |
 |----------|---------|--------|--------|
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → trust | Integrated | #1 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | #1 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/NEXT_BEST_ACTION_ENGINE.md) | Decision layer: selects one next action based on lead understanding and business context | Integrated | #2 |
-| [docs/01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/CONVERSATION_ENGINE.md](01_CUSTOMER_INTELLIGENCE/02_LEAD_INTELLIGENCE/CONVERSATION_ENGINE.md) | Communication layer: transforms action into message respecting brand voice | Integrated | #3 |
+| [docs/domain/customer_intelligence/LEAD_INTELLIGENCE_MODEL.md](domain/customer_intelligence/LEAD_INTELLIGENCE_MODEL.md) | How Coloré OS understands leads: intent → emotion → readiness → trust | Integrated | #1 |
+| [docs/domain/customer_intelligence/LEAD_STATE_MACHINE.md](domain/customer_intelligence/LEAD_STATE_MACHINE.md) | Lead lifecycle: 10 states from initial contact to booking or closure | Integrated | #1 |
+| [docs/domain/customer_intelligence/NEXT_BEST_ACTION_ENGINE.md](domain/customer_intelligence/NEXT_BEST_ACTION_ENGINE.md) | Decision layer: selects one next action based on lead understanding and business context | Integrated | #2 |
+| [docs/domain/customer_intelligence/CONVERSATION_ENGINE.md](domain/customer_intelligence/CONVERSATION_ENGINE.md) | Communication layer: transforms action into message respecting brand voice | Integrated | #3 |
 
 **Complete Architecture Chain:** 
 ```
@@ -200,8 +200,8 @@ Standard Operating Procedures for recurring operations.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [docs/02_EXECUTION/SOP_DOCUMENT_LIFECYCLE.md](02_EXECUTION/SOP_DOCUMENT_LIFECYCLE.md) | How documents move from IDEA → DESIGN → REVIEW → APPROVED → INTEGRATED | Integrated | Sprint #1 |
-| [docs/02_EXECUTION/SOP_TASK_LIFECYCLE.md](02_EXECUTION/SOP_TASK_LIFECYCLE.md) | How tasks move from IDEA → RESEARCH → DESIGN → REVIEW → BUILD → VERIFY → DEPLOY → LEARN | Integrated | Sprint #1 |
+| [docs/operations/SOP_DOCUMENT_LIFECYCLE.md](operations/SOP_DOCUMENT_LIFECYCLE.md) | How documents move from IDEA → DESIGN → REVIEW → APPROVED → INTEGRATED | Integrated | Sprint #1 |
+| [docs/operations/SOP_TASK_LIFECYCLE.md](operations/SOP_TASK_LIFECYCLE.md) | How tasks move from IDEA → RESEARCH → DESIGN → REVIEW → BUILD → VERIFY → DEPLOY → LEARN | Integrated | Sprint #1 |
 | [docs/FIRST_CAMPAIGN_CHECKLIST.md](FIRST_CAMPAIGN_CHECKLIST.md) | Step-by-step execution checklist for first campaign launch | Active | 7b3ca59 |
 | [docs/CAMPAIGN_PIPELINE.md](CAMPAIGN_PIPELINE.md) | End-to-end campaign generation pipeline; all 10 stages documented | Active | b0d1eed |
 
@@ -215,11 +215,11 @@ Project-level state, decisions, and verification.
 
 | Document | Purpose | Status | Commit |
 |----------|---------|--------|--------|
-| [.colore/00_Master/KNOWN_STATE.md](./../.colore/00_Master/KNOWN_STATE.md) | Verified facts; source of truth for project state | Active | — |
-| [.colore/00_Master/PROJECT_STATE.md](./../.colore/00_Master/PROJECT_STATE.md) | Current sprint, priorities, completed work | Active | — |
-| [.colore/00_Master/DECISIONS.md](./../.colore/00_Master/DECISIONS.md) | Active decisions driving execution | Active | — |
-| [.colore/07_DECISIONS.md](./../.colore/07_DECISIONS.md) | Full decision history and ADR records | Active | — |
-| [.colore/00_Master/WORKFLOW.md](./../.colore/00_Master/WORKFLOW.md) | Work workflow: BACKLOG → TODO → DOING → REVIEW → DONE | Active | — |
+| [.colore/state.md](./../.colore/state.md) | Verified facts; source of truth for project state | Active | — |
+| [.colore/state.md](./../.colore/state.md) | Current sprint, priorities, completed work | Active | — |
+| [.colore/changelog.md](./../.colore/changelog.md) | Active decisions driving execution | Active | — |
+| [.colore/changelog.md](./../.colore/changelog.md) | Full decision history and ADR records | Active | — |
+| [.colore/runtime.md](./../.colore/runtime.md) | Work workflow: BACKLOG → TODO → DOING → REVIEW → DONE | Active | — |
 
 ---
 
@@ -229,7 +229,7 @@ Project-level state, decisions, and verification.
 |----------|---------|--------|--------|
 | [README.md](../README.md) | Project overview and getting started | Active | — |
 | [.colore/README.md](./../.colore/README.md) | Runtime documentation overview | Active | — |
-| [.colore/06_SESSION.md](./../.colore/06_SESSION.md) | Session management and logging | Active | — |
+| [.colore/changelog.md](./../.colore/changelog.md) | Session management and logging | Active | — |
 | [docs/DECISION_MODEL.md](DECISION_MODEL.md) | How decisions are made and escalated | Draft | — |
 | [docs/PRODUCT_VISION.md](PRODUCT_VISION.md) | Product vision and long-term goals | Draft | — |
 | [docs/CONVERSATION_PRINCIPLES.md](CONVERSATION_PRINCIPLES.md) | How humans and AI collaborate | Active | — |

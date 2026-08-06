@@ -175,7 +175,7 @@ Everything else is interpretation.
    - `BACKLOG.md` — future work
    - `ROADMAP.md` — strategic direction
 
-3. **Architecture Decision Records** (`.colore/07_DECISIONS.md`)
+3. **Architecture Decision Records** (`.colore/changelog.md`)
    - Non-revisable decisions locked this sprint
    - Historical decision log
 
@@ -197,14 +197,14 @@ Complete this checklist before starting any work:
 
 - [ ] Navigate to `/root/colore-os`
 - [ ] Run `git status` (verify current branch and uncommitted changes)
-- [ ] Read `.colore/09_UAOP.md` (scope and principles)
-- [ ] Read `.colore/00_Master/KNOWN_STATE.md` (verified facts)
-- [ ] Read `.colore/00_Master/PROJECT_STATE.md` (current sprint)
-- [ ] Read `.colore/00_Master/TODAY.md` (daily focus)
-- [ ] Read `.colore/00_Master/DECISIONS.md` (active decisions)
-- [ ] Read `.colore/03_ARCHITECTURE.md` (approved design)
-- [ ] Read `.colore/07_DECISIONS.md` (decision history)
-- [ ] Read `.colore/00_Master/BACKLOG.md` (future work)
+- [ ] Read `.colore/runtime.md` (scope and principles)
+- [ ] Read `.colore/state.md` (verified facts)
+- [ ] Read `.colore/state.md` (current sprint)
+- [ ] Read `.colore/next.md` (daily focus)
+- [ ] Read `.colore/changelog.md` (active decisions)
+- [ ] Read `.colore/architecture.md` (approved design)
+- [ ] Read `.colore/changelog.md` (decision history)
+- [ ] Read `.colore/roadmap.md` (future work)
 - [ ] Run `git log --oneline -10` (recent commits)
 - [ ] Run `git diff` (review any uncommitted work)
 
@@ -606,7 +606,7 @@ Should this learning become:
 
 ### Storage:
 
-- ADR: `.colore/07_DECISIONS.md`
+- ADR: `.colore/changelog.md`
 - SOP: `.colore/` (create new file if needed)
 - Playbook: Create in `/playbooks/` directory
 - Knowledge: Create in `/docs/` directory
@@ -707,24 +707,24 @@ Complete this checklist before ending the session:
 
 ### Project State Updates
 
-- [ ] Update `.colore/00_Master/KNOWN_STATE.md`
+- [ ] Update `.colore/state.md`
   - [ ] Add any verified facts discovered during session
   - [ ] Update "Last verified" date
   - [ ] Remove facts that turned out to be wrong
 
-- [ ] Update `.colore/00_Master/PROJECT_STATE.md`
+- [ ] Update `.colore/state.md`
   - [ ] Update "Last updated" date
   - [ ] Record any completed work
   - [ ] Move completed items from TODO to DONE
 
-- [ ] Update `.colore/00_Master/DECISIONS.md` (if needed)
+- [ ] Update `.colore/changelog.md` (if needed)
   - [ ] Add any new active decisions
   - [ ] Record any architectural changes
 
 ### Architecture & Knowledge
 
 - [ ] Create ADR if architecture changed
-  - [ ] Document decision in `.colore/07_DECISIONS.md`
+  - [ ] Document decision in `.colore/changelog.md`
   - [ ] Record reasoning and tradeoffs
   
 - [ ] Capture learnings
