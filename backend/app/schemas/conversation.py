@@ -22,6 +22,13 @@ class ConversationReplyResponse(BaseModel):
     message_id: int
 
 
+class ConversationProcessResponse(BaseModel):
+    reply: str
+    intent: str
+    confidence: float
+    slots: list[str]
+
+
 class ConversationCreate(BaseModel):
     customer_id: int
     primary_channel: str

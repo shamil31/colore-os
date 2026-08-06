@@ -3,10 +3,12 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.api.booking import PROPOSAL_SLOTS
 from app.core.config import settings
 from app.db.database import get_db
 from app.schemas.conversation import (
     ConversationCreate,
+    ConversationProcessResponse,
     ConversationReplyResponse,
     ConversationResponse,
     MessageCreate,
@@ -130,4 +132,47 @@ async def reply_endpoint(
     return ConversationReplyResponse(
         reply=reply,
         message_id=message.id,
+    )
+
+
+@router.post("/{conversation_id}/process", response_model=ConversationProcessResponse)
+async def process_endpoint(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+):
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="LLM is not configured",
+        )
+
+    conversation = get_conversation_by_id(db, conversation_id)
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found",
+        )
+
+    db_messages = get_messages_by_conversation_id(db, conversation_id)
+
+    messages = [
+        {
+            "role": "user" if message.direction == "inbound" else "assistant",
+            "content": message.content,
+        }
+        for message in db_messages
+    ]
+
+    llm_service = LLMService()
+    reply = await llm_service.reply(messages)
+    result = await llm_service.classify(messages)
+
+    slots = PROPOSAL_SLOTS if result["intent"] == "BOOKING" else []
+
+    return ConversationProcessResponse(
+        reply=reply,
+        intent=result["intent"],
+        confidence=result["confidence"],
+        slots=slots,
     )
