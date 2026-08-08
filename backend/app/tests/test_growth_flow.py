@@ -243,6 +243,138 @@ def test_direct_meta_webhook_is_closed_without_an_app_secret(monkeypatch):
     reset_connector_gateway_for_tests()
 
 
+# --------------------------------------------- P1-003: direct path, end to end
+
+
+def _signed_post(path, payload, *, secret):
+    """A real Meta delivery is signed over its exact bytes, not over a JSON
+    object re-serialised on the way there. Sign the same bytes that are sent,
+    the way `X-Hub-Signature-256` verification requires."""
+    import hashlib
+    import hmac
+    import json as jsonlib
+
+    body = jsonlib.dumps(payload).encode("utf-8")
+    digest = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
+
+    return client.post(
+        path,
+        content=body,
+        headers={
+            "Content-Type": "application/json",
+            "X-Hub-Signature-256": f"sha256={digest}",
+        },
+    )
+
+
+def test_a_real_instagram_lead_reaches_the_owner_through_the_direct_meta_path(
+    setup_test_db, monkeypatch
+):
+    """The one scenario this whole task exists to prove: with only Meta's own
+    signature — no n8n, no X-Colore-Token — a single Instagram DM ends with
+    the raw payload persisted, an internal event recorded, and the owner
+    notified. This is the `Instagram -> Meta Webhook -> Coloré OS -> Growth AI
+    -> Telegram` path exactly as drawn in the mission brief, and it had no
+    positive-path test before this."""
+    monkeypatch.setattr(settings, "META_APP_SECRET", "test-app-secret")
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "")
+    reset_connector_gateway_for_tests()
+
+    session = RecordingSession()
+    gateway = get_connector_gateway()
+    gateway.integration_registry._connectors["telegram"] = TelegramConnector(
+        bot_token="TEST", default_chat_id="777", session=session
+    )
+    gateway.rate_limiter.reset()
+
+    payload = instagram_payload(text="Здравствуйте, хочу записаться завтра", mid="mid.FIRSTLEAD")
+
+    response = _signed_post("/growth/webhook/meta", payload, secret="test-app-secret")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["result"] == "processed"
+
+    # 1. Raw payload persisted.
+    detail = client.get(f"/growth/events/{body['event_id']}").json()
+    assert "mid.FIRSTLEAD" in detail["text"] or detail["text"] == "Здравствуйте, хочу записаться завтра"
+
+    # 2. Normalised conversation persisted — who, what channel, what they said.
+    assert detail["source"] == "instagram"
+    assert detail["sender_ref"] == "IGSID_CLIENT"
+    assert detail["text"] == "Здравствуйте, хочу записаться завтра"
+
+    # 3. An internal event exists and is queryable by id — the trace.
+    assert detail["status"] == "processed"
+
+    # 4. The owner was notified in Telegram.
+    assert len(session.calls) == 1
+    alert = session.calls[0]["json"]["text"]
+    assert "Здравствуйте, хочу записаться завтра" in alert
+    assert "INSTAGRAM" in alert
+
+    # 5. Nothing was sent back to the client. Growth AI's only outbound
+    # capability exercised here is message.send to Telegram; there is no
+    # Instagram-directed action anywhere in this event's trace.
+    assert detail["actions"] == [
+        {
+            "id": detail["actions"][0]["id"],
+            "connector": "telegram",
+            "capability": "message.send",
+            "status": "ok",
+            "error": "",
+            "created_at": detail["actions"][0]["created_at"],
+        }
+    ]
+
+    reset_connector_gateway_for_tests()
+
+
+def test_a_tampered_instagram_payload_is_rejected_before_touching_the_database(
+    setup_test_db, monkeypatch
+):
+    """A signature that does not match the body must fail closed — the first
+    real lead must not be the first real forgery too."""
+    monkeypatch.setattr(settings, "META_APP_SECRET", "test-app-secret")
+    reset_connector_gateway_for_tests()
+
+    payload = instagram_payload(text="forged", mid="mid.FORGED")
+    response = _signed_post("/growth/webhook/meta", payload, secret="wrong-secret")
+
+    assert response.status_code == 401
+
+    events = client.get("/growth/events").json()
+    assert not any(e["external_id"] == "mid.FORGED" for e in events)
+
+    reset_connector_gateway_for_tests()
+
+
+def test_a_real_lead_without_a_configured_classifier_still_notifies_the_owner(
+    setup_test_db, monkeypatch
+):
+    """OPENAI_API_KEY may not be set the day the first lead actually arrives.
+    The alert must still reach the owner, unclassified rather than lost."""
+    monkeypatch.setattr(settings, "META_APP_SECRET", "test-app-secret")
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "")
+    reset_connector_gateway_for_tests()
+
+    session = RecordingSession()
+    gateway = get_connector_gateway()
+    gateway.integration_registry._connectors["telegram"] = TelegramConnector(
+        bot_token="TEST", default_chat_id="777", session=session
+    )
+    gateway.rate_limiter.reset()
+
+    payload = instagram_payload(text="Есть окно завтра?", mid="mid.NOKEY")
+    response = _signed_post("/growth/webhook/meta", payload, secret="test-app-secret")
+
+    assert response.status_code == 200
+    assert response.json()["intent"] == "UNKNOWN"
+    assert len(session.calls) == 1, "an unclassified message still reaches the owner"
+
+    reset_connector_gateway_for_tests()
+
+
 # ------------------------------------------------------------------ decision
 
 

@@ -164,6 +164,14 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: the first version of the coverage test walked `app.routes` directly and found zero business routes — this FastAPI build wraps included routers in an opaque `_IncludedRouter`, one level above the real `APIRoute` objects, so the test passed by checking nothing. Rewritten to flatten `.original_router.routes` and assert it actually reaches at least 15 real routes, so a walk that finds nothing again fails loudly instead of passing quietly.
 - Blocker unaffected by this change: the queue's `business_messaging` events (P1-001) still do not transmit — this task was scoped to access control only.
 
+### VH-020
+- Date: 2026-08-08
+- Event: P1-003 — first-real-lead readiness. Inspected the full Instagram path (Meta webhook → Coloré OS → Growth AI → Telegram) against a real payload shape rather than only the synthetic test fixtures already in place. Found and fixed one real defect: `_normalise_instagram` returned on the first skippable messaging item (an echo, or a non-text message) instead of continuing to scan the rest of the delivery, so a real message bundled behind an echo or a receipt in the same webhook POST would have been silently dropped. Everything else in the path — raw payload persistence, normalised event persistence, the internal event trace, and the Telegram alert — was already built and correct (GROWTH-005..009); confirmed by a new end-to-end test that goes through the actual `POST /growth/webhook/meta` path with a real HMAC signature, which had no positive-path test before today.
+- Status: DONE
+- Evidence: `backend/app/growth/normalize.py` (one function changed, no new abstractions), 7 new tests, 300 passing total. `test_a_real_instagram_lead_reaches_the_owner_through_the_direct_meta_path` proves the exact chain end to end with a signed request.
+- Note: No code change was made to the Client/Conversation tables. `Client.phone` is `NOT NULL UNIQUE`, and an Instagram lead has no phone (only an app-scoped IGSID) — writing a lead into that table today would require a schema migration, which this task's scope explicitly excludes ("no architecture redesign"). The existing `GrowthEvent` row already serves as the persisted lead record for this channel.
+- Blocker unaffected by this change: nothing has ever called this webhook from Meta. n8n has zero workflows and `META_APP_SECRET`/`META_VERIFY_TOKEN` are unset on the server — both are configuration/dashboard steps, not code.
+
 ## Entry Template
 
 ### VH-XXX

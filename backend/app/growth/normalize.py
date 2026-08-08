@@ -161,6 +161,15 @@ def _normalise_whatsapp(body: dict[str, Any]) -> NormalisedEvent | SkippedEvent:
 
 
 def _normalise_instagram(body: dict[str, Any], *, source: str) -> NormalisedEvent | SkippedEvent:
+    # Meta can bundle more than one messaging item in a single delivery — an
+    # echo of our own reply alongside the client's next message, for example.
+    # Returning on the first skippable item would abandon the rest of the
+    # payload and silently drop a real message sitting right behind it, so a
+    # skip only ends the scan once nothing actionable was found anywhere in
+    # the delivery. `fallback` keeps the first reason encountered, since that
+    # is the one worth reporting if the scan never finds a real message.
+    fallback: SkippedEvent | None = None
+
     for entry in _as_list(body.get("entry")):
         for item in _as_list(entry.get("messaging")):
             message = item.get("message")
@@ -173,19 +182,21 @@ def _normalise_instagram(body: dict[str, Any], *, source: str) -> NormalisedEven
             # Without this check Growth AI answers itself, in a loop, on the
             # first live message.
             if message.get("is_echo") or item.get("is_self"):
-                return SkippedEvent(
+                fallback = fallback or SkippedEvent(
                     reason=SKIP_ECHO,
                     detail="message echoed back by Instagram",
                     external_id=external_id,
                 )
+                continue
 
             text = str(message.get("text") or "").strip()
             if not text:
-                return SkippedEvent(
+                fallback = fallback or SkippedEvent(
                     reason=SKIP_UNSUPPORTED_TYPE,
                     detail="non-text message",
                     external_id=external_id,
                 )
+                continue
 
             return NormalisedEvent(
                 source=source,
@@ -198,7 +209,7 @@ def _normalise_instagram(body: dict[str, Any], *, source: str) -> NormalisedEven
                 raw=body,
             )
 
-    return SkippedEvent(reason=SKIP_NO_MESSAGE, detail="no messaging entries in payload")
+    return fallback or SkippedEvent(reason=SKIP_NO_MESSAGE, detail="no messaging entries in payload")
 
 
 def _as_list(value: Any) -> list[dict[str, Any]]:
