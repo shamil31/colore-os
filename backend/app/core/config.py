@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     META_APP_SECRET: str = ""
     META_VERIFY_TOKEN: str = ""
     META_API_VERSION: str = "v23.0"
+    # Conversions API. Both are needed to report confirmed outcomes back to
+    # Meta; without them events are built and queued but never sent.
+    META_ACCESS_TOKEN: str = ""
+    META_DATASET_ID: str = ""
 
     # Outbound: a workflow Coloré OS starts. Distinct from N8N_WEBHOOK_URL
     # above, which is where the event-bus adapter mirrors telemetry.

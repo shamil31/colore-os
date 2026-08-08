@@ -155,6 +155,7 @@ class AltegioDataClient:
         count: int,
         date_from: str,
         date_to: str,
+        with_deleted: bool = False,
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         """Every appointment in a date range, across all clients.
 
@@ -162,6 +163,14 @@ class AltegioDataClient:
         one answers "what did the salon book", which is what any conversion or
         occupancy figure needs. Fetching it per client would be 334 requests
         against a 5 req/sec limit.
+
+        `with_deleted` is required to see cancellations. Verified against the
+        live account on 2026-08-08: the default call returned 341 records with
+        `deleted` false for every one of them over 180 days, and the same call
+        with `with_deleted=1` returned 383, of which 13 were deleted. Without
+        this flag a cancelled appointment is indistinguishable from one that
+        never existed. The parameter is not in the published reference — see
+        R-004.
         """
         params: dict[str, Any] = {
             "start_date": date_from,
@@ -169,6 +178,8 @@ class AltegioDataClient:
             "count": count,
             "page": page,
         }
+        if with_deleted:
+            params["with_deleted"] = 1
 
         query = urlencode(params)
         url = f"{self.endpoints.records(company_id)}?{query}"
@@ -190,6 +201,7 @@ class AltegioDataClient:
         date_to: str,
         page_size: int = 200,
         max_pages: int = 25,
+        with_deleted: bool = False,
     ) -> list[dict[str, Any]]:
         page = 1
         all_records: list[dict[str, Any]] = []
@@ -201,6 +213,7 @@ class AltegioDataClient:
                 count=page_size,
                 date_from=date_from,
                 date_to=date_to,
+                with_deleted=with_deleted,
             )
             if not batch:
                 break

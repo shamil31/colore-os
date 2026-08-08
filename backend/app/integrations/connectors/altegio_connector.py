@@ -125,6 +125,7 @@ class AltegioConnector(BaseConnector):
                 date_from=date_from,
                 date_to=date_to,
                 page_size=_optional_int(params, "page_size", default=200),
+                with_deleted=bool(params.get("with_deleted")),
             )
         if capability == self.GET_ALL_CLIENT_RECORDS_RAW_CAPABILITY:
             company_id = _required_int(params, "company_id")

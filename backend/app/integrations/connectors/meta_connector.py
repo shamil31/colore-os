@@ -17,12 +17,16 @@ import hashlib
 import hmac
 from typing import Any
 
+import requests
+
 from app.integrations.gateway import capabilities
 
 from app.integrations.gateway.base_connector import BaseConnector
 
 SIGNATURE_HEADER = "X-Hub-Signature-256"
 SIGNATURE_PREFIX = "sha256="
+
+GRAPH_HOST = "https://graph.facebook.com"
 
 
 class MetaVerificationError(Exception):
@@ -33,6 +37,7 @@ class MetaConnector(BaseConnector):
     integration_name = "meta"
 
     VERIFY_SIGNATURE_CAPABILITY = "meta.verify_signature"
+    SEND_CONVERSIONS_CAPABILITY = "meta.send_conversions"
 
     def __init__(
         self,
@@ -40,16 +45,28 @@ class MetaConnector(BaseConnector):
         app_secret: str = "",
         verify_token: str = "",
         api_version: str = "v23.0",
+        access_token: str = "",
+        dataset_id: str = "",
+        timeout: int = 20,
+        session: requests.Session | None = None,
     ) -> None:
         self.app_secret = app_secret.strip()
         self.verify_token = verify_token.strip()
+        self.access_token = access_token.strip()
+        self.dataset_id = dataset_id.strip()
+        self.timeout = timeout
+        self._session = session or requests.Session()
         # Pinned in one place. An unversioned Graph call silently gets the
         # oldest available version.
         self.api_version = api_version.strip() or "v23.0"
 
     @property
     def capabilities(self) -> set[str]:
-        return {capabilities.EVENT_VERIFY, self.VERIFY_SIGNATURE_CAPABILITY}
+        return {
+            capabilities.EVENT_VERIFY,
+            self.VERIFY_SIGNATURE_CAPABILITY,
+            self.SEND_CONVERSIONS_CAPABILITY,
+        }
 
     def is_configured(self) -> bool:
         return bool(self.verify_token)
@@ -60,6 +77,18 @@ class MetaConnector(BaseConnector):
     @property
     def can_verify_signatures(self) -> bool:
         return bool(self.app_secret)
+
+    @property
+    def can_send_conversions(self) -> bool:
+        return bool(self.access_token and self.dataset_id)
+
+    def missing_conversion_settings(self) -> tuple[str, ...]:
+        missing = []
+        if not self.access_token:
+            missing.append("META_ACCESS_TOKEN")
+        if not self.dataset_id:
+            missing.append("META_DATASET_ID")
+        return tuple(missing)
 
     def execute(self, capability: str, *, payload: dict[str, Any] | None = None) -> Any:
         body = payload or {}
@@ -77,7 +106,51 @@ class MetaConnector(BaseConnector):
                 signature_header=body.get("signature_header"),
             )
 
+        if capability == self.SEND_CONVERSIONS_CAPABILITY:
+            return self.send_conversions(body.get("data") or [])
+
         raise ValueError(f"Unsupported capability for Meta connector: {capability}")
+
+    def send_conversions(self, events: list[dict[str, Any]]) -> dict[str, Any]:
+        """POST /{dataset_id}/events — the Conversions API.
+
+        Refuses rather than pretends when it cannot send. A silent no-op here
+        would make the queue look drained while Meta received nothing.
+        """
+        if not self.can_send_conversions:
+            raise MetaVerificationError(
+                "not configured: " + ", ".join(self.missing_conversion_settings())
+            )
+
+        if not events:
+            return {"events_received": 0}
+
+        url = f"{GRAPH_HOST}/{self.api_version}/{self.dataset_id}/events"
+
+        try:
+            response = self._session.post(
+                url,
+                json={"data": events, "access_token": self.access_token},
+                timeout=self.timeout,
+            )
+        except requests.RequestException as exc:
+            raise MetaVerificationError(f"conversions request failed: {exc}") from exc
+
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            raise MetaVerificationError(
+                f"conversions returned non-JSON (HTTP {response.status_code})"
+            ) from exc
+
+        if response.status_code >= 400 or "error" in payload:
+            error = payload.get("error") or {}
+            raise MetaVerificationError(
+                f"Meta rejected the events: HTTP {response.status_code} "
+                f"{error.get('type', '')} {error.get('message', '')}".strip()
+            )
+
+        return payload
 
     def verify_subscription(
         self,

@@ -21,6 +21,7 @@ Research to come back to. Check this before starting work.
 | R-001 | Recovered OpenHands Domain Model | Before Altegio | Pending |
 | R-002 | Growth AI integration gaps (4 unverified contracts) | Before the integration each gap blocks | Pending |
 | R-003 | Meta Business decisions required from Product Owner (5) | Before Meta goes live | Pending |
+| R-004 | Altegio `with_deleted=1` — undocumented, required for cancellations | Before relying on cancellation events | Pending |
 
 ## Rules
 
@@ -229,6 +230,56 @@ Take decisions 1 and 2 immediately regardless of the rest — both are clocks th
 
 ---
 
+## R-004 — Altegio `with_deleted=1` Is Undocumented And Required
+
+| Field | Value |
+|---|---|
+| **ID** | R-004 |
+| **Title** | Altegio `with_deleted=1` — undocumented, required for cancellations |
+| **Status** | Pending Review |
+| **Source** | Live account probe, 2026-08-08 (GROWTH-009) |
+| **Discovered** | 2026-08-08 |
+| **Deletion risk** | Low |
+
+### Description
+
+`GET /v1/records/{company_id}` does not return cancelled appointments by default, and it does not signal that anything was withheld. A cancelled appointment is indistinguishable from one that never existed.
+
+Measured on the live account over 180 days:
+
+| Call | `total_count` | deleted rows in page 1 |
+|---|---|---|
+| default | 341 | 0 |
+| `deleted=1` | 341 | 0 |
+| `include_deleted=1` | 341 | 0 |
+| **`with_deleted=1`** | **383** | **13** |
+
+Only `with_deleted=1` works. It is not in the published reference.
+
+### Why it matters
+
+The attribution loop reports `appointment_cancelled` to Meta. Without this parameter that state can never fire, and Meta would keep optimising toward appointments that were later cancelled. The flag currently carries a state that has real budget consequences.
+
+### When to return
+
+Before relying on cancellation events in production, and on any Altegio API version change. An undocumented parameter can be withdrawn without notice; if it stops working, cancellations silently stop being reported rather than erroring.
+
+Worth confirming with Altegio support (api@alteg.io) that the parameter is supported and stable.
+
+### Related Roadmap Phase
+
+Stage 1 — Growth AI Foundation.
+
+### Related ADR
+
+`adr/ADR-002-growth-ai-foundation.md`
+
+### Recommendation
+
+Add a check that compares `total_count` with and without the flag. If they ever become equal, the parameter has stopped working and cancellation reporting is silently dead.
+
+---
+
 ## Index
 
 | ID | Title | Status | Deletion risk |
@@ -236,6 +287,7 @@ Take decisions 1 and 2 immediately regardless of the rest — both are clocks th
 | R-001 | Recovered OpenHands Domain Model | Pending Review | **High** |
 | R-002 | Growth AI Integration Gaps | Pending Review | Low |
 | R-003 | Meta Business Decisions Required From Product Owner | Pending Review | Low |
+| R-004 | Altegio `with_deleted=1` Undocumented | Pending Review | Low |
 
 ## Source of Truth
 

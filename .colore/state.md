@@ -55,7 +55,8 @@ Maintained manually. Never infer state from code structure alone.
   - Growth AI Brain v0.1 — four Product Owner commands over Telegram (`Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`)
   - Altegio connected and verified live 2026-08-08: Colore beauty lab (company id **1316083**), 334 clients, 90 services, 4 specialists, appointments readable by date range
   - Growth AI Business Data — `Аналитика` command: leads, bookings, conversion, missing data, recommendations
-  - 166 tests passing
+  - Attribution loop: five confirmed outcomes → Conversions API events, queued in `meta_conversions` (migration `b2c3d4e5f6a7`); Telegram command `Meta`. 235 events queued from live Altegio data, 0 sent — no Meta credentials on this server.
+  - 195 tests passing
 
 ## Deployment Source of Truth
 

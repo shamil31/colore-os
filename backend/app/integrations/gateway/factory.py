@@ -50,6 +50,8 @@ def build_connector_gateway() -> ConnectorGateway:
             app_secret=settings.META_APP_SECRET,
             verify_token=settings.META_VERIFY_TOKEN,
             api_version=settings.META_API_VERSION,
+            access_token=settings.META_ACCESS_TOKEN,
+            dataset_id=settings.META_DATASET_ID,
         )
     )
 

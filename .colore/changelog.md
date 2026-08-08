@@ -120,6 +120,15 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: `ALTEGIO_COMPANY_ID=2403` in the environment is stale — Altegio answers "No location with identifier 2403 found". The real id is 1316083. Company id is now resolved from the API at runtime and the mismatch is reported rather than silently preferred.
 - Note: conversion is reported only over leads that can be attributed to a booking by phone. Bookings divided by leads was rejected as a metric: most of the salon's 47 appointments have no connection to Growth AI, so that ratio would look like an answer and mean nothing.
 
+### VH-015
+- Date: 2026-08-08
+- Event: GROWTH-009 — attribution loop closed. Five confirmed business outcomes (lead created, appointment booked, appointment cancelled, client arrived, no-show) are built into Conversions API events with unique event_id, event_time, action_source and hashed matching fields, queued in `meta_conversions`, and reported by the new Telegram command `Meta`. 235 real events queued from live Altegio data.
+- Status: DONE
+- Evidence: `backend/app/growth/{attribution,meta_sync,meta_renderer}.py`, `backend/app/models/meta_conversion.py`, migration `b2c3d4e5f6a7`, `docs/research/META_ATTRIBUTION_FLOW.md`. 195 tests passing. Idempotency verified live: two consecutive builds over 235 events inserted 0 rows on the second, 235 distinct event ids. No raw phone, email or name is stored — checked against the live table.
+- Note: cancellations are invisible without `with_deleted=1` on the Altegio records endpoint — an undocumented parameter found by probing. Default call returned 341 records over 180 days with `deleted` false for all of them; with the flag, 383 of which 13 deleted. Recorded as R-004.
+- Note: events are built only when a strong identifier (phone or email) exists. A name is not an identifier, so name-only records are skipped rather than sent unattributable. Instagram leads produce no event: IGSID is app-scoped and is not a phone.
+- Blocker: nothing is sent. `META_ACCESS_TOKEN` and `META_DATASET_ID` do not exist on this server, so the queue accumulates instead of transmitting.
+
 ## Entry Template
 
 ### VH-XXX

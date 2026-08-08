@@ -59,6 +59,9 @@ class BusinessSnapshot:
     staff: list[Any] = field(default_factory=list)
     clients: list[dict[str, Any]] = field(default_factory=list)
     records: list[dict[str, Any]] = field(default_factory=list)
+    cancelled_records: list[dict[str, Any]] = field(default_factory=list)
+    """Appointments Altegio marks deleted. Only visible with `with_deleted=1`,
+    and kept apart so booking counts stay counts of real appointments."""
 
     date_from: str = ""
     date_to: str = ""
@@ -194,10 +197,15 @@ def load_snapshot(
             "date_from": snapshot.date_from,
             "date_to": snapshot.date_to,
             "page_size": 200,
+            # Without this a cancellation is invisible: the record simply stops
+            # being returned, which is indistinguishable from never existing.
+            "with_deleted": True,
         },
     )
     if records.ok:
-        snapshot.records = [r for r in (records.data or []) if not r.get("deleted")]
+        returned = records.data or []
+        snapshot.records = [r for r in returned if not r.get("deleted")]
+        snapshot.cancelled_records = [r for r in returned if r.get("deleted")]
     else:
         snapshot.errors.append(f"записи: {records.error}")
 

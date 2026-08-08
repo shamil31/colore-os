@@ -28,6 +28,7 @@ CMD_NEWS = "news"
 CMD_DECISIONS = "decisions"
 CMD_NEXT = "next"
 CMD_ANALYTICS = "analytics"
+CMD_META = "meta"
 CMD_HELP = "help"
 
 ANALYTICS_DAYS = 30
@@ -69,6 +70,7 @@ _ALIASES: dict[str, tuple[str, ...]] = {
         "/аналитика",
         "цифры",
     ),
+    CMD_META: ("meta", "/meta", "мета", "/мета"),
     CMD_HELP: ("help", "/help", "/start", "помощь", "команды"),
 }
 
@@ -104,7 +106,40 @@ def handle(command: str, root: Path | None = None) -> str:
         return next_answer(root)
     if command == CMD_ANALYTICS:
         return analytics_answer()
+    if command == CMD_META:
+        return meta_answer()
     return help_answer()
+
+
+def meta_answer() -> str:
+    """Attribution queue state: connected, waiting, sent, accepted, rejected.
+
+    Builds the queue from confirmed outcomes first, so the waiting count is
+    current rather than whatever was left over from the last run.
+    """
+    from app.growth.meta_renderer import MetaRenderer
+    from app.growth.meta_sync import read_status
+
+    try:
+        from app.db.database import SessionLocal
+
+        session = SessionLocal()
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("meta status failed to open a session")
+        return (
+            "🔗 META STATUS\n\nCannot reach the Coloré OS database: "
+            f"{type(exc).__name__}: {exc}"
+        )
+
+    try:
+        status = read_status(session)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("meta status failed")
+        return f"🔗 META STATUS\n\nCannot read attribution state: {type(exc).__name__}: {exc}"
+    finally:
+        session.close()
+
+    return MetaRenderer().render(status, limit=TELEGRAM_LIMIT)
 
 
 def analytics_answer(days: int = ANALYTICS_DAYS) -> str:
@@ -282,6 +317,7 @@ def help_answer() -> str:
         "• Что требует моего решения? — open research and unknowns\n"
         "• Что делаем дальше? — sprint and active task\n"
         "• Аналитика — leads, bookings, conversion, and gaps\n"
+        "• Meta — attribution queue: waiting, sent, accepted, rejected\n"
         "\n"
         "I only answer with facts from repository files and live checks. "
         "If data is missing, I say so directly."
