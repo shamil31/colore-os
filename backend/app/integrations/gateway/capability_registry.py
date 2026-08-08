@@ -14,3 +14,6 @@ class CapabilityRegistry:
 
     def supports(self, integration_name: str, capability: str) -> bool:
         return integration_name in self._capabilities.get(capability, set())
+
+    def list_capabilities(self) -> list[str]:
+        return sorted(self._capabilities.keys())
