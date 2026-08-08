@@ -1,0 +1,38 @@
+# Coloré OS — universal integration scheduler.
+#
+# Runs registered integration jobs on their own intervals. Meta conversions is
+# the first job; adding another is one line in app/growth/meta_job.py's
+# build_registry(), not a change to this unit.
+#
+# Install:
+#   cp infrastructure/colore-scheduler.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable --now colore-scheduler
+#
+# Inspect:
+#   python -m app.scheduler.runner --status      (from backend/, in the venv)
+#   journalctl -u colore-scheduler -f
+
+[Unit]
+Description=Colore OS integration scheduler
+Documentation=file:///root/colore-os/docs/operations/GROWTH_AI_SETUP.md
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/colore-os/backend
+Environment=COLORE_REPO_ROOT=/root/colore-os
+Environment=COLORE_API_BASE=http://localhost:8000
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/root/colore-os/backend/.venv/bin/python -m app.scheduler.runner
+
+Restart=always
+RestartSec=10
+TimeoutStopSec=90
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

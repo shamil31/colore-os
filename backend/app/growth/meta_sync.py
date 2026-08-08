@@ -82,6 +82,17 @@ class MetaStatus:
     by_outcome: dict[str, int] = field(default_factory=dict)
     failure_reasons: dict[str, int] = field(default_factory=dict)
 
+    # Scheduler view — answers "is anything actually going to send this?"
+    scheduler_running: bool | None = None
+    job_registered: bool = False
+    last_run_at: datetime | None = None
+    last_run_status: str = ""
+    next_run_at: datetime | None = None
+    last_success_at: datetime | None = None
+    last_error: str = ""
+    last_error_at: datetime | None = None
+    currency: str = ""
+
 
 def _meta_connector() -> MetaConnector | None:
     try:
@@ -239,7 +250,33 @@ def _mark_permanent(row: MetaConversion, reason: str, now: datetime) -> None:
     row.next_attempt_at = None
 
 
-def _send_batch(connector, session: Session, rows: list[MetaConversion], result: SyncResult) -> None:
+def eligible_rows(session: Session, *, limit: int = BATCH_SIZE, now: datetime | None = None):
+    """Rows that would be sent right now. Shared by the sender and by dry runs,
+    so a dry run reports on exactly what a real run would touch."""
+    now = now or datetime.utcnow()
+    return (
+        session.query(MetaConversion)
+        .filter(
+            MetaConversion.status.in_((STATUS_QUEUED, STATUS_RETRY, STATUS_SENDING)),
+            or_(
+                MetaConversion.next_attempt_at.is_(None),
+                MetaConversion.next_attempt_at <= now,
+            ),
+        )
+        .order_by(MetaConversion.id)
+        .limit(limit)
+        .all()
+    )
+
+
+def _send_batch(
+    connector,
+    session: Session,
+    rows: list[MetaConversion],
+    result: SyncResult,
+    *,
+    test_event_code: str | None = None,
+) -> None:
     """Send a batch, isolating a bad event rather than condemning its neighbours.
 
     Meta answers per request, not per event, so a permanent rejection does not
@@ -254,7 +291,10 @@ def _send_batch(connector, session: Session, rows: list[MetaConversion], result:
     now = datetime.utcnow()
 
     try:
-        response = connector.send_conversions([_payload_for(row) for row in rows])
+        response = connector.send_conversions(
+            [_payload_for(row) for row in rows],
+            test_event_code=test_event_code,
+        )
     except Exception as exc:  # noqa: BLE001 — classified, never swallowed
         kind, reason = classify(exc)
 
@@ -274,8 +314,8 @@ def _send_batch(connector, session: Session, rows: list[MetaConversion], result:
 
         # More than one event and a permanent answer: split to find the culprit.
         middle = len(rows) // 2
-        _send_batch(connector, session, rows[:middle], result)
-        _send_batch(connector, session, rows[middle:], result)
+        _send_batch(connector, session, rows[:middle], result, test_event_code=test_event_code)
+        _send_batch(connector, session, rows[middle:], result, test_event_code=test_event_code)
         return
 
     _mark_sent(rows, response, now)
@@ -284,7 +324,12 @@ def _send_batch(connector, session: Session, rows: list[MetaConversion], result:
     session.commit()
 
 
-def send_pending(session: Session, *, limit: int = BATCH_SIZE) -> SyncResult:
+def send_pending(
+    session: Session,
+    *,
+    limit: int = BATCH_SIZE,
+    test_event_code: str | None = None,
+) -> SyncResult:
     result = SyncResult()
 
     connector = _meta_connector()
@@ -300,20 +345,7 @@ def send_pending(session: Session, *, limit: int = BATCH_SIZE) -> SyncResult:
 
     result.expired = expire_stale(session)
 
-    now = datetime.utcnow()
-    due = (
-        session.query(MetaConversion)
-        .filter(
-            MetaConversion.status.in_((STATUS_QUEUED, STATUS_RETRY, STATUS_SENDING)),
-            or_(
-                MetaConversion.next_attempt_at.is_(None),
-                MetaConversion.next_attempt_at <= now,
-            ),
-        )
-        .order_by(MetaConversion.id)
-        .limit(limit)
-        .all()
-    )
+    due = eligible_rows(session, limit=limit)
     if not due:
         return result
 
@@ -323,7 +355,7 @@ def send_pending(session: Session, *, limit: int = BATCH_SIZE) -> SyncResult:
         row.status = STATUS_SENDING
     session.commit()
 
-    _send_batch(connector, session, due, result)
+    _send_batch(connector, session, due, result, test_event_code=test_event_code)
     return result
 
 
@@ -333,6 +365,61 @@ def synchronise(session: Session, *, days: int = 90) -> SyncResult:
     result.built = built
     result.errors = errors + result.errors
     return result
+
+
+# ----------------------------------------------------------------- scheduler
+
+
+def _scheduler_service_active() -> bool | None:
+    """Whether the host scheduler unit is running. None when it cannot be told."""
+    import subprocess
+
+    try:
+        proc = subprocess.run(
+            ["systemctl", "is-active", "colore-scheduler"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except Exception:  # noqa: BLE001 — no systemd inside a container
+        return None
+    return proc.stdout.strip() == "active"
+
+
+def _read_scheduler_state(session: Session, status: MetaStatus) -> None:
+    """Answer the question the Meta report could not previously answer: is
+    anything going to send this, and when?"""
+    from app.core.config import settings
+
+    status.currency = (settings.BUSINESS_CURRENCY or "").strip().upper()
+    status.scheduler_running = _scheduler_service_active()
+
+    try:
+        from app.growth.meta_job import JOB_NAME
+        from app.scheduler.runner import build_service
+
+        service = build_service()
+        if JOB_NAME not in service.registry.names():
+            return
+        status.job_registered = True
+
+        last = service.last_run(session, JOB_NAME)
+        if last is not None:
+            status.last_run_at = last.started_at
+            status.last_run_status = last.status
+
+        success = service.last_run(session, JOB_NAME, status="success")
+        if success is not None:
+            status.last_success_at = success.started_at
+
+        failure = service.last_run(session, JOB_NAME, status="failed")
+        if failure is not None:
+            status.last_error = failure.error or failure.message
+            status.last_error_at = failure.started_at
+
+        status.next_run_at = service.next_run_at(session, service.registry.get(JOB_NAME))
+    except Exception as exc:  # noqa: BLE001
+        status.errors.append(f"scheduler state unavailable: {type(exc).__name__}: {exc}")
 
 
 # -------------------------------------------------------------------- status
@@ -359,6 +446,8 @@ def read_status(session: Session, *, days: int = 90, build: bool = True) -> Meta
         except Exception as exc:  # noqa: BLE001
             logger.exception("meta queue build failed")
             status.errors.append(f"queue build failed: {type(exc).__name__}: {exc}")
+
+    _read_scheduler_state(session, status)
 
     try:
         rows = session.query(MetaConversion).all()

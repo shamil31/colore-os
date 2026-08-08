@@ -73,9 +73,11 @@ class MetaConnector(BaseConnector):
         api_version: str = "v23.0",
         access_token: str = "",
         dataset_id: str = "",
+        test_event_code: str = "",
         timeout: int = 20,
         session: requests.Session | None = None,
     ) -> None:
+        self.test_event_code = test_event_code.strip()
         self.app_secret = app_secret.strip()
         self.verify_token = verify_token.strip()
         self.access_token = access_token.strip()
@@ -137,7 +139,12 @@ class MetaConnector(BaseConnector):
 
         raise ValueError(f"Unsupported capability for Meta connector: {capability}")
 
-    def send_conversions(self, events: list[dict[str, Any]]) -> dict[str, Any]:
+    def send_conversions(
+        self,
+        events: list[dict[str, Any]],
+        *,
+        test_event_code: str | None = None,
+    ) -> dict[str, Any]:
         """POST /{dataset_id}/events — the Conversions API.
 
         Refuses rather than pretends when it cannot send. A silent no-op here
@@ -153,10 +160,19 @@ class MetaConnector(BaseConnector):
 
         url = f"{GRAPH_HOST}/{self.api_version}/{self.dataset_id}/events"
 
+        body: dict[str, Any] = {"data": events, "access_token": self.access_token}
+
+        # With a test event code, events appear in Events Manager's Test Events
+        # view and do not affect ad delivery. It is the only way to prove the
+        # pipeline works without putting real traffic against a live account.
+        code = test_event_code if test_event_code is not None else self.test_event_code
+        if code:
+            body["test_event_code"] = code
+
         try:
             response = self._session.post(
                 url,
-                json={"data": events, "access_token": self.access_token},
+                json=body,
                 timeout=self.timeout,
             )
         except requests.RequestException as exc:

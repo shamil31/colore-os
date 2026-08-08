@@ -237,6 +237,72 @@ PY
   fi
 fi
 
+# ---------------------------------------------------------------- scheduler
+
+head_ "Integration scheduler"
+
+if ! systemctl list-unit-files colore-scheduler.service >/dev/null 2>&1 \
+   || ! systemctl cat colore-scheduler >/dev/null 2>&1; then
+  warn "colore-scheduler is not installed — no integration job will ever run"
+elif [ "$(systemctl is-active colore-scheduler 2>/dev/null)" = "active" ]; then
+  ok "scheduler running ($(systemctl show -p ActiveEnterTimestamp --value colore-scheduler | cut -c1-19))"
+else
+  bad "colore-scheduler is not running — queued events will never be sent"
+fi
+
+if [ ! -x "$PY" ]; then
+  warn "cannot read job status: virtualenv python not found"
+else
+  SCHED_FILE=$(mktemp)
+  # The status JSON goes through a file, not a pipe: the reader below is a
+  # heredoc, and a heredoc already owns stdin.
+  (cd "$BACKEND" && "$PY" -m app.scheduler.runner --status >"$SCHED_FILE" 2>/dev/null)
+  if [ ! -s "$SCHED_FILE" ]; then
+    bad "scheduler status could not be read"
+    rm -f "$SCHED_FILE"
+  else
+    "$PY" - "$SCHED_FILE" <<'PY'
+import json, sys
+
+try:
+    with open(sys.argv[1], encoding="utf-8") as handle:
+        data = json.load(handle)
+except Exception as exc:  # noqa: BLE001
+    print(f"  \033[31m✗\033[0m scheduler status is not readable: {exc}")
+    raise SystemExit(1)
+
+jobs = data.get("jobs", [])
+failing = data.get("failing", [])
+
+if not jobs:
+    print("  \033[31m✗\033[0m no integration jobs are registered")
+    raise SystemExit(1)
+
+print(f"  \033[32m✓\033[0m registered jobs: {len(jobs)}")
+for job in jobs:
+    name = job["name"]
+    last = job.get("last_run_at") or "never"
+    nxt = job.get("next_run_at") or "not scheduled"
+    status = job.get("last_status") or "-"
+    mark = "\033[32m✓\033[0m" if status in ("success", "skipped", "-") else "\033[31m✗\033[0m"
+    print(f"  {mark} {name}: last {last[:19]} ({status}), next {nxt[:19]}")
+    if not job.get("available", True):
+        print(f"      unavailable: {job.get('unavailable_reason','')}")
+    if job.get("last_error"):
+        print(f"      last error: {job['last_error'][:90]}")
+
+if failing:
+    print(f"  \033[31m✗\033[0m failed jobs: {', '.join(failing)}")
+    raise SystemExit(1)
+
+print("  \033[32m✓\033[0m failed jobs: none")
+PY
+    SCHED_RC=$?
+    rm -f "$SCHED_FILE"
+    [ "$SCHED_RC" -ne 0 ] && PROBLEMS+=("integration scheduler reports a problem")
+  fi
+fi
+
 # ---------------------------------------------------------------- verdict
 
 printf "\n"

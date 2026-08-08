@@ -53,6 +53,45 @@ class MetaRenderer:
         builder.section("Last synchronization")
         builder.line(self._when(status.last_sync, now=now))
 
+        builder.section("Scheduler")
+        if status.scheduler_running is None:
+            builder.line("unknown — cannot query the service from here")
+        elif status.scheduler_running:
+            builder.line("running")
+        else:
+            builder.line("NOT RUNNING — nothing will be sent until it is started")
+        if not status.job_registered:
+            builder.detail("meta_conversions job is not registered")
+
+        builder.section("Last Run")
+        builder.line(self._when(status.last_run_at, now=now))
+        if status.last_run_status:
+            builder.detail(f"result: {status.last_run_status}")
+
+        builder.section("Next Run")
+        builder.line(self._when(status.next_run_at, now=now, future=True))
+
+        builder.section("Queue")
+        builder.line(
+            f"{status.waiting} waiting, {status.sent} sent, "
+            f"{status.permanent_failure} permanently failed"
+        )
+        builder.detail(
+            f"value currency: {status.currency}"
+            if status.currency
+            else "value currency: not configured — events carry no value"
+        )
+
+        builder.section("Last Success")
+        builder.line(self._when(status.last_success_at, now=now))
+
+        builder.section("Last Error")
+        if status.last_error:
+            builder.line(self._when(status.last_error_at, now=now))
+            builder.detail(status.last_error[:200])
+        else:
+            builder.line("none")
+
         if not status.connected:
             builder.section("Missing configuration")
             for name in dict.fromkeys(status.missing):
@@ -70,9 +109,15 @@ class MetaRenderer:
 
         return builder.build(limit=limit)
 
-    def _when(self, moment: datetime | None, *, now: datetime | None = None) -> str:
+    def _when(
+        self,
+        moment: datetime | None,
+        *,
+        now: datetime | None = None,
+        future: bool = False,
+    ) -> str:
         if moment is None:
-            return "never"
+            return "not scheduled" if future else "never"
 
         now = now or datetime.utcnow()
         stamp = moment.strftime("%H:%M")

@@ -78,14 +78,16 @@ for _ in $(seq 1 "$READY_TIMEOUT"); do
   sleep 1
 done
 
-echo "[5/6] Restarting the Growth AI bot ..."
-if systemctl list-unit-files colore-growth-bot.service >/dev/null 2>&1 \
-   && systemctl is-enabled --quiet colore-growth-bot 2>/dev/null; then
-  systemctl restart colore-growth-bot
-  echo "      colore-growth-bot: $(systemctl is-active colore-growth-bot)"
-else
-  echo "      colore-growth-bot is not installed — skipped"
-fi
+echo "[5/6] Restarting the host services ..."
+for unit in colore-growth-bot colore-scheduler; do
+  if systemctl list-unit-files "$unit.service" >/dev/null 2>&1 \
+     && systemctl is-enabled --quiet "$unit" 2>/dev/null; then
+    systemctl restart "$unit"
+    echo "      $unit: $(systemctl is-active "$unit")"
+  else
+    echo "      $unit is not installed — skipped"
+  fi
+done
 
 echo "[6/6] Running the system doctor ..."
 if [ ! -x "$DOCTOR" ]; then

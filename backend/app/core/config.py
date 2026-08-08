@@ -41,6 +41,20 @@ class Settings(BaseSettings):
     # Meta; without them events are built and queued but never sent.
     META_ACCESS_TOKEN: str = ""
     META_DATASET_ID: str = ""
+    # Sent with events so they land in Events Manager's Test Events view
+    # without affecting ad delivery. Empty means real traffic.
+    META_TEST_EVENT_CODE: str = ""
+
+    # Currency of the amounts Altegio records. Deliberately empty by default:
+    # the salon prices in RSD while the ad account bills in EUR, and a wrong
+    # guess misstates every Purchase value by roughly 100x. When unset, events
+    # carry no value at all rather than a value nobody verified.
+    BUSINESS_CURRENCY: str = ""
+
+    # Scheduler
+    SCHEDULER_TICK_SECONDS: int = 60
+    META_SYNC_INTERVAL_SECONDS: int = 900
+    META_SYNC_DAYS: int = 14
 
     # Outbound: a workflow Coloré OS starts. Distinct from N8N_WEBHOOK_URL
     # above, which is where the event-bus adapter mirrors telemetry.
@@ -53,6 +67,7 @@ class Settings(BaseSettings):
     GROWTH_INBOUND_SECRET: str = ""
 
     TEST_DATABASE_URL: str = ""
+    SQL_ECHO: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",

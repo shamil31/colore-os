@@ -52,6 +52,7 @@ def build_connector_gateway() -> ConnectorGateway:
             api_version=settings.META_API_VERSION,
             access_token=settings.META_ACCESS_TOKEN,
             dataset_id=settings.META_DATASET_ID,
+            test_event_code=settings.META_TEST_EVENT_CODE,
         )
     )
 

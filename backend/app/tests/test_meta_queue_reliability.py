@@ -75,12 +75,14 @@ class Connector:
         self.fail_with = fail_with
         self.bad_event_ids = set(bad_event_ids)
         self.batches = []
+        self.test_event_codes = []
 
     def missing_conversion_settings(self):
         return ()
 
-    def send_conversions(self, events):
+    def send_conversions(self, events, *, test_event_code=None):
         self.batches.append([e["event_id"] for e in events])
+        self.test_event_codes.append(test_event_code)
 
         if self.fail_with is not None:
             raise self.fail_with

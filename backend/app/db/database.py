@@ -7,7 +7,9 @@ from app.core.config import settings
 
 engine = create_engine(
     settings.DATABASE_URL,
-    echo=True,
+    # Off by default since the scheduler runs every minute: echoed SQL floods
+    # the journal and eventually the disk. Set SQL_ECHO=true to debug.
+    echo=settings.SQL_ECHO,
 )
 
 SessionLocal = sessionmaker(

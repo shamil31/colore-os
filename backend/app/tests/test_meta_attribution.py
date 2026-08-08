@@ -100,7 +100,10 @@ def test_a_booking_yields_a_schedule_event():
     assert events[0].event_id == "booked-1"
 
 
-def test_an_arrival_yields_a_purchase_from_the_physical_store():
+def test_an_arrival_yields_a_purchase_from_the_physical_store(monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "BUSINESS_CURRENCY", "RSD")
     events = attribution.event_from_record(record(attendance=1))
 
     outcomes = {e.outcome: e for e in events}
@@ -399,7 +402,7 @@ def test_a_refused_send_returns_events_to_the_queue(monkeypatch):
     monkeypatch.setattr(
         connector,
         "send_conversions",
-        lambda events: (_ for _ in ()).throw(
+        lambda events, **kwargs: (_ for _ in ()).throw(
             MetaSendError("Invalid token", status_code=400, error_code=190)
         ),
     )

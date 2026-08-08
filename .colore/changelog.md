@@ -137,6 +137,15 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: a batch that Meta refuses permanently is now halved and re-sent to isolate the offending event, instead of condemning its neighbours. Cost is at most 2·log2(n) extra requests; the alternative was losing up to 100 confirmed outcomes per bad event.
 - Note: an expired token and an unknown dataset are classified temporary, not permanent, although the P0 brief lists invalid dataset as a candidate for permanent_failure. The event is valid in both cases and only the configuration is wrong; marking them permanent would recreate the exact defect being fixed. Deviation is deliberate and reversible.
 
+### VH-017
+- Date: 2026-08-08
+- Event: P0-003 — universal integration scheduler. Generic job registry, interval/manual/dry-run/test execution, persisted run history, and per-job isolation. Meta conversions became the first job. Currency moved to configuration. Meta test events supported. Doctor verifies scheduler state; Telegram `Meta` reports Scheduler, Last Run, Next Run, Queue, Last Success, Last Error.
+- Status: DONE
+- Evidence: `backend/app/scheduler/`, `backend/app/growth/meta_job.py`, migration `d4e5f6a7b8c9`, `infrastructure/colore-scheduler.service`. 32 new tests, 254 passing. Service active on the host; doctor reports registered jobs, last and next execution, and failed jobs.
+- Note: this closed the gap found in P0-002 — `send_pending` was reachable only through `synchronise`, which nothing called. With a valid token and dataset, zero events would ever have been transmitted.
+- Note: `BUSINESS_CURRENCY` defaults to empty and an unset currency means events carry no value at all. The salon prices in RSD while its ad account bills in EUR; a wrong guess misstates every Purchase by roughly 100x, and no value is safer than an unverified one.
+- Note: SQLAlchemy `echo` was hardcoded True. Harmless before, but a service ticking every 60s floods the journal and eventually the disk. Now `SQL_ECHO`, default False.
+
 ## Entry Template
 
 ### VH-XXX
