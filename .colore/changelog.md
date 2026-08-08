@@ -112,6 +112,14 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Evidence: `backend/app/growth/{commands,system_status,runtime_reader,bot}.py`, `infrastructure/colore-growth-bot.service`. 142 tests passing. Bot `@Colore_Growth_bot` active under systemd, first owner command answered 10:02.
 - Note: the bot runs on the host rather than in the backend container. Every question it answers needs the git tree, `.colore/`, `scripts/doctor.sh` or the sibling containers — none of which the image contains. `deploy.sh` now restarts it, so a deploy cannot leave the bot on an older commit.
 
+### VH-014
+- Date: 2026-08-08
+- Event: GROWTH-008 — Growth AI connected to real business data. Altegio verified live and reporting: Colore beauty lab (id 1316083), 334 clients, 90 services, 4 specialists, 47 appointments in 30 days. New `Аналитика` command returns leads, bookings, conversion, missing data and recommendations. Meta Business decisions documented as R-003.
+- Status: DONE
+- Evidence: `backend/app/growth/{business_data,analytics}.py`, `docs/research/META_BUSINESS_DECISIONS.md`, R-003 in `research.md`. 166 tests passing.
+- Note: `ALTEGIO_COMPANY_ID=2403` in the environment is stale — Altegio answers "No location with identifier 2403 found". The real id is 1316083. Company id is now resolved from the API at runtime and the mismatch is reported rather than silently preferred.
+- Note: conversion is reported only over leads that can be attributed to a booking by phone. Bookings divided by leads was rejected as a metric: most of the salon's 47 appointments have no connection to Growth AI, so that ratio would look like an answer and mean nothing.
+
 ## Entry Template
 
 ### VH-XXX

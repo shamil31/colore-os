@@ -20,6 +20,7 @@ Research to come back to. Check this before starting work.
 |---|---|---|---|
 | R-001 | Recovered OpenHands Domain Model | Before Altegio | Pending |
 | R-002 | Growth AI integration gaps (4 unverified contracts) | Before the integration each gap blocks | Pending |
+| R-003 | Meta Business decisions required from Product Owner (5) | Before Meta goes live | Pending |
 
 ## Rules
 
@@ -183,12 +184,58 @@ Close G-1 and G-2 together by capturing one real Altegio webhook delivery agains
 
 ---
 
+## R-003 — Meta Business Decisions Required From Product Owner
+
+| Field | Value |
+|---|---|
+| **ID** | R-003 |
+| **Title** | Meta Business decisions required from Product Owner (5) |
+| **Status** | Pending Review |
+| **Source** | `docs/research/META_BUSINESS_DECISIONS.md` (2026-08-08) |
+| **Discovered** | 2026-08-08 (GROWTH-008) |
+| **Deletion risk** | Low |
+
+### Description
+
+Meta cannot go live on engineering effort alone. Five decisions belong to the Product Owner:
+
+1. Start Business Verification with the salon's legal entity.
+2. Is ad-spend reporting wanted? If yes, connect Marketing API **Limited Access now**.
+3. Approve the permission list for App Review.
+4. Provide App ID, App Secret and a verify token; confirm n8n stays the subscription holder.
+5. Is offline conversion reporting wanted? If yes, provide the Dataset ID and decide on the privacy notice for sending hashed client phones to Meta.
+
+### Why it matters
+
+Decision 2 has a timing trap that is easy to miss. Meta requires "at least 500 Marketing API calls in the last 15 days" with "an error rate of less than 15%" before Full Access can be requested. Full Access cannot be applied for on the day it is needed — the integration must already have been calling the API for a fortnight. Postponing the connection postpones ad reporting by two weeks beyond the decision.
+
+Decision 5 depends on cross-channel identity: an Instagram-sourced visit cannot be reported back to Meta because `IGSID` is app-scoped and is not a phone. That is [[R-001]]'s `identity` module territory.
+
+### When to return
+
+Before any Meta credential is issued. Decisions 1 and 2 have external lead times and should start first.
+
+### Related Roadmap Phase
+
+Stage 1 — Growth AI Foundation; Stage 2 — Revenue Stability (ad attribution).
+
+### Related ADR
+
+`adr/ADR-002-growth-ai-foundation.md`
+
+### Recommendation
+
+Take decisions 1 and 2 immediately regardless of the rest — both are clocks that only start when the Product Owner acts, and neither blocks or is blocked by engineering.
+
+---
+
 ## Index
 
 | ID | Title | Status | Deletion risk |
 |---|---|---|---|
 | R-001 | Recovered OpenHands Domain Model | Pending Review | **High** |
 | R-002 | Growth AI Integration Gaps | Pending Review | Low |
+| R-003 | Meta Business Decisions Required From Product Owner | Pending Review | Low |
 
 ## Source of Truth
 

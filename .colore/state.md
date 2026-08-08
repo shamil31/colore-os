@@ -53,7 +53,9 @@ Maintained manually. Never infer state from code structure alone.
   - Growth AI flow `Meta → n8n → Coloré OS → Growth AI → Telegram`, verified live against the deployed container 2026-08-08
   - Telegram live: bot `@Colore_Growth_bot`, first real message delivered to the owner 2026-08-08
   - Growth AI Brain v0.1 — four Product Owner commands over Telegram (`Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`)
-  - 142 tests passing
+  - Altegio connected and verified live 2026-08-08: Colore beauty lab (company id **1316083**), 334 clients, 90 services, 4 specialists, appointments readable by date range
+  - Growth AI Business Data — `Аналитика` command: leads, bookings, conversion, missing data, recommendations
+  - 166 tests passing
 
 ## Deployment Source of Truth
 
@@ -101,6 +103,8 @@ See [`architecture.md`](architecture.md) for full detail.
 - Timestamp/identifier of the first live booking initiated by Coloré OS: TODO
 - Campaign baseline values for conversion and uplift: TODO
 - SLA for Integrilla delivery and retry guarantees: TODO
+- Five Meta Business decisions belonging to the Product Owner: see R-003 in [`research.md`](research.md) and [`../docs/research/META_BUSINESS_DECISIONS.md`](../docs/research/META_BUSINESS_DECISIONS.md)
+- Correct value for `ALTEGIO_COMPANY_ID` in the environment: currently `2403`, which Altegio does not recognise. Real id is `1316083`; the code resolves it from the API and no longer depends on the setting.
 
 ## Source of Truth
 

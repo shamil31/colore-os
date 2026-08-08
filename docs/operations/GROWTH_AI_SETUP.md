@@ -173,6 +173,7 @@ The bot `@Colore_Growth_bot` answers the Product Owner. Four commands:
 | `Что нового?` | today's `.colore/changelog.md` entries and today's commits |
 | `Что требует моего решения?` | open Review Queue entries, project Unknowns, blockers on the active task |
 | `Что делаем дальше?` | current sprint and active task from `sprint.md` and `next.md` |
+| `Аналитика` | leads, bookings, conversion, missing data and recommendations — live from Altegio and `growth_events` |
 
 Anything else gets the command list back. Messages from anyone other than
 `TELEGRAM_OWNER_ID` are logged and ignored without a reply.
@@ -207,6 +208,27 @@ older commit.
 
 It uses long polling, not a webhook. `setWebhook` would irreversibly disable
 `getUpdates` for this bot, and polling needs no inbound port.
+
+### How `Аналитика` counts
+
+| Figure | Source | Basis |
+|---|---|---|
+| Leads | `growth_events` in Coloré OS | inbound client messages Growth AI processed |
+| Bookings | Altegio `/records` | appointments in the period, `deleted` excluded, split by the official attendance codes (`-1` no-show, `0` pending, `1` arrived, `2` confirmed) |
+| Conversion | both | **only** leads attributable to a booking |
+
+Conversion is never bookings ÷ leads. Most of the salon's appointments have
+nothing to do with Growth AI, so that ratio would look like an answer and mean
+nothing. A lead counts as converted when its phone matches an Altegio client
+*and* that client has a booking created **after** the lead arrived — a client
+who already had an appointment did not convert because of a message.
+
+Leads that cannot be attributed are reported with the reason. Instagram is the
+common case: an `IGSID` is app-scoped and is not a phone number.
+
+The company id is resolved from Altegio at runtime, not from
+`ALTEGIO_COMPANY_ID`. That setting is stale on this server (`2403`, which
+Altegio does not recognise) and the mismatch is reported in the answer.
 
 ## What this does not do yet
 

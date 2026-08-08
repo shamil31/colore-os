@@ -28,6 +28,7 @@ class AltegioConnector(BaseConnector):
     GET_CLIENTS_CAPABILITY = "altegio.get_clients"
     GET_ALL_CLIENTS_RAW_CAPABILITY = "altegio.get_all_clients_raw"
     GET_ALL_CLIENT_RECORDS_RAW_CAPABILITY = "altegio.get_all_client_records_raw"
+    GET_RECORDS_RANGE_CAPABILITY = "altegio.get_records_range"
 
     def __init__(
         self,
@@ -54,6 +55,7 @@ class AltegioConnector(BaseConnector):
             self.GET_CLIENTS_CAPABILITY,
             self.GET_ALL_CLIENTS_RAW_CAPABILITY,
             self.GET_ALL_CLIENT_RECORDS_RAW_CAPABILITY,
+            self.GET_RECORDS_RANGE_CAPABILITY,
             # Read only, deliberately. Altegio stays the system of record and
             # Coloré OS writes nothing to it (ADR-002 decision 6). Declaring a
             # write capability here would let a future caller reach for one.
@@ -112,6 +114,18 @@ class AltegioConnector(BaseConnector):
             company_id = _required_int(params, "company_id")
             page_size = _optional_int(params, "page_size", default=200)
             return data_client.get_all_clients_raw(company_id, page_size=page_size)
+        if capability == self.GET_RECORDS_RANGE_CAPABILITY:
+            company_id = _required_int(params, "company_id")
+            date_from = params.get("date_from")
+            date_to = params.get("date_to")
+            if not isinstance(date_from, str) or not isinstance(date_to, str):
+                raise ValueError("Missing or invalid 'date_from'/'date_to' (expected YYYY-MM-DD)")
+            return data_client.get_all_records_raw(
+                company_id,
+                date_from=date_from,
+                date_to=date_to,
+                page_size=_optional_int(params, "page_size", default=200),
+            )
         if capability == self.GET_ALL_CLIENT_RECORDS_RAW_CAPABILITY:
             company_id = _required_int(params, "company_id")
             client_id = _required_int(params, "client_id")

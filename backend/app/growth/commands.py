@@ -10,11 +10,14 @@ a stray `_` or `*` in a commit subject cannot break the reply.
 
 from __future__ import annotations
 
+import logging
 import re
 from datetime import date
 from pathlib import Path
 
 from app.growth import runtime_reader, system_status
+
+logger = logging.getLogger("colore.commands")
 
 TELEGRAM_LIMIT = 4096
 
@@ -22,7 +25,10 @@ CMD_STATUS = "status"
 CMD_NEWS = "news"
 CMD_DECISIONS = "decisions"
 CMD_NEXT = "next"
+CMD_ANALYTICS = "analytics"
 CMD_HELP = "help"
+
+ANALYTICS_DAYS = 30
 
 # Statuses that mean an entry is still open. Matches the definition in
 # .colore/bootstrap.md: Rejected and Closed are not reported.
@@ -51,6 +57,13 @@ _ALIASES: dict[str, tuple[str, ...]] = {
         "дальше",
         "next",
         "/next",
+    ),
+    CMD_ANALYTICS: (
+        "аналитика",
+        "analytics",
+        "/analytics",
+        "/аналитика",
+        "цифры",
     ),
     CMD_HELP: ("help", "/help", "/start", "помощь", "команды"),
 }
@@ -85,7 +98,32 @@ def handle(command: str, root: Path | None = None) -> str:
         return decisions_answer(root)
     if command == CMD_NEXT:
         return next_answer(root)
+    if command == CMD_ANALYTICS:
+        return analytics_answer()
     return help_answer()
+
+
+def analytics_answer(days: int = ANALYTICS_DAYS) -> str:
+    """Leads, bookings, conversion, gaps and advice — from real data only.
+
+    Imported lazily: this is the only command that reaches the database and
+    Altegio, and the other three must keep working when either is down.
+    """
+    from app.growth import analytics
+
+    try:
+        report = analytics.build_report(days=days)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("analytics failed")
+        return (
+            "📈 АНАЛИТИКА\n"
+            "\n"
+            f"Не удалось собрать данные: {type(exc).__name__}: {exc}\n"
+            "\n"
+            "Ничего не показываю, чтобы не выдумать цифры."
+        )
+
+    return _fit(analytics.render(report))
 
 
 # ------------------------------------------------------------------- статус
@@ -269,6 +307,7 @@ def help_answer() -> str:
         "• Что нового? — что сделано сегодня по журналу проекта и коммитам\n"
         "• Что требует моего решения? — открытые исследования и вопросы\n"
         "• Что делаем дальше? — текущий спринт и активная задача\n"
+        "• Аналитика — лиды, записи, конверсия и чего не хватает\n"
         "\n"
         "Отвечаю только на факты из репозитория и живых проверок. "
         "Если данных нет — так и скажу."

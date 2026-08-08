@@ -147,6 +147,74 @@ class AltegioDataClient:
 
         return all_clients
 
+    def get_records_page_raw(
+        self,
+        company_id: int,
+        *,
+        page: int,
+        count: int,
+        date_from: str,
+        date_to: str,
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Every appointment in a date range, across all clients.
+
+        The per-client variant below answers "what did this person book"; this
+        one answers "what did the salon book", which is what any conversion or
+        occupancy figure needs. Fetching it per client would be 334 requests
+        against a 5 req/sec limit.
+        """
+        params: dict[str, Any] = {
+            "start_date": date_from,
+            "end_date": date_to,
+            "count": count,
+            "page": page,
+        }
+
+        query = urlencode(params)
+        url = f"{self.endpoints.records(company_id)}?{query}"
+
+        payload = self.http_client.get(url, headers=self._auth_headers())
+        data = _extract_data_list(payload, "records")
+
+        meta = payload.get("meta") if isinstance(payload, dict) else None
+        if not isinstance(meta, dict):
+            meta = {}
+
+        return data, meta
+
+    def get_all_records_raw(
+        self,
+        company_id: int,
+        *,
+        date_from: str,
+        date_to: str,
+        page_size: int = 200,
+        max_pages: int = 25,
+    ) -> list[dict[str, Any]]:
+        page = 1
+        all_records: list[dict[str, Any]] = []
+
+        while page <= max_pages:
+            batch, meta = self.get_records_page_raw(
+                company_id,
+                page=page,
+                count=page_size,
+                date_from=date_from,
+                date_to=date_to,
+            )
+            if not batch:
+                break
+
+            all_records.extend(batch)
+
+            next_page = _resolve_next_page(meta, page=page, page_size=page_size, batch_size=len(batch))
+            if next_page is None:
+                break
+
+            page = next_page
+
+        return all_records
+
     def get_client_records_page_raw(
         self,
         company_id: int,

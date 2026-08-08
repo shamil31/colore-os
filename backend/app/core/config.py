@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     ALTEGIO_LOGIN: str = ""
     ALTEGIO_PASSWORD: str = ""
     ALTEGIO_TIMEOUT: int = 20
+    # Declared so a stale value is visible and can be reported. The company id
+    # is resolved from the API at runtime, never from this setting.
+    ALTEGIO_COMPANY_ID: str = ""
 
     # Growth AI channels. Every one of these is optional: a connector without
     # its settings registers anyway, reports itself unconfigured, and turns
