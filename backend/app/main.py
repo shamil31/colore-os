@@ -7,6 +7,7 @@ from app.api.ai import router as ai_router
 from app.api.booking import router as booking_router
 from app.api.clients import router as clients_router
 from app.api.conversations import router as conversations_router
+from app.api.growth import router as growth_router
 from app.core.config import settings
 from app.core.startup import log_runtime_info, validate_environment, verify_ui
 from app.db.database import test_connection
@@ -47,6 +48,7 @@ app.include_router(clients_router)
 app.include_router(conversations_router)
 app.include_router(ai_router)
 app.include_router(booking_router)
+app.include_router(growth_router)
 
 # Serves app/static/index.html at /ui/ from the same origin as the API,
 # so the browser does not block the UI's requests with CORS.

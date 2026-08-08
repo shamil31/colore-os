@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     N8N_WORKFLOW_HEADER: str = "X-Colore-Token"
     N8N_WORKFLOW_TOKEN: str = ""
 
+    # Shared secret for the n8n -> Coloré OS hop. Unset disables
+    # POST /growth/events rather than leaving it open: :8000 is published.
+    GROWTH_INBOUND_SECRET: str = ""
+
     TEST_DATABASE_URL: str = ""
 
     model_config = SettingsConfigDict(
