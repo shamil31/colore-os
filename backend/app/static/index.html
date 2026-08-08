@@ -48,12 +48,32 @@ const API = "";
 let current = null;          // current conversation object
 let messages = [];           // history of the current conversation, loaded from the server
 
+// Every API route is protected by default (see app/core/security.py). This
+// page is a static file with no server-side session, so the key is asked for
+// once per browser tab and kept in sessionStorage — never written into the
+// file itself, never persisted to disk.
+function apiKey() {
+  let key = sessionStorage.getItem("colore_api_key");
+  if (!key) {
+    key = window.prompt("Coloré OS API key:") || "";
+    sessionStorage.setItem("colore_api_key", key);
+  }
+  return key;
+}
+
 async function api(method, path, body) {
+  const headers = body ? {"Content-Type": "application/json"} : {};
+  headers["X-Colore-Api-Key"] = apiKey();
+
   const res = await fetch(API + path, {
     method,
-    headers: body ? {"Content-Type": "application/json"} : {},
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
+  if (res.status === 401) {
+    // A rejected key must not be reused silently on every subsequent call.
+    sessionStorage.removeItem("colore_api_key");
+  }
   const data = await res.json().catch(() => null);
   if (!res.ok) throw new Error((data && data.detail) || (method + " " + path + " → " + res.status));
   return data;

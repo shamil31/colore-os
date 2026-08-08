@@ -155,6 +155,15 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: a first-run bug in the P0-003 scheduler was found in production and fixed. `due_jobs` read the clock for `now`, then `next_run_at` read it again microseconds later, so a job with no history was never due. No job would ever have run. The P0-003 test missed it because it used a frozen clock; the regression test now uses a real one.
 - Blocker found by the first live send: every `business_messaging` event was refused with HTTP 400 OAuthException Invalid parameter, while every `physical_store` event was accepted. Lead, Schedule and AppointmentCancelled are therefore not transmitting. Not changed here — P0-004 forbids behaviour changes.
 
+### VH-019
+- Date: 2026-08-08
+- Event: P0-005 — security gate. Deny-by-default access control (`app/core/security.py`) protects every route by default; a route is public only if named in an explicit allowlist. Closes a real breach: `/growth/events`, `/growth/events/{id}`, `/growth/integrations`, `/conversations` and `/clients` returned client names, phone numbers and message text to anonymous callers over the public internet. Sweep found two more exposed routes not in the mission's list — `/ai/*` and `/booking/proposal` — now also protected. `/db` protected too (infra fingerprinting). `COLORE_API_TOKEN` (header `X-Colore-Api-Key`) is the new secret; `GROWTH_INBOUND_SECRET` (n8n ingest) and Meta's own webhook verification are unchanged and unaffected, by design — the middleware steps aside for both.
+- Status: DONE
+- Evidence: 293 tests passing, 26 in the new `test_security.py`. Doctor's new "Access control" section proves each protected path rejects no-key and wrong-key and accepts the correct key, and that public paths never require one. `curl https://api.colorebl.com/growth/events/1` previously returned 200 with client name, phone and message text — verification after deploy below.
+- Note: the static `/ui` conversation page called every business-data route with no auth of its own. Rather than break it, it now asks for the key once per browser tab (sessionStorage, never written into the file) and attaches it to its own requests.
+- Note: the first version of the coverage test walked `app.routes` directly and found zero business routes — this FastAPI build wraps included routers in an opaque `_IncludedRouter`, one level above the real `APIRoute` objects, so the test passed by checking nothing. Rewritten to flatten `.original_router.routes` and assert it actually reaches at least 15 real routes, so a walk that finds nothing again fails loudly instead of passing quietly.
+- Blocker unaffected by this change: the queue's `business_messaging` events (P1-001) still do not transmit — this task was scoped to access control only.
+
 ## Entry Template
 
 ### VH-XXX

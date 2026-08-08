@@ -9,6 +9,7 @@ from app.api.clients import router as clients_router
 from app.api.conversations import router as conversations_router
 from app.api.growth import router as growth_router
 from app.core.config import settings
+from app.core.security import api_key_middleware
 from app.core.startup import (
     log_runtime_info,
     log_salon_profile,
@@ -34,6 +35,10 @@ app = FastAPI(
     version=settings.VERSION,
     lifespan=lifespan,
 )
+
+# Deny by default. Registered before any route so nothing can be added later
+# that is accidentally public — see app/core/security.py for the allowlist.
+app.middleware("http")(api_key_middleware)
 
 
 @app.get("/")

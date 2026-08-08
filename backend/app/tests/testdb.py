@@ -16,6 +16,13 @@ from app.core.config import settings
 from app.db.database import get_db
 from app.main import app
 
+# Every route is protected by default (app/core/security.py). Tests need a
+# stable key rather than whatever happens to be in the deployment's .env —
+# using a real secret here would mean tests pass or fail depending on what is
+# configured on the machine running them.
+TEST_API_TOKEN = "test-colore-api-key"
+settings.COLORE_API_TOKEN = TEST_API_TOKEN
+
 if settings.TEST_DATABASE_URL:
     TEST_DATABASE_URL = settings.TEST_DATABASE_URL
     CONNECT_ARGS = {}
@@ -48,4 +55,4 @@ def override_get_db():
 
 
 app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
+client = TestClient(app, headers={"X-Colore-Api-Key": TEST_API_TOKEN})

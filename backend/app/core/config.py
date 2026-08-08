@@ -69,6 +69,11 @@ class Settings(BaseSettings):
     # POST /growth/events rather than leaving it open: :8000 is published.
     GROWTH_INBOUND_SECRET: str = ""
 
+    # Read access to business data (X-Colore-Api-Key). Used by the Growth AI
+    # bot, the doctor and the owner. Unset closes every protected endpoint —
+    # see app/core/security.py.
+    COLORE_API_TOKEN: str = ""
+
     TEST_DATABASE_URL: str = ""
     SQL_ECHO: bool = False
 

@@ -38,6 +38,15 @@ http_code() {
   printf '%s' "${code:-000}"
 }
 
+# Same as http_code, but with the API key attached when one is configured.
+# The key itself is never echoed or logged by this script.
+http_code_auth() {
+  local code
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 \
+    -H "X-Colore-Api-Key: ${API_TOKEN:-}" "$1" 2>/dev/null)
+  printf '%s' "${code:-000}"
+}
+
 # ---------------------------------------------------------------- deployment
 
 head_ "Deployment"
@@ -149,6 +158,14 @@ if [ -n "$CONTAINER_UP" ]; then
 
   MODEL=$(docker exec "$CONTAINER" printenv OPENAI_MODEL 2>/dev/null)
   [ -n "$MODEL" ] && ok "OPENAI_MODEL: $MODEL"
+
+  # Read once here, used by every authenticated check below. Never printed.
+  API_TOKEN=$(docker exec "$CONTAINER" printenv COLORE_API_TOKEN 2>/dev/null)
+  if [ -n "$API_TOKEN" ]; then
+    ok "COLORE_API_TOKEN: YES"
+  else
+    bad "COLORE_API_TOKEN: NO — every protected endpoint returns 503, not 200"
+  fi
 fi
 
 # ---------------------------------------------------------------- http
@@ -165,13 +182,63 @@ for path in /docs /ui/; do
   fi
 done
 
+# ------------------------------------------------------------- security
+
+head_ "Access control"
+
+note "public (no key required):"
+for path in / /docs /openapi.json; do
+  code=$(http_code "${BASE_URL}${path}")
+  if [ "$code" = "200" ]; then
+    ok "GET $path → 200, no key"
+  else
+    bad "GET $path → $code (expected 200 with no key)"
+  fi
+done
+
+note "protected (business data — must reject a missing or wrong key):"
+for path in /clients /conversations /growth/events /growth/integrations; do
+  code=$(http_code "${BASE_URL}${path}")
+  if [ "$code" = "401" ] || [ "$code" = "503" ]; then
+    ok "GET $path (no key) → $code, correctly rejected"
+  elif [ "$code" = "200" ]; then
+    bad "GET $path (no key) → 200 — BUSINESS DATA IS PUBLIC"
+  else
+    warn "GET $path (no key) → $code (expected 401 or 503)"
+  fi
+
+  wrong=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 \
+    -H "X-Colore-Api-Key: wrong-key-doctor-probe" "${BASE_URL}${path}" 2>/dev/null)
+  if [ "$wrong" = "401" ] || [ "$wrong" = "503" ]; then
+    ok "GET $path (wrong key) → $wrong, correctly rejected"
+  elif [ "$wrong" = "200" ]; then
+    bad "GET $path (wrong key) → 200 — a wrong key is being accepted"
+  fi
+
+  if [ -n "${API_TOKEN:-}" ]; then
+    right=$(http_code_auth "${BASE_URL}${path}")
+    if [ "$right" = "200" ]; then
+      ok "GET $path (correct key) → 200"
+    else
+      bad "GET $path (correct key) → $right (expected 200) — owner access is broken"
+    fi
+  fi
+done
+
+if [ -f "$REPO/backend/app/core/security.py" ]; then
+  ok "deny-by-default middleware present in source (app/core/security.py)"
+else
+  bad "app/core/security.py is missing from source"
+fi
+
 # ---------------------------------------------------------------- database
 
 head_ "Database"
 
-DB_CODE=$(http_code "${BASE_URL}/db")
+DB_CODE=$(http_code_auth "${BASE_URL}/db")
 if [ "$DB_CODE" = "200" ]; then
-  PGVER=$(curl -s --max-time 10 "${BASE_URL}/db" 2>/dev/null | sed -n 's/.*"postgres":"\([^"]*\).*/\1/p' | cut -c1-40)
+  PGVER=$(curl -s --max-time 10 -H "X-Colore-Api-Key: ${API_TOKEN:-}" "${BASE_URL}/db" 2>/dev/null \
+    | sed -n 's/.*"postgres":"\([^"]*\).*/\1/p' | cut -c1-40)
   ok "PostgreSQL reachable from the app (${PGVER:-connected})"
 else
   bad "GET /db → $DB_CODE — the app cannot reach PostgreSQL"
@@ -182,9 +249,10 @@ fi
 head_ "Conversation endpoint"
 
 # Read-only on purpose: the doctor must not create demo data.
-CONV_CODE=$(http_code "${BASE_URL}/conversations")
+CONV_CODE=$(http_code_auth "${BASE_URL}/conversations")
 if [ "$CONV_CODE" = "200" ]; then
-  COUNT=$(curl -s --max-time 10 "${BASE_URL}/conversations" 2>/dev/null | grep -o '"id"' | grep -c . || echo 0)
+  COUNT=$(curl -s --max-time 10 -H "X-Colore-Api-Key: ${API_TOKEN:-}" "${BASE_URL}/conversations" 2>/dev/null \
+    | grep -o '"id"' | grep -c . || echo 0)
   ok "GET /conversations → 200 ($COUNT conversation(s))"
 else
   bad "GET /conversations → $CONV_CODE (expected 200)"

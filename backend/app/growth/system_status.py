@@ -213,7 +213,15 @@ def integration_checks(api_base: str = "", timeout: int = 10) -> list[Check]:
     try:
         import requests
 
-        response = requests.get(f"{api_base}/growth/integrations", timeout=timeout)
+        from app.core.config import settings
+
+        headers = {}
+        if settings.COLORE_API_TOKEN:
+            headers["X-Colore-Api-Key"] = settings.COLORE_API_TOKEN
+
+        response = requests.get(
+            f"{api_base}/growth/integrations", headers=headers, timeout=timeout
+        )
         response.raise_for_status()
         payload = response.json()
     except Exception as exc:  # noqa: BLE001

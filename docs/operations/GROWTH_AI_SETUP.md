@@ -24,15 +24,33 @@ Decision basis: `.colore/adr/ADR-002-growth-ai-foundation.md`.
 | | |
 |---|---|
 | `GROWTH_INBOUND_SECRET` | set in `/opt/colore-os/docker/.env` (2026-08-08) |
+| `COLORE_API_TOKEN` | set in both env files (2026-08-08) — see [Security](#security) below |
 | n8n | `https://n8n.colorebl.com`, container `colore-n8n` |
 | Database | `growth_events`, `growth_actions` created by migration `a1b2c3d4e5f6` |
 
 Everything else is unset, deliberately.
 
+## Security
+
+Every route that returns business data — `/growth/events`, `/growth/events/{id}`,
+`/growth/integrations`, `/conversations`, `/clients`, `/ai/*`, `/booking/*`, `/db`
+— requires `X-Colore-Api-Key: <COLORE_API_TOKEN>`. This is deny-by-default
+(`backend/app/core/security.py`): a route not explicitly listed as public is
+protected automatically, including ones written after this note.
+
+Public without a key: `/`, `/docs`, `/openapi.json`, `/ui` (the static page
+itself; it prompts for the key in-browser and attaches it to its own calls).
+
+Self-authenticated with their own secret, not this key: `POST /growth/events`
+(n8n's `X-Colore-Token`) and `/growth/webhook/meta` (Meta's own verification).
+
+An unset `COLORE_API_TOKEN` returns `503` on every protected route rather than
+opening it — the same fail-closed rule as `GROWTH_INBOUND_SECRET`.
+
 ## Check what is live right now
 
 ```bash
-curl -s http://localhost:8000/growth/integrations | python3 -m json.tool
+curl -s -H "X-Colore-Api-Key: $COLORE_API_TOKEN" http://localhost:8000/growth/integrations | python3 -m json.tool
 ```
 
 `configured: false` plus a `missing_configuration` list is the answer to
@@ -145,8 +163,8 @@ accept self-signed ones.
 ## Reading the trace
 
 ```bash
-curl -s http://localhost:8000/growth/events | python3 -m json.tool
-curl -s http://localhost:8000/growth/events/1 | python3 -m json.tool
+curl -s -H "X-Colore-Api-Key: $COLORE_API_TOKEN" http://localhost:8000/growth/events | python3 -m json.tool
+curl -s -H "X-Colore-Api-Key: $COLORE_API_TOKEN" http://localhost:8000/growth/events/1 | python3 -m json.tool
 ```
 
 Skips are recorded, not silent. `skip_reason` will be one of:

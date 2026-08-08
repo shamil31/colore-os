@@ -55,8 +55,11 @@ Maintained manually. Never infer state from code structure alone.
   - Growth AI Brain v0.1 — four Product Owner commands over Telegram (`Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`)
   - Altegio connected and verified live 2026-08-08: Colore beauty lab (company id **1316083**), 334 clients, 90 services, 4 specialists, appointments readable by date range
   - Growth AI Business Data — `Аналитика` command: leads, bookings, conversion, missing data, recommendations
-  - Attribution loop: five confirmed outcomes → Conversions API events, queued in `meta_conversions` (migration `b2c3d4e5f6a7`); Telegram command `Meta`. 235 events queued from live Altegio data, 0 sent — no Meta credentials on this server.
-  - 195 tests passing
+  - Attribution loop: five confirmed outcomes → Conversions API events, queued in `meta_conversions` (migration `b2c3d4e5f6a7`); Telegram command `Meta`. 235 events queued from live Altegio data.
+  - Universal integration scheduler (`backend/app/scheduler/`, P0-003) — generic job registry, `colore-scheduler` systemd service; Meta conversions is the first registered job (`backend/app/core/jobs.py`).
+  - Platform configuration unified on one salon profile (`backend/app/core/salon.py`, P0-004): `SALON_NAME/COUNTRY/TIMEZONE/CURRENCY/LANGUAGE/LOCALE`. `SALON_CURRENCY=RSD`, evidence-based. `META_DATASET_ID=1344912060408162` production. First real Meta transmission: 3 `Purchase` events accepted.
+  - Security gate (`backend/app/core/security.py`, P0-005, 2026-08-08): deny-by-default access control on every route. Closed a real breach — `/growth/events`, `/growth/events/{id}`, `/growth/integrations`, `/conversations`, `/clients`, plus `/ai/*`, `/booking/*` and `/db` found by sweep, all returned business data to anonymous callers before this. New secret `COLORE_API_TOKEN` (header `X-Colore-Api-Key`); `GROWTH_INBOUND_SECRET` and Meta's own webhook verification unaffected by design.
+  - 293 tests passing
 
 ## Deployment Source of Truth
 
