@@ -129,6 +129,14 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: events are built only when a strong identifier (phone or email) exists. A name is not an identifier, so name-only records are skipped rather than sent unattributable. Instagram leads produce no event: IGSID is app-scoped and is not a phone.
 - Blocker: nothing is sent. `META_ACCESS_TOKEN` and `META_DATASET_ID` do not exist on this server, so the queue accumulates instead of transmitting.
 
+### VH-016
+- Date: 2026-08-08
+- Event: P0-001 — Meta delivery queue made recoverable. Delivery states are now queued, sending, sent, retry, permanent_failure. Failures are classified: network, timeout, 5xx, rate limit and configuration faults become retry with exponential backoff; only faults in the event itself (invalid payload, duplicate, past Metas 7-day window) become permanent_failure, and only per event.
+- Status: DONE
+- Evidence: `backend/app/growth/meta_delivery.py`, rewritten `send_pending` in `meta_sync.py`, migration `c3d4e5f6a7b8`. 27 new tests, 222 passing. Live queue migrated: 235 rows pending -> queued, then 229 expired as past the 7-day window, 6 remain sendable.
+- Note: a batch that Meta refuses permanently is now halved and re-sent to isolate the offending event, instead of condemning its neighbours. Cost is at most 2·log2(n) extra requests; the alternative was losing up to 100 confirmed outcomes per bad event.
+- Note: an expired token and an unknown dataset are classified temporary, not permanent, although the P0 brief lists invalid dataset as a candidate for permanent_failure. The event is valid in both cases and only the configuration is wrong; marking them permanent would recreate the exact defect being fixed. Deviation is deliberate and reversible.
+
 ## Entry Template
 
 ### VH-XXX

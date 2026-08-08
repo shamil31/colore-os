@@ -33,6 +33,32 @@ class MetaVerificationError(Exception):
     pass
 
 
+class MetaSendError(MetaVerificationError):
+    """A Conversions API send that did not succeed, with enough detail to judge
+    whether trying again could ever help.
+
+    Subclasses `MetaVerificationError` so existing callers keep working.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        error_code: int | None = None,
+        error_subcode: int | None = None,
+        is_transient: bool | None = None,
+        network: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.error_code = error_code
+        self.error_subcode = error_subcode
+        # Meta sets `is_transient` on its own errors when it knows the answer.
+        self.is_transient = is_transient
+        self.network = network
+
+
 class MetaConnector(BaseConnector):
     integration_name = "meta"
 
@@ -134,20 +160,26 @@ class MetaConnector(BaseConnector):
                 timeout=self.timeout,
             )
         except requests.RequestException as exc:
-            raise MetaVerificationError(f"conversions request failed: {exc}") from exc
+            # Never reached Meta. The events are untouched by definition.
+            raise MetaSendError(f"conversions request failed: {exc}", network=True) from exc
 
         try:
             payload = response.json()
         except ValueError as exc:
-            raise MetaVerificationError(
-                f"conversions returned non-JSON (HTTP {response.status_code})"
+            raise MetaSendError(
+                f"conversions returned non-JSON (HTTP {response.status_code})",
+                status_code=response.status_code,
             ) from exc
 
         if response.status_code >= 400 or "error" in payload:
             error = payload.get("error") or {}
-            raise MetaVerificationError(
+            raise MetaSendError(
                 f"Meta rejected the events: HTTP {response.status_code} "
-                f"{error.get('type', '')} {error.get('message', '')}".strip()
+                f"{error.get('type', '')} {error.get('message', '')}".strip(),
+                status_code=response.status_code,
+                error_code=error.get("code"),
+                error_subcode=error.get("error_subcode"),
+                is_transient=error.get("is_transient"),
             )
 
         return payload

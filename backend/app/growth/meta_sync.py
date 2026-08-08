@@ -17,20 +17,24 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.growth import attribution
 from app.growth.business_data import BusinessSnapshot, cached_snapshot
+from app.growth.meta_delivery import PERMANENT, backoff_for, classify
 from app.integrations.connectors.meta_connector import MetaConnector, MetaVerificationError
 from app.integrations.gateway.factory import get_connector_gateway
 from app.models.growth import STATUS_PROCESSED, GrowthEvent
 from app.models.meta_conversion import (
-    STATUS_ACCEPTED,
-    STATUS_PENDING,
-    STATUS_REJECTED,
+    STATUS_PERMANENT_FAILURE,
+    STATUS_QUEUED,
+    STATUS_RETRY,
+    STATUS_SENDING,
+    STATUS_SENT,
     MetaConversion,
 )
 
@@ -38,14 +42,29 @@ logger = logging.getLogger("colore.meta_sync")
 
 BATCH_SIZE = 100
 
+MAX_EVENT_AGE_SECONDS = 7 * 24 * 3600
+"""Meta: "If any event_time in data is greater than 7 days in the past, we
+return an error for the entire request and process no events."
+
+One stale event therefore poisons every event it travels with. They are taken
+out of the queue before a batch is assembled rather than discovered by having a
+batch rejected."""
+
 
 @dataclass
 class SyncResult:
     built: int = 0
     sent: int = 0
     accepted: int = 0
-    rejected: int = 0
+    retry: int = 0
+    permanent_failure: int = 0
+    expired: int = 0
     errors: list[str] = field(default_factory=list)
+
+    @property
+    def rejected(self) -> int:
+        """Anything that did not get through, whatever happens to it next."""
+        return self.retry + self.permanent_failure
 
 
 @dataclass
@@ -56,9 +75,12 @@ class MetaStatus:
     sent: int = 0
     accepted: int = 0
     rejected: int = 0
+    retry: int = 0
+    permanent_failure: int = 0
     last_sync: datetime | None = None
     errors: list[str] = field(default_factory=list)
     by_outcome: dict[str, int] = field(default_factory=dict)
+    failure_reasons: dict[str, int] = field(default_factory=dict)
 
 
 def _meta_connector() -> MetaConnector | None:
@@ -125,7 +147,7 @@ def build_queue(
                 source_ref=event.source_ref,
                 user_data=attribution.dumps(event.user_data),
                 custom_data=attribution.dumps(event.custom_data) if event.custom_data else "",
-                status=STATUS_PENDING,
+                status=STATUS_QUEUED,
             )
         )
         try:
@@ -142,6 +164,126 @@ def build_queue(
 # ---------------------------------------------------------------------- send
 
 
+def _payload_for(row: MetaConversion) -> dict:
+    event = {
+        "event_name": row.event_name,
+        "event_time": row.event_time,
+        "event_id": row.event_id,
+        "action_source": row.action_source,
+        "user_data": attribution.json.loads(row.user_data or "{}"),
+    }
+    if row.custom_data:
+        event["custom_data"] = attribution.json.loads(row.custom_data)
+    return event
+
+
+def expire_stale(session: Session, *, now: float | None = None) -> int:
+    """Take events past Meta's 7-day window out of the queue, before batching.
+
+    They can never be accepted, and one of them travelling in a batch causes
+    Meta to reject every event alongside it. Removing them here is the
+    difference between losing one unsendable event and losing ninety-nine
+    sendable ones.
+    """
+    now = now if now is not None else datetime.now(timezone.utc).timestamp()
+    cutoff = int(now - MAX_EVENT_AGE_SECONDS)
+
+    stale = (
+        session.query(MetaConversion)
+        .filter(
+            MetaConversion.status.in_((STATUS_QUEUED, STATUS_RETRY)),
+            MetaConversion.event_time < cutoff,
+        )
+        .all()
+    )
+
+    for row in stale:
+        row.status = STATUS_PERMANENT_FAILURE
+        row.error = (
+            "event_time is more than 7 days in the past — Meta rejects the "
+            "whole request if any event is older than that, so this one is "
+            "never sent"
+        )
+        row.next_attempt_at = None
+
+    if stale:
+        session.commit()
+
+    return len(stale)
+
+
+def _mark_sent(rows: list[MetaConversion], response: dict, now: datetime) -> None:
+    body = attribution.dumps(response)
+    for row in rows:
+        row.attempts += 1
+        row.status = STATUS_SENT
+        row.response = body[:2000]
+        row.error = ""
+        row.sent_at = now
+        row.next_attempt_at = None
+
+
+def _mark_retry(rows: list[MetaConversion], reason: str, now: datetime) -> None:
+    for row in rows:
+        row.attempts += 1
+        row.status = STATUS_RETRY
+        row.error = reason
+        row.next_attempt_at = now + timedelta(seconds=backoff_for(row.attempts))
+
+
+def _mark_permanent(row: MetaConversion, reason: str, now: datetime) -> None:
+    row.attempts += 1
+    row.status = STATUS_PERMANENT_FAILURE
+    row.error = reason
+    row.sent_at = now
+    row.next_attempt_at = None
+
+
+def _send_batch(connector, session: Session, rows: list[MetaConversion], result: SyncResult) -> None:
+    """Send a batch, isolating a bad event rather than condemning its neighbours.
+
+    Meta answers per request, not per event, so a permanent rejection does not
+    say which event caused it. Rather than assume all of them are bad — the
+    behaviour this change exists to remove — the batch is halved and each half
+    retried until the offender is alone and identifiable. That costs at most
+    2·log₂(n) extra requests and never discards a good event.
+    """
+    if not rows:
+        return
+
+    now = datetime.utcnow()
+
+    try:
+        response = connector.send_conversions([_payload_for(row) for row in rows])
+    except Exception as exc:  # noqa: BLE001 — classified, never swallowed
+        kind, reason = classify(exc)
+
+        if kind != PERMANENT:
+            _mark_retry(rows, f"{reason}: {exc}", now)
+            result.retry += len(rows)
+            result.errors.append(f"{reason} — {len(rows)} event(s) will be retried")
+            session.commit()
+            return
+
+        if len(rows) == 1:
+            _mark_permanent(rows[0], f"{reason}: {exc}", now)
+            result.permanent_failure += 1
+            result.errors.append(f"event {rows[0].event_id}: {reason}")
+            session.commit()
+            return
+
+        # More than one event and a permanent answer: split to find the culprit.
+        middle = len(rows) // 2
+        _send_batch(connector, session, rows[:middle], result)
+        _send_batch(connector, session, rows[middle:], result)
+        return
+
+    _mark_sent(rows, response, now)
+    result.sent += len(rows)
+    result.accepted += len(rows)
+    session.commit()
+
+
 def send_pending(session: Session, *, limit: int = BATCH_SIZE) -> SyncResult:
     result = SyncResult()
 
@@ -156,57 +298,32 @@ def send_pending(session: Session, *, limit: int = BATCH_SIZE) -> SyncResult:
         )
         return result
 
-    pending = (
+    result.expired = expire_stale(session)
+
+    now = datetime.utcnow()
+    due = (
         session.query(MetaConversion)
-        .filter(MetaConversion.status == STATUS_PENDING)
+        .filter(
+            MetaConversion.status.in_((STATUS_QUEUED, STATUS_RETRY, STATUS_SENDING)),
+            or_(
+                MetaConversion.next_attempt_at.is_(None),
+                MetaConversion.next_attempt_at <= now,
+            ),
+        )
         .order_by(MetaConversion.id)
         .limit(limit)
         .all()
     )
-    if not pending:
+    if not due:
         return result
 
-    payload = []
-    for row in pending:
-        event = {
-            "event_name": row.event_name,
-            "event_time": row.event_time,
-            "event_id": row.event_id,
-            "action_source": row.action_source,
-            "user_data": attribution.json.loads(row.user_data or "{}"),
-        }
-        if row.custom_data:
-            event["custom_data"] = attribution.json.loads(row.custom_data)
-        payload.append(event)
-
-    now = datetime.utcnow()
-
-    try:
-        response = connector.send_conversions(payload)
-    except MetaVerificationError as exc:
-        message = str(exc)
-        for row in pending:
-            row.attempts += 1
-            row.status = STATUS_REJECTED
-            row.error = message
-            row.sent_at = now
-        session.commit()
-        result.sent = len(pending)
-        result.rejected = len(pending)
-        result.errors.append(message)
-        return result
-
-    body = attribution.dumps(response)
-    for row in pending:
-        row.attempts += 1
-        row.status = STATUS_ACCEPTED
-        row.response = body[:2000]
-        row.error = ""
-        row.sent_at = now
-
+    # Claim the rows so a crash mid-send is recoverable: `sending` rows are
+    # picked up again on the next run rather than sitting invisible.
+    for row in due:
+        row.status = STATUS_SENDING
     session.commit()
-    result.sent = len(pending)
-    result.accepted = len(pending)
+
+    _send_batch(connector, session, due, result)
     return result
 
 
@@ -250,15 +367,27 @@ def read_status(session: Session, *, days: int = 90, build: bool = True) -> Meta
         return status
 
     for row in rows:
-        if row.status == STATUS_PENDING:
+        if row.status in (STATUS_QUEUED, STATUS_SENDING):
             status.waiting += 1
             status.by_outcome[row.outcome] = status.by_outcome.get(row.outcome, 0) + 1
-        else:
+        elif row.status == STATUS_RETRY:
+            # Still in the queue — it has not been given up on.
+            status.waiting += 1
+            status.retry += 1
+            status.rejected += 1
+            status.by_outcome[row.outcome] = status.by_outcome.get(row.outcome, 0) + 1
+            if row.error:
+                key = row.error[:80]
+                status.failure_reasons[key] = status.failure_reasons.get(key, 0) + 1
+        elif row.status == STATUS_SENT:
             status.sent += 1
-            if row.status == STATUS_ACCEPTED:
-                status.accepted += 1
-            elif row.status == STATUS_REJECTED:
-                status.rejected += 1
+            status.accepted += 1
+        elif row.status == STATUS_PERMANENT_FAILURE:
+            status.permanent_failure += 1
+            status.rejected += 1
+            if row.error:
+                key = row.error[:80]
+                status.failure_reasons[key] = status.failure_reasons.get(key, 0) + 1
 
         if row.sent_at and (status.last_sync is None or row.sent_at > status.last_sync):
             status.last_sync = row.sent_at

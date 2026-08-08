@@ -43,6 +43,12 @@ class MetaRenderer:
 
         builder.section("Rejected")
         builder.line(str(status.rejected))
+        if status.retry:
+            builder.detail(f"waiting to retry: {status.retry} (still queued, not lost)")
+        if status.permanent_failure:
+            builder.detail(f"permanent failure: {status.permanent_failure}")
+        for reason, count in sorted(status.failure_reasons.items(), key=lambda x: -x[1])[:4]:
+            builder.detail(f"{count}× {reason}")
 
         builder.section("Last synchronization")
         builder.line(self._when(status.last_sync, now=now))

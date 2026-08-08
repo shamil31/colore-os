@@ -14,7 +14,11 @@ from app.growth import attribution, meta_sync
 from app.growth.business_data import BusinessSnapshot
 from app.growth.meta_renderer import MetaRenderer
 from app.growth.meta_sync import MetaStatus
-from app.integrations.connectors.meta_connector import MetaConnector, MetaVerificationError
+from app.integrations.connectors.meta_connector import (
+    MetaConnector,
+    MetaSendError,
+    MetaVerificationError,
+)
 from app.models.growth import STATUS_PROCESSED, GrowthEvent
 from app.models.meta_conversion import (
     OUTCOME_ARRIVED,
@@ -368,35 +372,46 @@ class FakeSessionDB:
         self.committed += 1
 
 
-def test_send_pending_marks_everything_rejected_when_meta_refuses(monkeypatch):
-    from app.models.meta_conversion import STATUS_PENDING, MetaConversion
+def test_a_refused_send_returns_events_to_the_queue(monkeypatch):
+    """Superseded the old behaviour, where any refusal was terminal (P0-001).
+
+    An invalid token says nothing about the event. It goes back to `retry`.
+    Full coverage of the delivery states lives in
+    `test_meta_queue_reliability.py`.
+    """
+    from app.models.meta_conversion import STATUS_QUEUED, STATUS_RETRY, MetaConversion
 
     row = MetaConversion(
         outcome=OUTCOME_LEAD,
         event_name="Lead",
         event_id="lead-1",
-        event_time=1,
+        event_time=int(datetime.now().timestamp()),
         action_source="business_messaging",
         source_system="colore",
         user_data='{"ph": ["abc"]}',
-        status=STATUS_PENDING,
+        status=STATUS_QUEUED,
         attempts=0,
     )
 
     connector = MetaConnector(verify_token="v", access_token="t", dataset_id="d")
     monkeypatch.setattr(meta_sync, "_meta_connector", lambda: connector)
+    monkeypatch.setattr(meta_sync, "expire_stale", lambda session, **kw: 0)
     monkeypatch.setattr(
         connector,
         "send_conversions",
-        lambda events: (_ for _ in ()).throw(MetaVerificationError("Invalid token")),
+        lambda events: (_ for _ in ()).throw(
+            MetaSendError("Invalid token", status_code=400, error_code=190)
+        ),
     )
 
     session = FakeSessionDB([row])
     result = meta_sync.send_pending(session)
 
-    assert result.rejected == 1
+    assert result.retry == 1
+    assert result.permanent_failure == 0
     assert result.accepted == 0
-    assert row.status == "rejected"
+    assert row.status == STATUS_RETRY
+    assert row.next_attempt_at is not None
     assert "Invalid token" in row.error
 
 

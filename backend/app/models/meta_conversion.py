@@ -5,18 +5,35 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
-# Queue lifecycle.
-STATUS_PENDING = "pending"
-"""Built from a confirmed outcome, not yet sent."""
+# Delivery states.
+STATUS_QUEUED = "queued"
+"""Built from a confirmed outcome, waiting for its first attempt."""
+
+STATUS_SENDING = "sending"
+"""Claimed by an in-flight batch. A crash mid-send leaves rows here, and they
+are recovered on the next run rather than being lost or double-sent."""
 
 STATUS_SENT = "sent"
-"""Handed to Meta; the response has not been classified yet."""
+"""Meta accepted it."""
 
-STATUS_ACCEPTED = "accepted"
-"""Meta acknowledged the event."""
+STATUS_RETRY = "retry"
+"""The attempt failed for a reason that may not repeat — network, timeout,
+5xx, rate limit, or a configuration fault that is not the event's own. The
+event is intact and will be attempted again after `next_attempt_at`."""
 
-STATUS_REJECTED = "rejected"
-"""Meta refused it. `error` holds the reason verbatim."""
+STATUS_PERMANENT_FAILURE = "permanent_failure"
+"""Re-sending this exact event can never succeed: the payload is invalid, it
+is a duplicate, or it is older than Meta's limit and only gets older. This is
+the only state that gives up on an event, and it is reached per event, never
+per batch."""
+
+RETRYABLE_STATUSES = (STATUS_QUEUED, STATUS_RETRY, STATUS_SENDING)
+
+# Names used before P0-001. Kept so the migration and any operator query can
+# still refer to them.
+LEGACY_STATUS_PENDING = "pending"
+LEGACY_STATUS_ACCEPTED = "accepted"
+LEGACY_STATUS_REJECTED = "rejected"
 
 # The five business outcomes this project reports. Nothing else is ever sent.
 OUTCOME_LEAD = "lead_created"
@@ -65,10 +82,13 @@ class MetaConversion(Base):
     user_data: Mapped[str] = mapped_column(Text, nullable=False, default="")
     custom_data: Mapped[str] = mapped_column(Text, nullable=False, default="")
 
-    status: Mapped[str] = mapped_column(String(20), nullable=False, default=STATUS_PENDING, index=True)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default=STATUS_QUEUED, index=True)
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     error: Mapped[str] = mapped_column(Text, nullable=False, default="")
     response: Mapped[str] = mapped_column(Text, nullable=False, default="")
+
+    next_attempt_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
+    """When a `retry` row becomes eligible again. Null means immediately."""
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     sent_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
