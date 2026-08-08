@@ -11,8 +11,9 @@ connector must not be able to exhaust the salon's whole Altegio quota answering
 a single message.
 
 Deliberately in-process and in-memory: one backend container holds the whole
-outbound path today. If a second replica ever runs, this becomes per-replica
-and the limits need to move to Redis — see the note in `docs/research/`.
+outbound path today. If a second replica is ever added, each replica gets its
+own counters and the effective limit doubles — at that point this has to move
+to shared state (Redis is already in the stack).
 """
 
 from __future__ import annotations

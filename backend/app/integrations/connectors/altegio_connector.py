@@ -9,11 +9,17 @@ from app.integrations.altegio import (
     AltegioEndpoints,
     AltegioHttpClient,
 )
+from app.integrations.gateway import capabilities
 from app.integrations.gateway.base_connector import BaseConnector
 
 
 class AltegioConnector(BaseConnector):
     integration_name = "altegio"
+
+    # "200 requests/min or 5 requests/sec per IP." One shared limiter here, so
+    # the decision layer cannot exhaust the salon's whole API quota answering a
+    # single message.
+    min_interval_seconds = 0.2
 
     AUTHENTICATE_CAPABILITY = "altegio.authenticate"
     GET_COMPANIES_CAPABILITY = "altegio.get_companies"
@@ -48,7 +54,25 @@ class AltegioConnector(BaseConnector):
             self.GET_CLIENTS_CAPABILITY,
             self.GET_ALL_CLIENTS_RAW_CAPABILITY,
             self.GET_ALL_CLIENT_RECORDS_RAW_CAPABILITY,
+            # Read only, deliberately. Altegio stays the system of record and
+            # Coloré OS writes nothing to it (ADR-002 decision 6). Declaring a
+            # write capability here would let a future caller reach for one.
+            capabilities.CLIENTS_READ,
+            capabilities.RECORDS_READ,
         }
+
+    def is_configured(self) -> bool:
+        return bool(self.partner_token and self.credentials.login and self.credentials.password)
+
+    def missing_configuration(self) -> tuple[str, ...]:
+        missing = []
+        if not self.partner_token:
+            missing.append("ALTEGIO_PARTNER_TOKEN")
+        if not self.credentials.login:
+            missing.append("ALTEGIO_LOGIN")
+        if not self.credentials.password:
+            missing.append("ALTEGIO_PASSWORD")
+        return tuple(missing)
 
     def execute(self, capability: str, *, payload: dict[str, Any] | None = None) -> Any:
         params = payload or {}
@@ -72,9 +96,18 @@ class AltegioConnector(BaseConnector):
         if capability == self.GET_SERVICES_CAPABILITY:
             company_id = _required_int(params, "company_id")
             return data_client.get_services(company_id)
-        if capability == self.GET_CLIENTS_CAPABILITY:
+        if capability in (self.GET_CLIENTS_CAPABILITY, capabilities.CLIENTS_READ):
             company_id = _required_int(params, "company_id")
             return data_client.get_clients(company_id)
+        if capability == capabilities.RECORDS_READ:
+            company_id = _required_int(params, "company_id")
+            client_id = _required_int(params, "client_id")
+            return data_client.get_all_client_records_raw(
+                company_id,
+                client_id=client_id,
+                page_size=_optional_int(params, "page_size", default=200),
+                date_from=_optional_str(params, "date_from"),
+            )
         if capability == self.GET_ALL_CLIENTS_RAW_CAPABILITY:
             company_id = _required_int(params, "company_id")
             page_size = _optional_int(params, "page_size", default=200)
