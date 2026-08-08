@@ -98,6 +98,13 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Status: DONE
 - Evidence: `docs/research/GROWTH_AI_INTEGRATION_RESEARCH.md`, `.colore/adr/ADR-002-growth-ai-foundation.md`, R-002 in `research.md` (4 unverified contracts recorded as gaps).
 
+### VH-012
+- Date: 2026-08-08
+- Event: GROWTH-002..005 — Growth AI Foundation delivered. A connector layer found uncommitted in the working tree was adopted rather than duplicated, then extended with capability dispatch, dry-run state and published rate limits; Telegram, Meta and n8n connectors added; the `Meta → n8n → Coloré OS → Growth AI → Telegram` flow wired end to end with a persisted, queryable trace.
+- Status: DONE
+- Evidence: commits `4fb21d5`, `25d6e66`, `6343318`, `61f70e7`. 116 tests passing. Live verification against the deployed container: WhatsApp payload classified BOOKING (0.98) at high priority, Instagram DM classified PRICE, Meta retry deduplicated, Instagram echo skipped, delivery receipt skipped, unauthenticated ingest rejected 401, unconfigured Meta paths closed 403/503. `scripts/doctor.sh` reports SYSTEM HEALTHY.
+- Note: `requests` was imported by `altegio/client.py` and `n8n_adapter.py` but never declared in `requirements.txt`. Present in the dev virtualenv, absent from the image — the tests passed while the container could not import the module at all. Declared in `6343318`'s predecessor `4fb21d5`.
+
 ## Entry Template
 
 ### VH-XXX

@@ -1,6 +1,6 @@
 # Coloré OS — State
 
-Last verified: 2026-08-05
+Last verified: 2026-08-08
 Maintained manually. Never infer state from code structure alone.
 
 ## Verified Facts
@@ -46,6 +46,12 @@ Maintained manually. Never infer state from code structure alone.
 - Runtime v1 migration (this document set) — 2026-08-05
 - Conversation Flows: Scenarios 001–013 (Book Appointment, Reschedule, Cancel, Consultation, Price Inquiry, Service Selection, Lead Qualification, Objection Handling, Human Handoff, Promotion Inquiry, Master Selection, First Contact, Follow Up) — see `docs/domain/scenarios/`
 - Product Vision v1.0, AI Constitution v1.0, AI Employee Framework v1.0, Conversation Principles v1.0, Intent Map v1.0, Decision Model v1.0 — see `docs/research/`
+- Growth AI Foundation (2026-08-08, ADR-002):
+  - Integration research against official documentation for Meta Business, Instagram Graph, WhatsApp Business, Altegio, Telegram Bot API, n8n — `docs/research/GROWTH_AI_INTEGRATION_RESEARCH.md`
+  - Connector layer: Integration Registry, Capability Registry, Connector Gateway (capability dispatch, dry run, rate limits), Event Bus — `backend/app/integrations/gateway/`
+  - Connectors: Telegram, Meta (webhook verification), n8n (workflow trigger), Altegio (read-only), OpenAI — `backend/app/integrations/connectors/`
+  - Growth AI flow `Meta → n8n → Coloré OS → Growth AI → Telegram`, verified live against the deployed container 2026-08-08
+  - 116 tests passing
 
 ## Deployment Source of Truth
 
@@ -81,8 +87,11 @@ See [`architecture.md`](architecture.md) for full detail.
 
 - `backend/app/main.py` — `/`, `/db`, `/clients` routes
 - `backend/app/api/clients.py` — CRUD for clients
+- `backend/app/api/growth.py` — `/growth/events`, `/growth/webhook/meta`, `/growth/integrations`, trace endpoints
 - `backend/app/db/database.py` — SQLAlchemy engine and DB connectivity
 - `infrastructure/docker-compose.yml` — postgres, n8n, backend
+- Tables `growth_events`, `growth_actions` (migration `a1b2c3d4e5f6`, applied 2026-08-08)
+- `GROWTH_INBOUND_SECRET` added to `/opt/colore-os/docker/.env` 2026-08-08 (backup taken alongside it). No channel credentials are set: Telegram, Meta and n8n all run as dry runs until tokens exist. Setup steps: [`docs/operations/GROWTH_AI_SETUP.md`](../docs/operations/GROWTH_AI_SETUP.md).
 
 ## Unknowns
 
