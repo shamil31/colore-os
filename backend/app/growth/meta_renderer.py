@@ -27,6 +27,23 @@ class MetaRenderer:
     def render(self, status: MetaStatus, *, limit: int, now: datetime | None = None) -> str:
         builder = ResponseBuilder().heading("🔗 META STATUS")
 
+        builder.section("Salon")
+        builder.line(status.salon_name or "not configured")
+        if status.salon_country or status.salon_timezone:
+            builder.detail(
+                f"{status.salon_country or '—'} · {status.salon_timezone or '—'}"
+            )
+
+        builder.section("Salon Currency")
+        builder.line(
+            status.currency
+            if status.currency
+            else "not configured — events carry no value"
+        )
+
+        builder.section("Dataset")
+        builder.line(status.dataset_id or "not configured")
+
         builder.section("Connected")
         builder.line("YES" if status.connected else "NO")
 
@@ -63,23 +80,18 @@ class MetaRenderer:
         if not status.job_registered:
             builder.detail("meta_conversions job is not registered")
 
-        builder.section("Last Run")
+        builder.section("Last Sync")
         builder.line(self._when(status.last_run_at, now=now))
         if status.last_run_status:
             builder.detail(f"result: {status.last_run_status}")
 
-        builder.section("Next Run")
+        builder.section("Next Sync")
         builder.line(self._when(status.next_run_at, now=now, future=True))
 
         builder.section("Queue")
         builder.line(
             f"{status.waiting} waiting, {status.sent} sent, "
             f"{status.permanent_failure} permanently failed"
-        )
-        builder.detail(
-            f"value currency: {status.currency}"
-            if status.currency
-            else "value currency: not configured — events carry no value"
         )
 
         builder.section("Last Success")

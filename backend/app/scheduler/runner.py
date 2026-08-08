@@ -35,8 +35,10 @@ def _stop(*_: object) -> None:
 
 
 def build_service():
+    # The registry comes from the composition root. Nothing in this package
+    # names an integration — that is what keeps the scheduler generic.
+    from app.core.jobs import build_registry
     from app.db.database import SessionLocal
-    from app.growth.meta_job import build_registry
     from app.scheduler.service import SchedulerService
 
     return SchedulerService(build_registry(), SessionLocal)

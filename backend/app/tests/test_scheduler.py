@@ -200,6 +200,37 @@ def test_a_job_that_never_ran_is_due_immediately(session_factory):
     assert [j.name for j in service.due_jobs(session)] == ["recorder"]
 
 
+def test_a_first_run_is_due_against_a_real_moving_clock(session_factory):
+    """Regression: with a frozen clock this passed while nothing ever ran.
+
+    `due_jobs` read the clock for `now`, then `next_run_at` read it again a
+    moment later, so a job with no history was always due *after* the instant
+    it was compared against. Every new job sat idle forever, and only a real
+    clock exposes it.
+    """
+    registry = JobRegistry()
+    job = Recorder()
+    registry.register(job)
+    service = SchedulerService(registry, session_factory)  # real datetime.utcnow
+
+    results = service.run_due()
+
+    assert results, "a job that has never run must run on the first tick"
+    assert job.calls == [MODE_INTERVAL]
+
+
+def test_the_second_tick_does_not_run_it_again(session_factory):
+    registry = JobRegistry()
+    job = Recorder()
+    registry.register(job)
+    service = SchedulerService(registry, session_factory)
+
+    service.run_due()
+    service.run_due()
+
+    assert job.calls == [MODE_INTERVAL], "the interval must hold after the first run"
+
+
 def test_a_job_is_not_due_again_before_its_interval(session_factory):
     service = service_for(session_factory, Recorder())
     service.run_job("recorder", mode=MODE_INTERVAL)

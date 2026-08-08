@@ -237,6 +237,108 @@ PY
   fi
 fi
 
+# --------------------------------------------------------------- salon
+
+head_ "Salon configuration"
+
+if [ ! -x "$PY" ]; then
+  bad "virtualenv python not found at $PY — cannot read the salon profile"
+else
+  SALON_FILE=$(mktemp)
+  (cd "$BACKEND" && "$PY" -c "
+import json
+from app.core.salon import salon_profile
+from app.core.config import settings
+p = salon_profile()
+print(json.dumps({**p.describe(), 'missing': list(p.missing()),
+                  'dataset': settings.META_DATASET_ID,
+                  'has_token': bool(settings.META_ACCESS_TOKEN)}, ensure_ascii=False))
+" >"$SALON_FILE" 2>/dev/null)
+
+  if [ ! -s "$SALON_FILE" ]; then
+    bad "salon profile could not be read"
+  else
+    SALON_NAME=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('name') or '')" "$SALON_FILE")
+    SALON_COUNTRY=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('country') or '')" "$SALON_FILE")
+    SALON_TZ=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('timezone') or '')" "$SALON_FILE")
+    SALON_CUR=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('currency') or '')" "$SALON_FILE")
+    SALON_MISSING=$("$PY" -c "import json,sys;print(', '.join(json.load(open(sys.argv[1])).get('missing') or []))" "$SALON_FILE")
+
+    [ -n "$SALON_NAME" ]    && ok "Salon: $SALON_NAME"          || bad "Salon: not configured"
+    [ -n "$SALON_COUNTRY" ] && ok "Country: $SALON_COUNTRY"     || bad "Country: not configured"
+    [ -n "$SALON_TZ" ]      && ok "Timezone: $SALON_TZ"         || bad "Timezone: not configured"
+    if [ -n "$SALON_CUR" ]; then
+      ok "Currency: $SALON_CUR"
+    else
+      bad "Currency: not configured — conversion events would carry no value"
+    fi
+    [ -n "$SALON_MISSING" ] && note "missing: $SALON_MISSING"
+  fi
+  rm -f "$SALON_FILE"
+fi
+
+# ------------------------------------------------------------- meta dataset
+
+head_ "Meta dataset"
+
+if [ ! -x "$PY" ]; then
+  warn "cannot verify the dataset: virtualenv python not found"
+else
+  DS_FILE=$(mktemp)
+  # Read-only: fetches the dataset's own id and name. The token is taken from
+  # settings and never printed.
+  (cd "$BACKEND" && "$PY" -c "
+import json
+import requests
+from app.core.config import settings
+
+dataset = (settings.META_DATASET_ID or '').strip()
+token = (settings.META_ACCESS_TOKEN or '').strip()
+out = {'dataset': dataset, 'configured': bool(dataset), 'has_token': bool(token)}
+
+if dataset and token:
+    try:
+        r = requests.get(
+            f'https://graph.facebook.com/{settings.META_API_VERSION}/{dataset}',
+            params={'fields': 'id,name'},
+            headers={'Authorization': f'Bearer {token}'},
+            timeout=15,
+        )
+        body = r.json()
+        out['status_code'] = r.status_code
+        if 'error' in body:
+            out['error'] = body['error'].get('message', '')[:160]
+        else:
+            out['name'] = body.get('name', '')
+            out['reachable'] = True
+    except Exception as exc:
+        out['error'] = f'{type(exc).__name__}: {exc}'[:160]
+
+print(json.dumps(out, ensure_ascii=False))
+" >"$DS_FILE" 2>/dev/null)
+
+  if [ ! -s "$DS_FILE" ]; then
+    bad "Meta dataset check could not run"
+  else
+    DS_ID=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('dataset') or '')" "$DS_FILE")
+    DS_OK=$("$PY" -c "import json,sys;print('1' if json.load(open(sys.argv[1])).get('reachable') else '')" "$DS_FILE")
+    DS_NAME=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('name') or '')" "$DS_FILE")
+    DS_ERR=$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('error') or '')" "$DS_FILE")
+    DS_TOK=$("$PY" -c "import json,sys;print('1' if json.load(open(sys.argv[1])).get('has_token') else '')" "$DS_FILE")
+
+    if [ -z "$DS_ID" ]; then
+      bad "META_DATASET_ID is not configured — nothing can be sent"
+    elif [ -z "$DS_TOK" ]; then
+      bad "dataset $DS_ID configured but META_ACCESS_TOKEN is absent"
+    elif [ -n "$DS_OK" ]; then
+      ok "dataset $DS_ID reachable (${DS_NAME:-unnamed})"
+    else
+      bad "dataset $DS_ID is NOT reachable: ${DS_ERR:-unknown error}"
+    fi
+  fi
+  rm -f "$DS_FILE"
+fi
+
 # ---------------------------------------------------------------- scheduler
 
 head_ "Integration scheduler"

@@ -70,6 +70,7 @@ class Connector:
     can_send_conversions = True
     verify_token = "v"
     app_secret = "s"
+    dataset_id = "DS1"
 
     def __init__(self, *, fail_with=None, bad_event_ids=()):
         self.fail_with = fail_with

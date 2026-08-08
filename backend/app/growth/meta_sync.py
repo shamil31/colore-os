@@ -91,7 +91,14 @@ class MetaStatus:
     last_success_at: datetime | None = None
     last_error: str = ""
     last_error_at: datetime | None = None
+
+    # Salon profile and target, so the report answers "what is this configured
+    # against" without exposing a single secret.
+    salon_name: str = ""
+    salon_country: str = ""
+    salon_timezone: str = ""
     currency: str = ""
+    dataset_id: str = ""
 
 
 def _meta_connector() -> MetaConnector | None:
@@ -389,9 +396,19 @@ def _scheduler_service_active() -> bool | None:
 def _read_scheduler_state(session: Session, status: MetaStatus) -> None:
     """Answer the question the Meta report could not previously answer: is
     anything going to send this, and when?"""
-    from app.core.config import settings
+    from app.core.salon import salon_profile
 
-    status.currency = (settings.BUSINESS_CURRENCY or "").strip().upper()
+    profile = salon_profile()
+    status.salon_name = profile.name
+    status.salon_country = profile.country
+    status.salon_timezone = profile.timezone
+    status.currency = profile.currency
+
+    connector = _meta_connector()
+    # The dataset id is an identifier, not a credential — Meta shows it in
+    # Events Manager. Nothing else about the connector is exposed.
+    status.dataset_id = connector.dataset_id if connector else ""
+
     status.scheduler_running = _scheduler_service_active()
 
     try:

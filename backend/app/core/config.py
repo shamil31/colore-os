@@ -5,6 +5,15 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Coloré OS"
     VERSION: str = "0.1.0"
 
+    # ---- The salon, described once. Read through app/core/salon.py, never
+    # directly, and never duplicated into an integration-specific setting.
+    SALON_NAME: str = ""
+    SALON_COUNTRY: str = ""
+    SALON_TIMEZONE: str = ""
+    SALON_CURRENCY: str = ""
+    SALON_LANGUAGE: str = ""
+    SALON_LOCALE: str = ""
+
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
@@ -44,12 +53,6 @@ class Settings(BaseSettings):
     # Sent with events so they land in Events Manager's Test Events view
     # without affecting ad delivery. Empty means real traffic.
     META_TEST_EVENT_CODE: str = ""
-
-    # Currency of the amounts Altegio records. Deliberately empty by default:
-    # the salon prices in RSD while the ad account bills in EUR, and a wrong
-    # guess misstates every Purchase value by roughly 100x. When unset, events
-    # carry no value at all rather than a value nobody verified.
-    BUSINESS_CURRENCY: str = ""
 
     # Scheduler
     SCHEDULER_TICK_SECONDS: int = 60

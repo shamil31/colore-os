@@ -73,27 +73,44 @@ class SchedulerService:
             query = query.filter(SchedulerRun.status == status)
         return query.order_by(SchedulerRun.id.desc()).first()
 
-    def next_run_at(self, session, job: IntegrationJob) -> datetime:
-        """Due immediately when it has never run — a fresh deploy should not
-        wait a full interval before doing anything."""
-        # Manual, dry and test runs do not reset the interval: asking a
-        # question must not delay the scheduled work.
-        last = (
+    def _last_interval_run(self, session, job_name: str) -> SchedulerRun | None:
+        """Manual, dry and test runs do not reset the interval: asking a
+        question must not delay the scheduled work."""
+        return (
             session.query(SchedulerRun)
             .filter(
-                SchedulerRun.job_name == job.name,
+                SchedulerRun.job_name == job_name,
                 SchedulerRun.mode == MODE_INTERVAL,
             )
             .order_by(SchedulerRun.id.desc())
             .first()
         )
+
+    def is_due(self, session, job: IntegrationJob, *, now: datetime | None = None) -> bool:
+        """A job that has never run is due, full stop.
+
+        Deliberately not "next_run_at() <= now". That comparison read the clock
+        twice — once for `now` and once inside `next_run_at` — so a job with no
+        history had a next-run timestamp a few microseconds *after* the `now` it
+        was compared against, and was never due. Every newly registered job
+        would have sat idle forever.
+        """
+        last = self._last_interval_run(session, job.name)
+        if last is None:
+            return True
+        now = now or self._clock()
+        return last.started_at + timedelta(seconds=job.interval_seconds) <= now
+
+    def next_run_at(self, session, job: IntegrationJob) -> datetime:
+        """For display. A job that has never run reads as due now."""
+        last = self._last_interval_run(session, job.name)
         if last is None:
             return self._clock()
         return last.started_at + timedelta(seconds=job.interval_seconds)
 
     def due_jobs(self, session, *, now: datetime | None = None) -> list[IntegrationJob]:
         now = now or self._clock()
-        return [job for job in self.registry.all() if self.next_run_at(session, job) <= now]
+        return [job for job in self.registry.all() if self.is_due(session, job, now=now)]
 
     # ---------------------------------------------------------------- execute
 

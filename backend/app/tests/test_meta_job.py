@@ -10,7 +10,8 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 from app.db.base import Base
 from app.growth import attribution, meta_sync
-from app.growth.meta_job import JOB_NAME, MetaConversionsJob, build_registry
+from app.core.jobs import build_registry
+from app.growth.meta_job import JOB_NAME, MetaConversionsJob
 from app.integrations.connectors.meta_connector import MetaConnector
 from app.models.meta_conversion import (
     OUTCOME_ARRIVED,
@@ -196,28 +197,5 @@ def test_an_empty_queue_is_skipped_not_failed(session, monkeypatch, no_build):
     assert result.status == STATUS_SKIPPED
 
 
-# ----------------------------------------------------------------- currency
-
-
-def test_currency_comes_from_configuration(monkeypatch):
-    monkeypatch.setattr(settings, "BUSINESS_CURRENCY", "eur")
-
-    value = attribution._value_of({"services": [{"cost_to_pay": 150}]})
-
-    assert value == {"value": 150.0, "currency": "EUR"}
-
-
-def test_no_configured_currency_means_no_value_rather_than_a_guess(monkeypatch):
-    """A wrong currency misstates every visit by roughly a hundredfold."""
-    monkeypatch.setattr(settings, "BUSINESS_CURRENCY", "")
-
-    assert attribution._value_of({"services": [{"cost_to_pay": 22000}]}) == {}
-
-
-def test_currency_is_never_hardcoded_in_the_source():
-    from pathlib import Path
-
-    source = Path(attribution.__file__).read_text(encoding="utf-8")
-
-    assert '"RSD"' not in source
-    assert "'RSD'" not in source
+# Currency now belongs to the salon profile, not to Meta. Its tests live in
+# test_salon_config.py, which also proves no second currency setting exists.

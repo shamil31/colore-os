@@ -146,6 +146,15 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Note: `BUSINESS_CURRENCY` defaults to empty and an unset currency means events carry no value at all. The salon prices in RSD while its ad account bills in EUR; a wrong guess misstates every Purchase by roughly 100x, and no value is safer than an unverified one.
 - Note: SQLAlchemy `echo` was hardcoded True. Harmless before, but a service ticking every 60s floods the journal and eventually the disk. Now `SQL_ECHO`, default False.
 
+### VH-018
+- Date: 2026-08-08
+- Event: P0-004 — platform configuration unified. One canonical salon profile (SALON_NAME, SALON_COUNTRY, SALON_TIMEZONE, SALON_CURRENCY, SALON_LANGUAGE, SALON_LOCALE) read through `app/core/salon.py`; BUSINESS_CURRENCY removed. META_DATASET_ID=1344912060408162 set as production, validated at startup and verified reachable by the doctor. Scheduler composition moved to `app/core/jobs.py` so the scheduler package names no vendor.
+- Status: DONE
+- Evidence: 267 tests passing. Doctor reports Salon/Country/Timezone/Currency, dataset reachable, scheduler and registered jobs. First real transmission: Meta accepted 3 Purchase events (fbtrace ids recorded).
+- Note: SALON_CURRENCY=RSD is evidence-based, not assumed — 108 priced service lines in real appointments run min 1000, median 5500, max 26000. A 5500 EUR median haircut is impossible; 5500 RSD is about 47 EUR.
+- Note: a first-run bug in the P0-003 scheduler was found in production and fixed. `due_jobs` read the clock for `now`, then `next_run_at` read it again microseconds later, so a job with no history was never due. No job would ever have run. The P0-003 test missed it because it used a frozen clock; the regression test now uses a real one.
+- Blocker found by the first live send: every `business_messaging` event was refused with HTTP 400 OAuthException Invalid parameter, while every `physical_store` event was accepted. Lead, Schedule and AppointmentCancelled are therefore not transmitting. Not changed here — P0-004 forbids behaviour changes.
+
 ## Entry Template
 
 ### VH-XXX

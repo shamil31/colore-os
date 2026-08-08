@@ -69,6 +69,68 @@ def log_runtime_info() -> None:
     logger.info("  OPENAI_MODEL:   %s", settings.OPENAI_MODEL)
 
 
+def log_salon_profile() -> None:
+    """Report the canonical salon description, and say plainly what is absent.
+
+    Not fatal: an incomplete profile degrades specific features — a missing
+    currency means events carry no value — rather than preventing the app from
+    serving anything.
+    """
+    from app.core.salon import salon_profile
+
+    _ensure_logging()
+    profile = salon_profile()
+
+    logger.info("--- Salon ---")
+    logger.info("  name:           %s", profile.name or "NOT SET")
+    logger.info("  country:        %s", profile.country or "NOT SET")
+    logger.info("  timezone:       %s", profile.timezone or "NOT SET")
+    logger.info("  currency:       %s", profile.currency or "NOT SET")
+    logger.info("  language:       %s", profile.language or "NOT SET")
+    logger.info("  locale:         %s", profile.locale or "NOT SET")
+
+    missing = profile.missing()
+    if missing:
+        logger.error(
+            "  salon profile is incomplete: %s — features depending on these "
+            "will degrade rather than guess",
+            ", ".join(missing),
+        )
+
+
+def validate_meta_dataset() -> None:
+    """Check the Conversions API target at startup.
+
+    Presence and shape only. Reachability needs a network call to Meta, which
+    has no business blocking a container from starting — the doctor checks that.
+    """
+    _ensure_logging()
+
+    dataset = _value("META_DATASET_ID")
+    token = _value("META_ACCESS_TOKEN")
+
+    if not dataset:
+        if token:
+            logger.error(
+                "  meta dataset:   NOT SET while META_ACCESS_TOKEN is present — "
+                "nothing can be sent to the Conversions API"
+            )
+        else:
+            logger.info("  meta dataset:   NOT SET (Meta not configured)")
+        return
+
+    if not dataset.isdigit():
+        logger.error("  meta dataset:   %r is not a numeric dataset id", dataset)
+        return
+
+    logger.info("  meta dataset:   %s", dataset)
+    if not token:
+        logger.error(
+            "  meta dataset:   configured, but META_ACCESS_TOKEN is absent — "
+            "nothing can be sent"
+        )
+
+
 def validate_environment() -> None:
     """Stop with a readable message when required configuration is absent."""
     _ensure_logging()

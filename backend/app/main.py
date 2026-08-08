@@ -9,13 +9,21 @@ from app.api.clients import router as clients_router
 from app.api.conversations import router as conversations_router
 from app.api.growth import router as growth_router
 from app.core.config import settings
-from app.core.startup import log_runtime_info, validate_environment, verify_ui
+from app.core.startup import (
+    log_runtime_info,
+    log_salon_profile,
+    validate_environment,
+    validate_meta_dataset,
+    verify_ui,
+)
 from app.db.database import test_connection
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log_runtime_info()
+    log_salon_profile()
+    validate_meta_dataset()
     verify_ui(app)
     validate_environment()
     yield

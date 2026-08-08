@@ -281,16 +281,16 @@ def _has_strong_identifier(user_data: dict[str, list[str]]) -> bool:
 def _value_of(record: dict[str, Any]) -> dict[str, Any]:
     """Money actually recorded against the visit, or nothing at all.
 
-    The currency comes from configuration and is never assumed. Meta treats
-    `value` as the number it optimises the budget against, and this salon
-    prices in one currency while its ad account bills in another — a wrong
-    guess would misstate every visit by roughly a hundredfold. With no
+    The currency comes from the salon profile and is never assumed. Meta
+    treats `value` as the number it optimises the budget against, and this
+    salon prices in one currency while its ad account bills in another — a
+    wrong guess would misstate every visit by roughly a hundredfold. With no
     configured currency the event is sent without a value, which is valid and
     honest, rather than with a number nobody verified.
     """
-    from app.core.config import settings
+    from app.core.salon import salon_currency
 
-    currency = (settings.BUSINESS_CURRENCY or "").strip().upper()
+    currency = salon_currency()
     if not currency:
         return {}
 

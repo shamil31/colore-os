@@ -103,7 +103,7 @@ def test_a_booking_yields_a_schedule_event():
 def test_an_arrival_yields_a_purchase_from_the_physical_store(monkeypatch):
     from app.core.config import settings
 
-    monkeypatch.setattr(settings, "BUSINESS_CURRENCY", "RSD")
+    monkeypatch.setattr(settings, "SALON_CURRENCY", "RSD")
     events = attribution.event_from_record(record(attendance=1))
 
     outcomes = {e.outcome: e for e in events}

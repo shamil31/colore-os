@@ -116,10 +116,3 @@ class MetaConversionsJob(IntegrationJob):
         return JobResult(message=", ".join(parts), summary=summary)
 
 
-def build_registry():
-    """The jobs this deployment runs. Adding an integration is one line here."""
-    from app.scheduler.service import JobRegistry
-
-    registry = JobRegistry()
-    registry.register(MetaConversionsJob())
-    return registry
