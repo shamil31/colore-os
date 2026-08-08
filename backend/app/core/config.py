@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     # calls into recorded dry runs instead of failing (ADR-002 decision 7).
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_OPERATOR_CHAT_ID: str = ""
+    # The only account the Growth AI bot answers. Falls back to the operator
+    # chat id when unset.
+    TELEGRAM_OWNER_ID: str = ""
 
     META_APP_SECRET: str = ""
     META_VERIFY_TOKEN: str = ""

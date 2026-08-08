@@ -6,6 +6,11 @@
 # container, then runs the system doctor. Any failing step stops the deploy
 # immediately.
 #
+# It also restarts the host-side Growth AI Telegram bot, whose code ships in
+# this repository. Without that, a deploy leaves the bot running the previous
+# commit — the same stale-code failure the doctor exists to catch for the
+# container. Skipped silently when the service is not installed.
+#
 # This script never repairs anything on its own. It does not run migrations,
 # does not run tests, does not touch .env, does not prune Docker, and does not
 # rebuild any service other than backend.
@@ -42,10 +47,10 @@ echo "  compose:    $DOCKER_DIR"
 echo "  service:    $SERVICE"
 echo
 
-echo "[1/5] Entering the compose directory ..."
+echo "[1/6] Entering the compose directory ..."
 cd "$DOCKER_DIR"
 
-echo "[2/5] Updating the repository ..."
+echo "[2/6] Updating the repository ..."
 git -C "$REPO" pull
 
 # Recorded in the image so the running container can report which commit it
@@ -54,10 +59,10 @@ GIT_COMMIT="$(git -C "$REPO" rev-parse --short HEAD)"
 export GIT_COMMIT
 echo "      commit: $GIT_COMMIT"
 
-echo "[3/5] Building the $SERVICE image ..."
+echo "[3/6] Building the $SERVICE image ..."
 docker compose build "$SERVICE"
 
-echo "[4/5] Restarting the $SERVICE container ..."
+echo "[4/6] Restarting the $SERVICE container ..."
 docker compose up -d "$SERVICE"
 
 # The container reports Started before uvicorn has bound the port. Without this
@@ -73,7 +78,16 @@ for _ in $(seq 1 "$READY_TIMEOUT"); do
   sleep 1
 done
 
-echo "[5/5] Running the system doctor ..."
+echo "[5/6] Restarting the Growth AI bot ..."
+if systemctl list-unit-files colore-growth-bot.service >/dev/null 2>&1 \
+   && systemctl is-enabled --quiet colore-growth-bot 2>/dev/null; then
+  systemctl restart colore-growth-bot
+  echo "      colore-growth-bot: $(systemctl is-active colore-growth-bot)"
+else
+  echo "      colore-growth-bot is not installed — skipped"
+fi
+
+echo "[6/6] Running the system doctor ..."
 if [ ! -x "$DOCTOR" ]; then
   echo "doctor not found or not executable: $DOCTOR" >&2
   fail

@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Active Task
 
-Growth AI Foundation — connector layer and one end-to-end trace.
+Growth AI Brain v0.1 — the Product Owner manages Coloré OS from Telegram.
 
 - **Status:** REVIEW
 - **Sub-sprint:** GROWTH AI FOUNDATION (see [`sprint.md`](sprint.md), [`adr/ADR-002-growth-ai-foundation.md`](adr/ADR-002-growth-ai-foundation.md))
@@ -12,36 +12,35 @@ Growth AI Foundation — connector layer and one end-to-end trace.
 
 ## Delivered
 
-1. Integration research from official documentation — `docs/research/GROWTH_AI_INTEGRATION_RESEARCH.md`
-2. Connector Gateway, Integration Registry, Capability Registry, Event Bus
-3. Connectors: Telegram, Meta, n8n, Altegio (read-only), OpenAI
-4. Inbound event endpoint, Growth AI decision service, outbound dispatch
-5. End-to-end trace, verified live against the deployed container
+1. Four Telegram commands: `Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`
+2. Host-side bot service `colore-growth-bot` (systemd, long polling, owner-only)
+3. Live system status: doctor, deploy, git, docker, and all five integrations
+4. Runtime documents read directly — no summarisation by inference
 
-## Definition of Done — status
+## Rule this task is built on
 
-| # | Criterion | Status |
-|---|---|---|
-| 1 | Meta-shaped event normalised, deduplicated, routed | DONE — verified live |
-| 2 | Growth AI produces a decision | DONE — BOOKING 0.98 / high, with a written reason |
-| 3 | Decision dispatched through Telegram | DONE as dry run — no bot token exists yet |
-| 4 | Every step visible in one queryable trace | DONE — `GET /growth/events/{id}` |
-| 5 | `scripts/doctor.sh` reports SYSTEM HEALTHY | DONE |
+Every answer is a fact from the repository or a live check. When a source is
+missing, the answer names the missing file instead of producing a plausible
+reply. This is enforced by test, not by convention.
 
 ## What remains before this is DONE
 
-**One thing, and it is not code:** a Telegram bot token and operator chat id.
-Until they exist, criterion 3 is a recorded dry run rather than a person being
-told. Steps: [`../docs/operations/GROWTH_AI_SETUP.md`](../docs/operations/GROWTH_AI_SETUP.md), Step 1, about five minutes.
-
-Meta credentials and the n8n workflow are Steps 2–3 of the same document. They
-are not blockers for closing this task — the n8n hop is proven by the endpoint
-it calls.
+Nothing is blocked. Product Owner review of the four answers in Telegram is the
+remaining step — send `Статус` to `@Colore_Growth_bot`.
 
 ## Next After This
 
-Priority → Integrilla manual transport loop resumes (previous active task,
-unchanged in scope), unless Product redirects.
+Growth AI Foundation is complete: the connector layer, the
+`Meta → n8n → Coloré OS → Growth AI → Telegram` flow, and the Telegram
+interface all run. The sub-sprint can close.
+
+Then either:
+
+- **Resume Priority → Integrilla** — the paused FIRST REVENUE critical path, or
+- **Connect Meta for real** — n8n workflow plus Meta app, so live client
+  messages enter the flow. Steps 2–3 of [`../docs/operations/GROWTH_AI_SETUP.md`](../docs/operations/GROWTH_AI_SETUP.md).
+
+This is a Product decision. Ask the bot: `Что требует моего решения?`
 
 ## Do Not Work On
 

@@ -51,7 +51,9 @@ Maintained manually. Never infer state from code structure alone.
   - Connector layer: Integration Registry, Capability Registry, Connector Gateway (capability dispatch, dry run, rate limits), Event Bus — `backend/app/integrations/gateway/`
   - Connectors: Telegram, Meta (webhook verification), n8n (workflow trigger), Altegio (read-only), OpenAI — `backend/app/integrations/connectors/`
   - Growth AI flow `Meta → n8n → Coloré OS → Growth AI → Telegram`, verified live against the deployed container 2026-08-08
-  - 116 tests passing
+  - Telegram live: bot `@Colore_Growth_bot`, first real message delivered to the owner 2026-08-08
+  - Growth AI Brain v0.1 — four Product Owner commands over Telegram (`Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`)
+  - 142 tests passing
 
 ## Deployment Source of Truth
 
@@ -91,6 +93,7 @@ See [`architecture.md`](architecture.md) for full detail.
 - `backend/app/db/database.py` — SQLAlchemy engine and DB connectivity
 - `infrastructure/docker-compose.yml` — postgres, n8n, backend
 - Tables `growth_events`, `growth_actions` (migration `a1b2c3d4e5f6`, applied 2026-08-08)
+- `colore-growth-bot` — host-side systemd service (`infrastructure/colore-growth-bot.service`). Runs on the host, not in a container: the backend image contains no repository, no `.colore/`, no docker socket, so it could not answer status questions truthfully from inside. Restarted by `deploy.sh`. Logs: `journalctl -u colore-growth-bot -f`.
 - `GROWTH_INBOUND_SECRET` added to `/opt/colore-os/docker/.env` 2026-08-08 (backup taken alongside it). No channel credentials are set: Telegram, Meta and n8n all run as dry runs until tokens exist. Setup steps: [`docs/operations/GROWTH_AI_SETUP.md`](../docs/operations/GROWTH_AI_SETUP.md).
 
 ## Unknowns

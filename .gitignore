@@ -8,6 +8,11 @@ __pycache__/
 
 # Environment
 .env
+# Timestamped copies taken before editing an env file. These hold the same
+# secrets as .env and were staged once by `git add -A` because the bare `.env`
+# rule does not match them.
+.env.backup-*
+.env.*.bak
 
 # macOS
 .DS_Store

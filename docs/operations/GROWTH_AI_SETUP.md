@@ -163,6 +163,51 @@ delivery for 36 hours.
 
 ---
 
+## Managing Coloré OS from Telegram
+
+The bot `@Colore_Growth_bot` answers the Product Owner. Four commands:
+
+| Command | Answers with |
+|---|---|
+| `Статус` | doctor, deploy, git, docker and every integration — all live checks |
+| `Что нового?` | today's `.colore/changelog.md` entries and today's commits |
+| `Что требует моего решения?` | open Review Queue entries, project Unknowns, blockers on the active task |
+| `Что делаем дальше?` | current sprint and active task from `sprint.md` and `next.md` |
+
+Anything else gets the command list back. Messages from anyone other than
+`TELEGRAM_OWNER_ID` are logged and ignored without a reply.
+
+**Every answer is a fact from the repository or a live check.** When a source is
+missing, the answer names the missing file rather than inventing a plausible
+reply — there is a test for exactly that.
+
+### The service
+
+The bot runs on the **host**, as systemd unit `colore-growth-bot`, not in the
+backend container. That is not a preference: the image contains no repository,
+no `.colore/`, and no docker socket, so a bot inside it could not answer a
+single status question truthfully.
+
+```bash
+systemctl status colore-growth-bot
+journalctl -u colore-growth-bot -f
+```
+
+Install (already done on this server):
+
+```bash
+cp infrastructure/colore-growth-bot.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now colore-growth-bot
+```
+
+Credentials come from `/root/colore-os/backend/.env`, which is gitignored.
+`./deploy.sh` restarts the service, so a deploy cannot leave the bot running an
+older commit.
+
+It uses long polling, not a webhook. `setWebhook` would irreversibly disable
+`getUpdates` for this bot, and polling needs no inbound port.
+
 ## What this does not do yet
 
 - **Nothing is sent to a client automatically.** Telegram alerts the operator,

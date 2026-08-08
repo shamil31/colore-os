@@ -105,6 +105,13 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Evidence: commits `4fb21d5`, `25d6e66`, `6343318`, `61f70e7`. 116 tests passing. Live verification against the deployed container: WhatsApp payload classified BOOKING (0.98) at high priority, Instagram DM classified PRICE, Meta retry deduplicated, Instagram echo skipped, delivery receipt skipped, unauthenticated ingest rejected 401, unconfigured Meta paths closed 403/503. `scripts/doctor.sh` reports SYSTEM HEALTHY.
 - Note: `requests` was imported by `altegio/client.py` and `n8n_adapter.py` but never declared in `requirements.txt`. Present in the dev virtualenv, absent from the image — the tests passed while the container could not import the module at all. Declared in `6343318`'s predecessor `4fb21d5`.
 
+### VH-013
+- Date: 2026-08-08
+- Event: GROWTH-007 — Growth AI Brain v0.1. Telegram became the Product Owner's interface: `Статус`, `Что нового?`, `Что требует моего решения?`, `Что делаем дальше?`. Telegram credentials configured in the deployment, first live message delivered to the owner.
+- Status: DONE
+- Evidence: `backend/app/growth/{commands,system_status,runtime_reader,bot}.py`, `infrastructure/colore-growth-bot.service`. 142 tests passing. Bot `@Colore_Growth_bot` active under systemd, first owner command answered 10:02.
+- Note: the bot runs on the host rather than in the backend container. Every question it answers needs the git tree, `.colore/`, `scripts/doctor.sh` or the sibling containers — none of which the image contains. `deploy.sh` now restarts it, so a deploy cannot leave the bot on an older commit.
+
 ## Entry Template
 
 ### VH-XXX

@@ -1,0 +1,42 @@
+# Coloré OS — Growth AI Telegram bot.
+#
+# Runs on the host, not in a container. Every question it answers needs
+# something the backend container cannot see: the git tree, .colore/,
+# scripts/doctor.sh, and the sibling containers.
+#
+# Install:
+#   cp infrastructure/colore-growth-bot.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable --now colore-growth-bot
+#
+# After changing bot code:  systemctl restart colore-growth-bot
+# Logs:                     journalctl -u colore-growth-bot -f
+#
+# Credentials come from /root/colore-os/backend/.env, which is gitignored.
+
+[Unit]
+Description=Colore OS Growth AI Telegram bot
+Documentation=file:///root/colore-os/docs/operations/GROWTH_AI_SETUP.md
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/colore-os/backend
+Environment=COLORE_REPO_ROOT=/root/colore-os
+Environment=COLORE_API_BASE=http://localhost:8000
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/root/colore-os/backend/.venv/bin/python -m app.growth.bot
+
+# Telegram long polling holds a request open for 25s; a hard stop mid-poll is
+# normal and loses nothing, because the update offset is only advanced after
+# updates are read.
+Restart=always
+RestartSec=5
+TimeoutStopSec=35
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
