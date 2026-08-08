@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from app.core.config import settings
+from app.integrations.gateway import reset_connector_gateway_for_tests
 from app.services.llm_service import INTENTS, LLMService
 from app.tests.testdb import client
 
@@ -117,11 +118,10 @@ def test_analyze_accepts_every_allowed_intent(setup_test_db, monkeypatch, intent
 @pytest.mark.asyncio
 async def test_classify_parses_llm_json(monkeypatch):
     monkeypatch.setattr(settings, "OPENAI_API_KEY", "sk-test-key")
+    reset_connector_gateway_for_tests()
     service = LLMService()
-    service.client.chat.completions.create = AsyncMock(
-        return_value=_mock_openai_response(
-            json.dumps({"intent": "PRICE", "confidence": 0.81})
-        )
+    service.gateway.execute_async = AsyncMock(
+        return_value=_mock_openai_response(json.dumps({"intent": "PRICE", "confidence": 0.81}))
     )
 
     result = await service.classify([{"role": "user", "content": "How much is it?"}])
@@ -132,11 +132,10 @@ async def test_classify_parses_llm_json(monkeypatch):
 @pytest.mark.asyncio
 async def test_classify_falls_back_to_other_on_unknown_intent(monkeypatch):
     monkeypatch.setattr(settings, "OPENAI_API_KEY", "sk-test-key")
+    reset_connector_gateway_for_tests()
     service = LLMService()
-    service.client.chat.completions.create = AsyncMock(
-        return_value=_mock_openai_response(
-            json.dumps({"intent": "BUY_SHAMPOO", "confidence": 0.7})
-        )
+    service.gateway.execute_async = AsyncMock(
+        return_value=_mock_openai_response(json.dumps({"intent": "BUY_SHAMPOO", "confidence": 0.7}))
     )
 
     result = await service.classify([{"role": "user", "content": "..."}])
@@ -147,10 +146,9 @@ async def test_classify_falls_back_to_other_on_unknown_intent(monkeypatch):
 @pytest.mark.asyncio
 async def test_classify_handles_missing_confidence(monkeypatch):
     monkeypatch.setattr(settings, "OPENAI_API_KEY", "sk-test-key")
+    reset_connector_gateway_for_tests()
     service = LLMService()
-    service.client.chat.completions.create = AsyncMock(
-        return_value=_mock_openai_response(json.dumps({"intent": "CANCEL"}))
-    )
+    service.gateway.execute_async = AsyncMock(return_value=_mock_openai_response(json.dumps({"intent": "CANCEL"})))
 
     result = await service.classify([{"role": "user", "content": "..."}])
 

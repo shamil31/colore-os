@@ -1,14 +1,9 @@
 import os
 import sys
 
-from app.integrations.altegio import (
-    AltegioAuthClient,
-    AltegioCredentials,
-    AltegioDataClient,
-    AltegioEndpoints,
-    AltegioHttpClient,
-    AltegioRequestError,
-)
+from app.integrations.altegio import AltegioRequestError
+from app.integrations.connectors.altegio_connector import AltegioConnector
+from app.integrations.gateway import ConnectorGateway
 
 
 def _required_env(name: str) -> str:
@@ -27,35 +22,34 @@ def main() -> int:
         return 1
 
     try:
-        credentials = AltegioCredentials(
-            login=_required_env("ALTEGIO_LOGIN"),
-            password=_required_env("ALTEGIO_PASSWORD"),
-        )
+        login = _required_env("ALTEGIO_LOGIN")
+        password = _required_env("ALTEGIO_PASSWORD")
     except ValueError as exc:
         print(f"ERROR: {exc}")
         return 1
 
-    endpoints = AltegioEndpoints(base_url=base_url)
-    http_client = AltegioHttpClient(timeout=int(os.getenv("ALTEGIO_TIMEOUT", "20")))
+    gateway = ConnectorGateway()
+    gateway.register(
+        AltegioConnector(
+            base_url=base_url,
+            partner_token=partner_token,
+            login=login,
+            password=password,
+            timeout=int(os.getenv("ALTEGIO_TIMEOUT", "20")),
+        )
+    )
 
     try:
-        auth_client = AltegioAuthClient(
-            endpoints=endpoints,
-            partner_token=partner_token,
-            credentials=credentials,
-            http_client=http_client,
+        gateway.execute(
+            "altegio",
+            AltegioConnector.AUTHENTICATE_CAPABILITY,
         )
-        token = auth_client.authenticate()
         print("AUTHENTICATION: WORKING")
 
-        data_client = AltegioDataClient(
-            endpoints=endpoints,
-            partner_token=partner_token,
-            token=token,
-            http_client=http_client,
+        companies = gateway.execute(
+            "altegio",
+            AltegioConnector.GET_COMPANIES_CAPABILITY,
         )
-
-        companies = data_client.get_companies()
         print(f"COMPANIES: WORKING (count={len(companies)})")
 
         if not companies:
@@ -70,10 +64,18 @@ def main() -> int:
         else:
             company_id = companies[0].location_id
 
-        staff = data_client.get_staff(company_id)
+        staff = gateway.execute(
+            "altegio",
+            AltegioConnector.GET_STAFF_CAPABILITY,
+            payload={"company_id": company_id},
+        )
         print(f"STAFF: WORKING (company_id={company_id}, count={len(staff)})")
 
-        services = data_client.get_services(company_id)
+        services = gateway.execute(
+            "altegio",
+            AltegioConnector.GET_SERVICES_CAPABILITY,
+            payload={"company_id": company_id},
+        )
         print(f"SERVICES: WORKING (company_id={company_id}, count={len(services)})")
 
         return 0

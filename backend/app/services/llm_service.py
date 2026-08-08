@@ -1,8 +1,8 @@
 import json
 
-from openai import AsyncOpenAI
-
 from app.core.config import settings
+from app.integrations.connectors.openai_connector import OpenAIConnector
+from app.integrations.gateway.factory import get_connector_gateway
 
 INTENTS = [
     "BOOKING",
@@ -24,21 +24,35 @@ CLASSIFY_PROMPT = (
 
 class LLMService:
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.gateway = get_connector_gateway()
         self.model = settings.OPENAI_MODEL
 
+        if settings.OPENAI_API_KEY:
+            try:
+                self.gateway.integration_registry.get("openai")
+            except KeyError:
+                self.gateway.register(OpenAIConnector(api_key=settings.OPENAI_API_KEY))
+
     async def reply(self, messages: list[dict]) -> str:
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
+        response = await self.gateway.execute_async(
+            "openai",
+            OpenAIConnector.CHAT_COMPLETIONS_CAPABILITY,
+            payload={
+                "model": self.model,
+                "messages": messages,
+            },
         )
         return response.choices[0].message.content
 
     async def classify(self, messages: list[dict]) -> dict:
-        response = await self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "system", "content": CLASSIFY_PROMPT}] + messages,
-            response_format={"type": "json_object"},
+        response = await self.gateway.execute_async(
+            "openai",
+            OpenAIConnector.CHAT_COMPLETIONS_CAPABILITY,
+            payload={
+                "model": self.model,
+                "messages": [{"role": "system", "content": CLASSIFY_PROMPT}] + messages,
+                "response_format": {"type": "json_object"},
+            },
         )
 
         data = json.loads(response.choices[0].message.content)

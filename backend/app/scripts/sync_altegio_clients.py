@@ -8,15 +8,9 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.db.database import SessionLocal
-from app.integrations.altegio import (
-    AltegioAuthClient,
-    AltegioClient,
-    AltegioCredentials,
-    AltegioDataClient,
-    AltegioEndpoints,
-    AltegioHttpClient,
-    AltegioRequestError,
-)
+from app.integrations.altegio import AltegioRequestError
+from app.integrations.connectors.altegio_connector import AltegioConnector
+from app.integrations.gateway import ConnectorGateway
 from app.models.revenue_client import RevenueClient
 
 
@@ -27,8 +21,11 @@ def _required_env(name: str) -> str:
     return value
 
 
-def _resolve_company_id(data_client: AltegioDataClient) -> int:
-    companies = data_client.get_companies()
+def _resolve_company_id(gateway: ConnectorGateway) -> int:
+    companies = gateway.execute(
+        "altegio",
+        AltegioConnector.GET_COMPANIES_CAPABILITY,
+    )
     if not companies:
         raise ValueError("No companies returned by Altegio")
 
@@ -170,36 +167,39 @@ def main() -> int:
         return 1
 
     try:
-        credentials = AltegioCredentials(
-            login=_required_env("ALTEGIO_LOGIN"),
-            password=_required_env("ALTEGIO_PASSWORD"),
-        )
+        login = _required_env("ALTEGIO_LOGIN")
+        password = _required_env("ALTEGIO_PASSWORD")
     except ValueError as exc:
         print(f"ERROR: {exc}")
         return 1
 
-    endpoints = AltegioEndpoints(base_url=base_url)
-    http_client = AltegioHttpClient(timeout=int(os.getenv("ALTEGIO_TIMEOUT", "20")))
+    gateway = ConnectorGateway()
+    gateway.register(
+        AltegioConnector(
+            base_url=base_url,
+            partner_token=partner_token,
+            login=login,
+            password=password,
+            timeout=int(os.getenv("ALTEGIO_TIMEOUT", "20")),
+        )
+    )
 
     try:
-        auth_client = AltegioAuthClient(
-            endpoints=endpoints,
-            partner_token=partner_token,
-            credentials=credentials,
-            http_client=http_client,
-        )
-        token = auth_client.authenticate()
-
-        data_client = AltegioDataClient(
-            endpoints=endpoints,
-            partner_token=partner_token,
-            token=token,
-            http_client=http_client,
+        gateway.execute(
+            "altegio",
+            AltegioConnector.AUTHENTICATE_CAPABILITY,
         )
 
-        company_id = _resolve_company_id(data_client)
+        company_id = _resolve_company_id(gateway)
         page_size = int(os.getenv("ALTEGIO_CLIENTS_PAGE_SIZE", "200"))
-        remote_clients = data_client.get_all_clients_raw(company_id, page_size=page_size)
+        remote_clients = gateway.execute(
+            "altegio",
+            AltegioConnector.GET_ALL_CLIENTS_RAW_CAPABILITY,
+            payload={
+                "company_id": company_id,
+                "page_size": page_size,
+            },
+        )
 
         created = 0
         updated = 0

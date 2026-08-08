@@ -20,4 +20,8 @@ openpyxl==3.1.2
 pytest==9.1.1
 pytest-asyncio==1.4.0
 httpx==0.28.1
+# Imported by app/integrations/altegio/client.py and gateway/n8n_adapter.py.
+# It was never declared, so it is present in the dev virtualenv but absent
+# from the image — the tests pass and the container fails to import.
+requests==2.34.2
 openai==2.53.0

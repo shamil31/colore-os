@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-5"
+    N8N_WEBHOOK_URL: str = ""
+    N8N_TIMEOUT: int = 5
 
     ALTEGIO_BASE_URL: str = ""
 
