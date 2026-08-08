@@ -19,7 +19,8 @@ Last updated: 2026-08-05
 
 ## In Scope Now
 
-1. Priority → Integrilla (message transport loop) — ACTIVE
+0. **GROWTH AI FOUNDATION** (sub-sprint, see [`adr/ADR-002-growth-ai-foundation.md`](adr/ADR-002-growth-ai-foundation.md)) — ACTIVE
+1. Priority → Integrilla (message transport loop) — PAUSED behind sub-sprint
 2. Campaign Engine
 3. Segmentation
 4. Message Selection
@@ -32,8 +33,9 @@ Last updated: 2026-08-05
 - Dashboard
 - Marketplace
 - SaaS
-- Messenger
 - Event Sourcing
+
+**Amended 2026-08-08 by ADR-002:** *Messenger* is no longer blanket-deferred. The **connector layer** (Gateway, Integration Registry, Capability Registry, connectors for n8n / Telegram / Altegio / Meta) is in scope now. Building out individual channels beyond the one end-to-end trace is not.
 
 ## Completed Foundation
 

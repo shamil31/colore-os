@@ -92,6 +92,12 @@ See [`adr/ADR-001-runtime-first-development.md`](adr/ADR-001-runtime-first-devel
 - Event: Runtime v1 migration — `.colore/` restructured into flat authoritative document set (`bootstrap.md`, `state.md`, `sprint.md`, `next.md`, `roadmap.md`, `architecture.md`, `changelog.md`, `runtime.md`, `roles.md`, `agents.md`) plus `adr/`, `playbooks/`, `templates/`.
 - Status: DONE
 
+### VH-011
+- Date: 2026-08-08
+- Event: GROWTH-001 — Growth AI integration research completed against official vendor documentation for Meta Business, Instagram Graph, WhatsApp Business, Altegio, Telegram Bot API and n8n. ADR-002 accepted: Growth AI enters as a sub-sprint inside FIRST REVENUE, structured as a connector layer rather than per-channel work.
+- Status: DONE
+- Evidence: `docs/research/GROWTH_AI_INTEGRATION_RESEARCH.md`, `.colore/adr/ADR-002-growth-ai-foundation.md`, R-002 in `research.md` (4 unverified contracts recorded as gaps).
+
 ## Entry Template
 
 ### VH-XXX

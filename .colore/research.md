@@ -1,6 +1,6 @@
 # Research Registry
 
-Last updated: 2026-08-06
+Last updated: 2026-08-08
 
 ## Purpose
 
@@ -19,6 +19,7 @@ Research to come back to. Check this before starting work.
 | ID | Title | When to return | Status |
 |---|---|---|---|
 | R-001 | Recovered OpenHands Domain Model | Before Altegio | Pending |
+| R-002 | Growth AI integration gaps (4 unverified contracts) | Before the integration each gap blocks | Pending |
 
 ## Rules
 
@@ -136,11 +137,58 @@ Three actions, in order:
 
 ---
 
+## R-002 — Growth AI Integration Gaps
+
+| Field | Value |
+|---|---|
+| **ID** | R-002 |
+| **Title** | Growth AI integration gaps (4 unverified contracts) |
+| **Status** | Pending Review |
+| **Source** | `docs/research/GROWTH_AI_INTEGRATION_RESEARCH.md` (2026-08-08) |
+| **Discovered** | 2026-08-08 (GROWTH-001) |
+| **Deletion risk** | Low |
+
+### Description
+
+The 2026-08-08 integration research verified every contract needed for the `Meta → n8n → Coloré OS → Growth AI → Telegram` flow against official vendor documentation. Four contracts could **not** be verified and are recorded here rather than guessed.
+
+| # | Gap | Why unverified | Blocks |
+|---|---|---|---|
+| G-1 | Altegio webhook payload schema and event list | `developer.alteg.io` webhook reference renders client-side; not readable by fetch | Altegio-triggered flows |
+| G-2 | Altegio `book_record` / `book_dates` / `book_staff` / `book_services` exact contracts | same | Booking write-back (already deferred post-FIRST REVENUE) |
+| G-3 | Instagram human-agent tag field name for replies outside the 24h window | documented as a capability, field name not stated on the page | Replying to an Instagram DM after 24h |
+| G-4 | Meta System User token expiry semantics vs. user tokens | not stated on the System Users overview page | Token rotation policy |
+
+### Why it matters
+
+None of the four blocks today's flow — today is Meta-triggered and Telegram-out. Each blocks a specific, already-identified next step. Recording them prevents the next agent from either rebuilding the research or, worse, inventing a payload shape and writing code against fiction.
+
+### When to return
+
+- **G-1, G-2:** before any Altegio-triggered flow or booking write-back. Resolve by capturing a live payload from the salon account, or an authenticated docs session — not by guessing.
+- **G-3:** before Instagram outbound messaging.
+- **G-4:** before the first Meta token rotation, or on the first `190` auth error, whichever comes first.
+
+### Related Roadmap Phase
+
+Stage 1 — Growth AI Foundation; Epic — Altegio Write Back.
+
+### Related ADR
+
+[`adr/ADR-002-growth-ai-foundation.md`](adr/ADR-002-growth-ai-foundation.md)
+
+### Recommendation
+
+Close G-1 and G-2 together by capturing one real Altegio webhook delivery against a test endpoint. That single observation resolves more than reading the documentation would.
+
+---
+
 ## Index
 
 | ID | Title | Status | Deletion risk |
 |---|---|---|---|
 | R-001 | Recovered OpenHands Domain Model | Pending Review | **High** |
+| R-002 | Growth AI Integration Gaps | Pending Review | Low |
 
 ## Source of Truth
 

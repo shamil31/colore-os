@@ -7,6 +7,7 @@ Last updated: 2026-08-05
 Goal: first real client booking initiated by Coloré OS and recorded in Altegio.
 
 Execution order:
+0. Growth AI Foundation — connector layer (ADR-002, added 2026-08-08)
 1. Priority → Integrilla
 2. Campaign Engine
 3. Segmentation
@@ -61,8 +62,8 @@ Skipping this check means rebuilding work the project has already produced once.
 - Dashboard
 - Marketplace
 - SaaS
-- Messenger
 - Event Sourcing
+- Messenger — **partially unblocked 2026-08-08 by ADR-002.** The connector layer is in scope now; building out individual channels beyond one end-to-end trace is not.
 
 ### Architecture Backlog
 - Rename `docs/domain/customer_intelligence/` to `docs/domain/decision_intelligence/` (future consolidation)
