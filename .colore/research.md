@@ -22,6 +22,7 @@ Research to come back to. Check this before starting work.
 | R-002 | Growth AI integration gaps (4 unverified contracts) | Before the integration each gap blocks | Pending |
 | R-003 | Meta Business decisions required from Product Owner (5) | Before Meta goes live | Pending |
 | R-004 | Altegio `with_deleted=1` — undocumented, required for cancellations | Before relying on cancellation events | Pending |
+| R-005 | Container never had full Altegio credentials — only `ALTEGIO_BASE_URL` | Before trusting any container-side Altegio read | Pending |
 
 ## Rules
 
@@ -280,6 +281,41 @@ Add a check that compares `total_count` with and without the flag. If they ever 
 
 ---
 
+## R-005 — Container Never Had Full Altegio Credentials
+
+| Field | Value |
+|---|---|
+| **ID** | R-005 |
+| **Title** | Container never had full Altegio credentials — only `ALTEGIO_BASE_URL` |
+| **Status** | Pending Review |
+| **Source** | Live verification during P0-005 (GROWTH-SECURITY-001), 2026-08-08 |
+| **Discovered** | 2026-08-08, while confirming the Telegram bot still worked after the security gate |
+| **Deletion risk** | Low |
+
+### Description
+
+`/opt/colore-os/docker/.env` — the file `colore-backend` actually runs with — has only `ALTEGIO_BASE_URL`. `ALTEGIO_PARTNER_TOKEN`, `ALTEGIO_LOGIN`, `ALTEGIO_PASSWORD` and `ALTEGIO_COMPANY_ID` exist only in `backend/.env` (the host file, read by `.venv/bin/python` scripts run directly and by the host-side bot and scheduler).
+
+This is not new breakage from P0-005. It was already true; it surfaced because `Статус` (which calls the container's `/growth/integrations`) reported Altegio as `не настроен`, while every prior GROWTH-008/P0-004 verification that showed 334 clients, 90 services etc. was run with `.venv/bin/python` on the host — which reads `backend/.env` and has always had the full credentials.
+
+### Why it matters
+
+Anything that runs **inside** `colore-backend` and needs Altegio — a future API route, a container-side job — has never been able to authenticate. Anything that runs on the **host** — the scheduler, the bot, `scripts/generate_*_report.py` — has always worked. The two have silently disagreed about whether Altegio is configured, and nothing before this surfaced it because nothing container-side had asked yet.
+
+### When to return
+
+Before adding any Altegio call inside the container, or before trusting `Статус`'s Altegio line without checking which process answered it.
+
+### Related Roadmap Phase
+
+Stage 1 — Growth AI Foundation.
+
+### Recommendation
+
+Decide deliberately whether Altegio access is a host concern or a container concern (today it is architecturally a host concern — the bot, doctor and scheduler all run there), and either add the four missing keys to `/opt/colore-os/docker/.env` or document that the container is not expected to reach Altegio directly. Not fixed here: out of scope for a security-gate task, and changing it without that decision would be a shortcut.
+
+---
+
 ## Index
 
 | ID | Title | Status | Deletion risk |
@@ -288,6 +324,7 @@ Add a check that compares `total_count` with and without the flag. If they ever 
 | R-002 | Growth AI Integration Gaps | Pending Review | Low |
 | R-003 | Meta Business Decisions Required From Product Owner | Pending Review | Low |
 | R-004 | Altegio `with_deleted=1` Undocumented | Pending Review | Low |
+| R-005 | Container Never Had Full Altegio Credentials | Pending Review | Low |
 
 ## Source of Truth
 
