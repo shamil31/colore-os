@@ -16,6 +16,8 @@ from datetime import date
 from pathlib import Path
 
 from app.growth import runtime_reader, system_status
+from app.growth.response_builder import ResponseBuilder
+from app.growth.status_renderer import StatusRenderer
 
 logger = logging.getLogger("colore.commands")
 
@@ -33,6 +35,8 @@ ANALYTICS_DAYS = 30
 # Statuses that mean an entry is still open. Matches the definition in
 # .colore/bootstrap.md: Rejected and Closed are not reported.
 OPEN_STATUSES = ("pending", "under review", "adopted")
+
+_status_renderer = StatusRenderer()
 
 _ALIASES: dict[str, tuple[str, ...]] = {
     CMD_STATUS: ("статус", "status", "/status", "/статус"),
@@ -131,26 +135,7 @@ def analytics_answer(days: int = ANALYTICS_DAYS) -> str:
 
 def status_answer(root: Path | None = None) -> str:
     checks = system_status.collect_status(root)
-
-    lines = ["📊 СТАТУС COLORÉ OS", ""]
-    for check in checks:
-        lines.append(f"{check.marker} {check.name}: {check.summary}")
-        for detail in check.detail:
-            lines.append(f"     • {detail}")
-
-    problems = [c for c in checks if c.ok is False]
-    unknown = [c for c in checks if c.ok is None]
-
-    lines.append("")
-    if not problems and not unknown:
-        lines.append("Всё в порядке.")
-    else:
-        if problems:
-            lines.append(f"Требует внимания: {', '.join(c.name for c in problems)}.")
-        if unknown:
-            lines.append(f"Не удалось проверить: {', '.join(c.name for c in unknown)}.")
-
-    return _fit("\n".join(lines))
+    return _status_renderer.render(checks, limit=TELEGRAM_LIMIT)
 
 
 # --------------------------------------------------------------- что нового
@@ -161,137 +146,128 @@ def news_answer(root: Path | None = None) -> str:
     entries, error = runtime_reader.read_changelog(root)
     commits = runtime_reader.commits_since(root, day=today)
 
-    lines = [f"🆕 ЧТО НОВОГО — {today}", ""]
+    builder = ResponseBuilder().heading(f"🆕 WHAT'S NEW — {today}")
 
     if error:
-        lines.append(f"Журнал изменений прочитать не удалось: {error}")
+        builder.section("Project changelog").line(f"Cannot read changelog: {error}")
     else:
         todays = runtime_reader.entries_for(entries, today)
         if todays:
-            lines.append("Записано в журнал проекта сегодня:")
-            lines.append("")
+            builder.section("Project changelog")
+            builder.line("Recorded today:")
             for entry in todays:
-                lines.append(f"• {entry.entry_id} — {entry.event}")
+                builder.bullet(f"{entry.entry_id} — {entry.event}")
                 if entry.status:
-                    lines.append(f"   статус: {entry.status}")
-                lines.append("")
+                    builder.detail(f"status: {entry.status}")
         else:
-            lines.append("Сегодня в журнал проекта записей не добавлено.")
-            lines.append("")
+            builder.section("Project changelog")
+            builder.line("No new changelog entries today.")
             if entries:
                 last = entries[0]
-                lines.append(f"Последняя запись — {last.entry_id} от {last.date}:")
-                lines.append(f"{last.event}")
-                lines.append("")
+                builder.line(f"Latest entry: {last.entry_id} ({last.date})")
+                builder.detail(last.event)
 
+    builder.section("Git commits")
     if commits:
-        lines.append(f"Коммитов сегодня: {len(commits)}")
+        builder.line(f"Commits today: {len(commits)}")
         for commit in commits:
-            lines.append(f"• {commit}")
+            builder.bullet(commit)
     else:
-        lines.append("Коммитов за сегодня нет.")
+        builder.line("No commits today.")
 
-    return _fit("\n".join(lines))
+    return builder.build(limit=TELEGRAM_LIMIT)
 
 
 # --------------------------------------------- что требует моего решения
 
 
 def decisions_answer(root: Path | None = None) -> str:
-    lines = ["🤔 ТРЕБУЕТ ВАШЕГО РЕШЕНИЯ", ""]
+    builder = ResponseBuilder().heading("🤔 DECISIONS NEEDED")
     found_any = False
 
     items, error = runtime_reader.read_review_queue(root)
     if error:
-        lines.append(f"Очередь исследований недоступна: {error}")
-        lines.append("")
+        builder.section("Research queue").line(f"Unavailable: {error}")
     else:
         open_items = [
             item for item in items if item.status.strip().lower().startswith(OPEN_STATUSES)
         ]
         if open_items:
             found_any = True
-            lines.append("Открытые исследования (нужно решение: принять, отклонить или отложить):")
-            lines.append("")
+            builder.section("Open research")
+            builder.line("Need your decision: accept, reject, or postpone.")
             for item in open_items:
-                lines.append(f"• {item.item_id} — {item.title}")
-                lines.append(f"   вернуться: {item.when} | статус: {item.status}")
-                lines.append("")
+                builder.bullet(f"{item.item_id} — {item.title}")
+                builder.detail(f"return: {item.when} | status: {item.status}")
 
     unknowns, error = runtime_reader.read_unknowns(root)
     if error:
-        lines.append(f"Список открытых вопросов недоступен: {error}")
-        lines.append("")
+        builder.section("Open questions").line(f"Unavailable: {error}")
     elif unknowns:
         found_any = True
-        lines.append("Открытые вопросы проекта (нет данных — нужны от вас):")
-        lines.append("")
+        builder.section("Open questions")
+        builder.line("Missing data that needs your input:")
         for unknown in unknowns:
-            lines.append(f"• {unknown}")
-        lines.append("")
+            builder.bullet(unknown)
 
     next_view, error = runtime_reader.read_next(root)
     if not error and next_view.remaining:
         found_any = True
-        lines.append("Блокирует закрытие текущей задачи:")
-        lines.append("")
+        builder.section("Current blockers")
         for item in next_view.remaining:
-            lines.append(f"• {item}")
-        lines.append("")
+            builder.bullet(item)
 
     if not found_any:
-        lines.append("Ничего не ждёт вашего решения.")
+        builder.section("Summary").line("No pending decisions for now.")
 
-    lines.append("Источники: .colore/research.md, .colore/state.md, .colore/next.md")
-    return _fit("\n".join(lines))
+    builder.section("Sources")
+    builder.line(".colore/research.md, .colore/state.md, .colore/next.md")
+    return builder.build(limit=TELEGRAM_LIMIT)
 
 
 # ----------------------------------------------------------- что дальше
 
 
 def next_answer(root: Path | None = None) -> str:
-    lines = ["🎯 ЧТО ДЕЛАЕМ ДАЛЬШЕ", ""]
+    builder = ResponseBuilder().heading("🎯 WHAT'S NEXT")
 
     sprint, error = runtime_reader.read_sprint(root)
     if error:
-        lines.append(f"Спринт прочитать не удалось: {error}")
+        builder.section("Sprint").line(f"Unavailable: {error}")
     else:
+        builder.section("Sprint")
         if sprint.name:
-            lines.append(f"Спринт: {sprint.name}")
+            builder.line(f"Sprint: {sprint.name}")
         if sprint.goal:
-            lines.append(f"Цель: {sprint.goal}")
+            builder.line(f"Goal: {sprint.goal}")
         if sprint.kpi:
-            lines.append(f"KPI: {sprint.kpi}")
+            builder.line(f"KPI: {sprint.kpi}")
         if sprint.in_scope:
-            lines.append("")
-            lines.append("В работе сейчас:")
+            builder.line("In scope now:")
             for item in sprint.in_scope:
-                lines.append(f"• {item}")
-
-    lines.append("")
+                builder.bullet(item)
 
     next_view, error = runtime_reader.read_next(root)
     if error:
-        lines.append(f"Активную задачу прочитать не удалось: {error}")
+        builder.section("Active task").line(f"Unavailable: {error}")
     else:
+        builder.section("Active task")
         if next_view.task:
-            lines.append(f"Активная задача: {next_view.task}")
+            builder.line(f"Task: {next_view.task}")
         if next_view.status:
-            lines.append(f"Статус: {next_view.status}")
+            builder.line(f"Status: {next_view.status}")
         if next_view.remaining:
-            lines.append("")
-            lines.append("Осталось:")
+            builder.line("Remaining:")
             for item in next_view.remaining:
-                lines.append(f"• {item}")
+                builder.bullet(item)
         if next_view.do_not:
-            lines.append("")
-            lines.append("Не берём в работу:")
+            builder.section("Do not work on")
             for item in next_view.do_not:
-                lines.append(f"• {item}")
+                builder.bullet(item)
 
-    lines.append("")
-    lines.append("Источники: .colore/sprint.md, .colore/next.md")
-    return _fit("\n".join(lines))
+    builder.section("Sources")
+    builder.line(".colore/sprint.md, .colore/next.md")
+    return builder.build(limit=TELEGRAM_LIMIT)
 
 
 # --------------------------------------------------------------------- help
@@ -299,18 +275,16 @@ def next_answer(root: Path | None = None) -> str:
 
 def help_answer() -> str:
     return (
-        "🤖 Growth AI Coloré\n"
+        "🤖 GROWTH AI — COMMANDS\n"
         "\n"
-        "Команды:\n"
+        "• Статус — doctor, deploy, git, docker and integrations\n"
+        "• Что нового? — today's changelog and commits\n"
+        "• Что требует моего решения? — open research and unknowns\n"
+        "• Что делаем дальше? — sprint and active task\n"
+        "• Аналитика — leads, bookings, conversion, and gaps\n"
         "\n"
-        "• Статус — доктор, деплой, git, docker и все интеграции\n"
-        "• Что нового? — что сделано сегодня по журналу проекта и коммитам\n"
-        "• Что требует моего решения? — открытые исследования и вопросы\n"
-        "• Что делаем дальше? — текущий спринт и активная задача\n"
-        "• Аналитика — лиды, записи, конверсия и чего не хватает\n"
-        "\n"
-        "Отвечаю только на факты из репозитория и живых проверок. "
-        "Если данных нет — так и скажу."
+        "I only answer with facts from repository files and live checks. "
+        "If data is missing, I say so directly."
     )
 
 

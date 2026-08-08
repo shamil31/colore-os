@@ -82,8 +82,10 @@ def test_status_answer_renders_every_check(monkeypatch):
     assert "✅ Doctor: SYSTEM HEALTHY" in answer
     assert "❌ Git" in answer
     assert "⚪ n8n" in answer
-    assert "Требует внимания: Git, Meta." in answer
-    assert "Не удалось проверить: n8n." in answer
+    assert "I cannot analyze advertising because Meta Business is not connected." in answer
+    assert "Needs attention: Git, Meta." in answer
+    assert "Could not verify: n8n." in answer
+    assert "Recommendations" in answer
 
 
 def test_status_says_all_clear_when_nothing_is_wrong(monkeypatch):
@@ -93,7 +95,7 @@ def test_status_says_all_clear_when_nothing_is_wrong(monkeypatch):
         lambda root=None: [Check("Doctor", True, "SYSTEM HEALTHY")],
     )
 
-    assert "Всё в порядке." in commands.status_answer()
+    assert "Everything looks healthy." in commands.status_answer()
 
 
 def test_a_check_that_cannot_run_is_reported_as_unknown_not_as_ok():
@@ -256,7 +258,7 @@ def test_empty_review_queue_says_nothing_is_pending(tmp_path):
     (colore / "state.md").write_text("## Unknowns\n\n", encoding="utf-8")
     (colore / "next.md").write_text("## Active Task\n\nX\n", encoding="utf-8")
 
-    assert "Ничего не ждёт вашего решения." in commands.decisions_answer(tmp_path)
+    assert "No pending decisions for now." in commands.decisions_answer(tmp_path)
 
 
 def test_answers_are_trimmed_to_the_telegram_limit():
